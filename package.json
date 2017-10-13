@@ -4,6 +4,9 @@
   "description": "A desktop application that lets you create beautiful polygon based art",
   "main": "index.js",
   "scripts": {
+	"build": "npm run build:main && npm run build:ui",
+	"build:main": "tsc -p ./src/main",
+	"build:ui": "tsc -p ./src/ui",
     "lint:main": "tslint -p ./src/main/tsconfig.json --type-check",
     "lint:ui": "tslint -p ./src/ui/tsconfig.json --type-check",
     "start": "electron src/main/index.js",
