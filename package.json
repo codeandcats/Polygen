@@ -1,0 +1,11 @@
+{
+  "name": "polygen",
+  "version": "1.0.0",
+  "description": "A desktop application that lets you create beautiful polygon based art",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Ben <codeandcats@gmail.com>",
+  "license": "UNLICENSED"
+}
