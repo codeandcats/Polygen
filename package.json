@@ -4,6 +4,8 @@
   "description": "A desktop application that lets you create beautiful polygon based art",
   "main": "index.js",
   "scripts": {
+    "lint:main": "tslint -p ./src/main/tsconfig.json --type-check",
+    "lint:ui": "tslint -p ./src/ui/tsconfig.json --type-check",
     "start": "electron src/main/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -12,6 +14,7 @@
   "dependencies": {},
   "devDependencies": {
     "electron": "1.7.9",
+    "tslint": "5.7.0",
     "typescript": "2.5.3"
   }
 }
