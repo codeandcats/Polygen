@@ -11,6 +11,7 @@
   "license": "UNLICENSED",
   "dependencies": {},
   "devDependencies": {
-    "electron": "1.7.9"
+    "electron": "1.7.9",
+    "typescript": "2.5.3"
   }
 }
