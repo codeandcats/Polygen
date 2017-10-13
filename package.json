@@ -17,8 +17,12 @@
   },
   "author": "Ben <codeandcats@gmail.com>",
   "license": "UNLICENSED",
-  "dependencies": {},
+  "dependencies": {
+    "app-root-path": "2.0.1"
+  },
   "devDependencies": {
+    "@types/app-root-path": "1.2.4",
+    "@types/electron": "1.6.10",
     "concurrently": "3.5.0",
     "electron": "1.7.9",
     "tslint": "5.7.0",

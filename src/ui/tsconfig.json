@@ -1,0 +1,11 @@
+{
+	"compilerOptions": {
+		"module": "commonjs",
+		"strictNullChecks": true,
+		"sourceMap": true,
+		"target": "es6"
+	},
+	"include": [
+		"**/*.ts"
+	]
+}
