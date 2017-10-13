@@ -5,6 +5,7 @@
     ],
     "jsRules": {},
     "rules": {
+		"indent": [true, "tabs", 4],
         "arrow-parens": false,
         "interface-name": [true, "never-prefix"],
         "object-literal-sort-keys": false,
