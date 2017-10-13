@@ -4,8 +4,13 @@
   "description": "A desktop application that lets you create beautiful polygon based art",
   "main": "index.js",
   "scripts": {
+    "start": "electron src/main/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Ben <codeandcats@gmail.com>",
-  "license": "UNLICENSED"
+  "license": "UNLICENSED",
+  "dependencies": {},
+  "devDependencies": {
+    "electron": "1.7.9"
+  }
 }
