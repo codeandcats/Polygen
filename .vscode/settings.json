@@ -10,5 +10,9 @@
 		".vscode/symbols.json": true,
 		"src/**/*.js": true,
 		"src/**/*.js.map": true
-	}
+	},
+	"cSpell.words": [
+		"antd",
+		"submenu"
+	]
 }

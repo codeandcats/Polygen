@@ -1,11 +1,18 @@
 {
 	"compilerOptions": {
-		"module": "commonjs",
-		"strictNullChecks": true,
+		"allowSyntheticDefaultImports": true,
+		"emitDecoratorMetadata": true,
+		"experimentalDecorators": true,
+		"jsx": "react",
+		"lib": ["es5", "es6", "dom"],
+		"noImplicitAny": true,
+		"noUnusedParameters": true,
 		"sourceMap": true,
-		"target": "es6"
+		"strictNullChecks": true,
+		"target": "es3"
 	},
 	"include": [
-		"**/*.ts"
+		"**/*.ts",
+		"**/*.tsx"
 	]
 }

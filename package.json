@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "A desktop application that lets you create beautiful polygon based art",
   "main": "index.js",
+  "product-name": "Polygen",
   "scripts": {
     "build": "npm run build:main && npm run build:ui",
     "build:main": "tsc -p ./src/main",
@@ -12,18 +13,32 @@
     "build-watch:ui": "tsc -w -p ./src/ui",
     "lint:main": "tslint -p ./src/main/tsconfig.json --type-check",
     "lint:ui": "tslint -p ./src/ui/tsconfig.json --type-check",
-    "start": "electron src/main/index.js",
+    "start": "cross-env NODE_ENV=development electron src/main/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Ben <codeandcats@gmail.com>",
   "license": "UNLICENSED",
+  "build": {
+    "appId": "com.codeandcats.polygen",
+    "files": [
+      "index.js",
+      "src/**/*"
+    ]
+  },
   "dependencies": {
-    "app-root-path": "2.0.1"
+    "antd": "2.13.6",
+    "app-root-path": "2.0.1",
+    "react": "16.0.0",
+    "react-dom": "16.0.0",
+    "react-redux": "5.0.6"
   },
   "devDependencies": {
     "@types/app-root-path": "1.2.4",
     "@types/electron": "1.6.10",
+    "@types/react": "16.0.10",
+    "@types/react-dom": "16.0.1",
     "concurrently": "3.5.0",
+    "cross-env": "5.0.5",
     "electron": "1.7.9",
     "tslint": "5.7.0",
     "typescript": "2.5.3"
