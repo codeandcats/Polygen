@@ -1,3 +1,4 @@
+import { moveElement } from '../../../shared/lang/arrays';
 import { ApplicationState } from '../../../shared/models/applicationState';
 import { Editor } from '../../../shared/models/editor';
 import { Layer } from '../../../shared/models/layer';
@@ -50,10 +51,19 @@ export const openExistingProjectFile = defineAction(
 			editorIndex = editors.length - 1;
 		}
 
+		let recentFileNames = [...state.recentFileNames];
+		const recentFileNameIndex = recentFileNames.indexOf(payload.fileName);
+		if (recentFileNameIndex === -1) {
+			recentFileNames.push(payload.fileName);
+		} else {
+			recentFileNames = moveElement(recentFileNames, recentFileNameIndex, 0);
+		}
+
 		return {
 			...state,
+			activeEditorIndex: editorIndex,
 			editors,
-			activeEditorIndex: editorIndex
+			recentFileNames
 		};
 	}
 ).getDispatcher(store);
