@@ -1,6 +1,7 @@
-import { ProjectFileContents } from './projectFileContents';
+import { Layer } from './layer';
+import { Size } from './size';
 
 export interface ProjectFile {
-	fileName: string | undefined;
-	contents: ProjectFileContents;
+	size: Size;
+	layers: Layer[];
 }

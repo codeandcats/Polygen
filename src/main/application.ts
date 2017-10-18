@@ -89,6 +89,17 @@ export class Application {
 						}
 					}
 				]
+			},
+			{
+				label: 'Debug',
+				submenu: [
+					{
+						role: 'reload'
+					},
+					{
+						role: 'toggledevtools'
+					}
+				]
 			}
 		];
 	}

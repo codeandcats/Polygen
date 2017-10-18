@@ -6,13 +6,17 @@
   "product-name": "Polygen",
   "scripts": {
     "build": "npm run build:main && npm run build:ui",
-    "build:main": "tsc -p ./src/main",
-    "build:ui": "tsc -p ./src/ui",
-    "build-watch": "concurrently --raw \"npm run build-watch:main\" \"npm run build-watch:ui\"",
-    "build-watch:main": "tsc -w -p ./src/main",
-    "build-watch:ui": "tsc -w -p ./src/ui",
+    "build:main": "tsc -p ./src/main --pretty",
+    "build:ui": "tsc -p ./src/ui --pretty",
+    "build:tests": "tsc -p ./tests --pretty",
+    "build-watch": "concurrently --raw \"npm run build-watch:main\" \"npm run build-watch:ui\" \"npm run build-watch:tests\"",
+    "build-watch:main": "tsc -w -p ./src/main --pretty",
+    "build-watch:ui": "tsc -w -p ./src/ui --pretty",
+    "build-watch:tests": "tsc -w -p ./tests --pretty",
+    "clean": "rimraf \"src/**/*.js\" \"src/**/*.map\"",
     "lint:main": "tslint -p ./src/main/tsconfig.json --type-check",
     "lint:ui": "tslint -p ./src/ui/tsconfig.json --type-check",
+    "lint:tests": "tslint -p ./tests/tsconfig.json --type-check",
     "start": "cross-env NODE_ENV=development electron src/main/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -26,20 +30,29 @@
     ]
   },
   "dependencies": {
-    "antd": "2.13.6",
     "app-root-path": "2.0.1",
+    "assert-never": "1.0.0",
+    "bootstrap": "3.3.7",
     "react": "16.0.0",
+    "react-bootstrap": "0.31.3",
     "react-dom": "16.0.0",
     "react-redux": "5.0.6"
   },
   "devDependencies": {
     "@types/app-root-path": "1.2.4",
+    "@types/chai": "4.0.4",
     "@types/electron": "1.6.10",
+    "@types/mocha": "2.2.43",
     "@types/react": "16.0.10",
+    "@types/react-bootstrap": "0.31.6",
     "@types/react-dom": "16.0.1",
+    "@types/react-redux": "5.0.10",
+    "chai": "4.1.2",
     "concurrently": "3.5.0",
     "cross-env": "5.0.5",
     "electron": "1.7.9",
+    "mocha": "4.0.1",
+    "rimraf": "2.6.2",
     "tslint": "5.7.0",
     "typescript": "2.5.3"
   }

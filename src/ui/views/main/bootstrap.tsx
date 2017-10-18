@@ -1,7 +1,8 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
+import store from '../../store';
 import { MainWindow } from './index';
 
 const container = document.getElementById('content') as HTMLElement;
 
-ReactDOM.render(<MainWindow />, container);
+store.subscribe(() => ReactDOM.render(<MainWindow store={store} />, container));
