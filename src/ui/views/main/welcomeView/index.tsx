@@ -42,7 +42,7 @@ export class WelcomeView extends React.Component<WelcomeViewProps, WelcomeViewSt
 		return (
 			<div style={ { display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: '100%' } }>
 				<Grid>
-					<Jumbotron>
+					<Jumbotron style={ { margin: 0 } }>
 						<h1>Welcome</h1>
 						<p>Create or open a file to get started.</p>
 						<ButtonToolbar>
