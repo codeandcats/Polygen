@@ -1,3 +1,7 @@
+/**
+ * Creates a copy of the specified array with the element
+ * located at `fromIndex` moved to `toIndex` and returns the new array.
+ */
 export function moveElement<T>(items: T[], fromIndex: number, toIndex: number): T[] {
 	// Create a copy of the array
 	items = [...items];
