@@ -1,27 +1,29 @@
-import { moveElement } from '../../../../../shared/lang/arrays';
 import { ApplicationState } from '../../../../../shared/models/applicationState';
-import { Point } from '../../../../../shared/models/point';
 import { defineAction } from '../../../../reduxWithLessSux/action';
-import store from '../../../../store';
 
-interface MoveSelectedLayerPayload {
-	moveBy: number;
+interface RemoveLayerPayload {
+	layerIndex: number;
 }
 
-export const movePoint = defineAction(
-	'removeSelectedLayer', (state: ApplicationState, payload: MoveSelectedLayerPayload) => {
+export const removeLayer = defineAction(
+	'removeLayer', (state: ApplicationState, payload: RemoveLayerPayload) => {
 		const editors = state.editors.map((editor, editorIndex) => {
 			if (editorIndex === state.activeEditorIndex) {
+				let { selectedLayerIndex } = editor;
 				const projectFile = editor.projectFile;
 				let layers = [...projectFile.layers];
-				layers = moveElement(layers, editor.selectedLayerIndex, editor.selectedLayerIndex + payload.moveBy);
+				if (layers.length > 1) {
+					layers = layers.filter((_, index) => index !== payload.layerIndex);
+				}
+				selectedLayerIndex = Math.min(layers.length - 1, Math.max(0, selectedLayerIndex));
 
 				return {
 					...editor,
 					projectFile: {
 						...projectFile,
 						layers
-					}
+					},
+					selectedLayerIndex
 				};
 			}
 			return editor;
@@ -32,4 +34,4 @@ export const movePoint = defineAction(
 			editors
 		};
 	}
-).getDispatcher(store);
+).getDispatcher();

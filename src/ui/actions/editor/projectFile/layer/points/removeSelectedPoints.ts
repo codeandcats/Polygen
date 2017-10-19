@@ -1,7 +1,6 @@
 import { ApplicationState } from '../../../../../../shared/models/applicationState';
 import { Point } from '../../../../../../shared/models/point';
 import { defineAction } from '../../../../../reduxWithLessSux/action';
-import store from '../../../../../store';
 
 export const removeSelectedPoints = defineAction(
 	'removeSelectedPoints', (state: ApplicationState) => {
@@ -36,4 +35,4 @@ export const removeSelectedPoints = defineAction(
 			editors
 		};
 	}
-).getDispatcher(store);
+).getDispatcher();

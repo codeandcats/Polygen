@@ -1,6 +1,5 @@
 import { ApplicationState } from '../../../shared/models/applicationState';
 import { defineAction } from '../../reduxWithLessSux/action';
-import store from '../../store';
 
 export const closeActiveProjectFile = defineAction(
 	'closeActiveProjectFile', (state: ApplicationState) => {
@@ -10,4 +9,4 @@ export const closeActiveProjectFile = defineAction(
 			editors
 		};
 	}
-).getDispatcher(store);
+).getDispatcher();

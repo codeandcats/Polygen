@@ -1,6 +1,5 @@
 import { ApplicationState } from '../../../../../../shared/models/applicationState';
 import { defineAction } from '../../../../../reduxWithLessSux/action';
-import store from '../../../../../store';
 
 export const selectAllPoints = defineAction(
 	'selectAllPoints', (state: ApplicationState) => {
@@ -21,4 +20,4 @@ export const selectAllPoints = defineAction(
 			editors
 		};
 	}
-).getDispatcher(store);
+).getDispatcher();

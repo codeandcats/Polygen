@@ -5,7 +5,6 @@ import { Layer } from '../../../shared/models/layer';
 import { Point } from '../../../shared/models/point';
 import { ProjectFile } from '../../../shared/models/projectFile';
 import { defineAction } from '../../reduxWithLessSux/action';
-import store from '../../store';
 
 interface OpenExistingProjectFilePayload {
 	fileName: string;
@@ -66,4 +65,4 @@ export const openExistingProjectFile = defineAction(
 			recentFileNames
 		};
 	}
-).getDispatcher(store);
+).getDispatcher();

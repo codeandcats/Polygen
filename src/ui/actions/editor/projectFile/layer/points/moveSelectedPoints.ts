@@ -1,7 +1,6 @@
 import { ApplicationState } from '../../../../../../shared/models/applicationState';
 import { Point } from '../../../../../../shared/models/point';
 import { defineAction } from '../../../../../reduxWithLessSux/action';
-import store from '../../../../../store';
 
 interface MoveSelectedPointsPayload {
 	moveBy: Point;
@@ -44,4 +43,4 @@ export const moveSelectedPoints = defineAction(
 			editors
 		};
 	}
-).getDispatcher(store);
+).getDispatcher();

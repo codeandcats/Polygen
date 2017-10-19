@@ -25,8 +25,6 @@ export class NewProjectFileDialog extends React.Component<NewProjectFileDialogPr
 		const width = this.getDimensionValueIfValid('width');
 		const height = this.getDimensionValueIfValid('height');
 
-		console.log({ width, height });
-
 		if (width && height) {
 			this.props.onAccept({ width, height });
 		}

@@ -1,11 +1,11 @@
 import { ApplicationState, DEFAULT_APPLICATION_STATE } from '../../shared/models/applicationState';
 import { Reducer, Store } from './store';
 
-type StoreActionDispatcher<TState, TPayload> = (store: Store<TState>, payload: TPayload) => void;
+type StoreActionDispatcher<TState, TPayload> = (store: Store<TState>, payload?: TPayload) => void;
 
-type ActionDispatcher<TState, TPayload> = (payload: TPayload) => void;
+type ActionDispatcher<TState, TPayload> = (payload?: TPayload) => void;
 
-class ActionDefinition<TState, TPayload> {
+export class ActionDefinition<TState, TPayload> {
 	constructor(
 		public readonly type: string,
 		private reducer: (state: TState, payload: TPayload, type?: string) => TState) {
@@ -18,8 +18,8 @@ class ActionDefinition<TState, TPayload> {
 		store?: Store<TState>
 	): StoreActionDispatcher<TState, TPayload> | ActionDispatcher<TState, TPayload> {
 		if (!store) {
-			return (toStore: Store<TState>, payload: TPayload) => {
-				toStore.dispatch(this.type, payload);
+			return (toStore: Store<TState>, payload?: TPayload) => {
+				toStore.dispatch(this, payload);
 			};
 		}
 
@@ -27,9 +27,13 @@ class ActionDefinition<TState, TPayload> {
 			store.registerAction(this.type, this.reducer);
 		}
 
-		return (payload: TPayload) => {
-			store.dispatch(this.type, payload);
+		return (payload?: TPayload) => {
+			store.dispatch(this, payload);
 		};
+	}
+
+	public getReducer() {
+		return this.reducer;
 	}
 }
 

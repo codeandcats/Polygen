@@ -3,7 +3,6 @@ import { Editor } from '../../../shared/models/editor';
 import { ProjectFile } from '../../../shared/models/projectFile';
 import { Size } from '../../../shared/models/size';
 import { defineAction } from '../../reduxWithLessSux/action';
-import store from '../../store';
 
 interface OpenNewProjectFilePayload {
 	size: Size;
@@ -15,6 +14,8 @@ export const openNewProjectFile = defineAction(
 		const projectFile: ProjectFile = {
 			layers: [
 				{
+					isVisible: true,
+					name: 'Layer 1',
 					points: []
 				}
 			],
@@ -43,4 +44,4 @@ export const openNewProjectFile = defineAction(
 			activeEditorIndex
 		};
 	}
-).getDispatcher(store);
+).getDispatcher();

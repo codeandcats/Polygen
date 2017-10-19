@@ -1,7 +1,7 @@
 import { createStore, Store as ReduxStore } from 'redux';
 import { ApplicationState, DEFAULT_APPLICATION_STATE } from '../../shared/models/applicationState';
+import { ActionDefinition } from './action';
 
-// tslint:disable:max-classes-per-file
 class ActionAlreadyRegistered extends Error {
 	constructor(type: string) {
 		super(`Action type ${ type } already registered with store`);
@@ -13,7 +13,6 @@ class ActionNotRegistered extends Error {
 		super(`Action type ${ type } not registered with store`);
 	}
 }
-// tslint:enable:max-classes-per-file
 
 interface ReduxAction<TPayload> {
 	type: string;
@@ -30,7 +29,8 @@ interface ReducerByTypeMap<TState> {
 
 type Unsubscribe = () => void;
 
-// tslint:disable-next-line:max-classes-per-file
+// TODO: Could totally replace redux at this point
+
 export class Store<TState> {
 	private readonly store: ReduxStore<TState>;
 	private readonly reducerByType: ReducerByTypeMap<TState> = {};
@@ -49,8 +49,11 @@ export class Store<TState> {
 		this.store = createStore((state, action: ReduxAction<TState>) => this.reduce(state, action), initialState);
 	}
 
-	public dispatch(type: string, payload: any): void {
-		this.store.dispatch({ type, payload });
+	public dispatch<TPayload>(definition: ActionDefinition<TState, TPayload>, payload: TPayload): void {
+		if (!this.isActionRegistered(definition.type)) {
+			this.registerAction(definition.type, definition.getReducer());
+		}
+		this.store.dispatch({ type: definition.type, payload });
 	}
 
 	public getState(): TState {

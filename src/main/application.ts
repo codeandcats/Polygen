@@ -94,6 +94,12 @@ export class Application {
 				label: 'Debug',
 				submenu: [
 					{
+						role: 'copy'
+					},
+					{
+						role: 'paste'
+					},
+					{
 						role: 'reload'
 					},
 					{

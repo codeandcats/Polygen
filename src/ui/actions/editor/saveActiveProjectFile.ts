@@ -3,7 +3,6 @@ import { Editor } from '../../../shared/models/editor';
 import { ProjectFile } from '../../../shared/models/projectFile';
 import { Size } from '../../../shared/models/size';
 import { defineAction } from '../../reduxWithLessSux/action';
-import store from '../../store';
 
 interface SaveActiveProjectFilePayload {
 	fileName: string;
@@ -27,4 +26,4 @@ export const saveActiveProjectFile = defineAction(
 			editors
 		};
 	}
-).getDispatcher(store);
+).getDispatcher();

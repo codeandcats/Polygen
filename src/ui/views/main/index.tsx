@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { ApplicationState } from '../../../shared/models/applicationState';
 import { ProjectFile } from '../../../shared/models/projectFile';
 import { Store } from '../../reduxWithLessSux/store';
+import { BootstrapLabel } from './breakpointLabel/index';
 import { EditorView } from './editorView';
 import { WelcomeView } from './welcomeView';
 
@@ -18,7 +19,10 @@ export class MainWindow extends React.Component<MainWindowProps, MainWindowState
 		const state = this.props.store.getState();
 
 		return (
-			state.editors.length === 0 ? <WelcomeView /> : <EditorView />
+			<div>
+				{ state.editors.length === 0 ? <WelcomeView store={this.props.store} /> : <EditorView store={this.props.store} /> }
+				<BootstrapLabel />
+			</div>
 		);
 	}
 }

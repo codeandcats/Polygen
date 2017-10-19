@@ -33,14 +33,18 @@
     "app-root-path": "2.0.1",
     "assert-never": "1.0.0",
     "bootstrap": "3.3.7",
+    "classnames": "2.2.5",
+    "font-awesome": "4.7.0",
     "react": "16.0.0",
     "react-bootstrap": "0.31.3",
     "react-dom": "16.0.0",
-    "react-redux": "5.0.6"
+    "react-redux": "5.0.6",
+    "typestyle": "1.4.3"
   },
   "devDependencies": {
     "@types/app-root-path": "1.2.4",
     "@types/chai": "4.0.4",
+    "@types/classnames": "2.2.3",
     "@types/electron": "1.6.10",
     "@types/mocha": "2.2.43",
     "@types/react": "16.0.10",

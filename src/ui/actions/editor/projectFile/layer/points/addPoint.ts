@@ -1,7 +1,6 @@
 import { ApplicationState } from '../../../../../../shared/models/applicationState';
 import { Point } from '../../../../../../shared/models/point';
 import { defineAction } from '../../../../../reduxWithLessSux/action';
-import store from '../../../../../store';
 
 interface AddPointActionPayload {
 	editorIndex: number;
@@ -40,4 +39,4 @@ export const addPoint = defineAction(
 			editors
 		};
 	}
-).getDispatcher(store);
+).getDispatcher();
