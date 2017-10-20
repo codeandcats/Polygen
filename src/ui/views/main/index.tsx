@@ -5,6 +5,7 @@ import { ProjectFile } from '../../../shared/models/projectFile';
 import { Store } from '../../reduxWithLessSux/store';
 import { BootstrapLabel } from './breakpointLabel/index';
 import { EditorView } from './editorView';
+import './styles';
 import { WelcomeView } from './welcomeView';
 
 interface MainWindowProps {

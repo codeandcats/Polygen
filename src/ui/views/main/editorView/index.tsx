@@ -5,7 +5,10 @@ import {
 } from 'react-bootstrap';
 import { ApplicationState } from '../../../../shared/models/applicationState';
 import { Store } from '../../../reduxWithLessSux/store';
+import { Canvas } from './canvas/index';
+import { EditorToolbar } from './editorToolbar';
 import { LayerList } from './layerList';
+import * as styles from './styles';
 
 export interface EditorViewProps {
 	store: Store<ApplicationState>;
@@ -21,23 +24,22 @@ export class EditorView extends React.Component<EditorViewProps, EditorViewState
 		const layer = editor.projectFile.layers[editor.selectedLayerIndex];
 
 		return (
-			<div style={ { display: 'table', width: '100%', height: '100%', position: 'absolute' } }>
-				<div style={ { display: 'table-row' } }>
-					<div style={ { display: 'table-cell' } }>
+			<div className={ styles.editorView }>
+				<div className={ styles.bodyRow }>
+					<div className={ styles.bodyCell }>
 						<Grid>
 							<Row>
-								<Col xs={12}>
-									<ControlLabel style={ { marginRight: 10 } }>Tools</ControlLabel>
-									<ButtonGroup>
-										<Button>Add Point</Button>
-										<Button>Delete Selection</Button>
-									</ButtonGroup>
-								</Col>
-							</Row>
-							<Row>
 								<Col xs={8} sm={9}>
-									<div style={ { background: 'yellow', width: '100%', height: 400 } }>
-									</div>
+									<Row>
+										<Col xs={12}>
+											<EditorToolbar />
+										</Col>
+									</Row>
+									<Row>
+										<Col xs={12}>
+											<Canvas />
+										</Col>
+									</Row>
 								</Col>
 								<Col xs={4} sm={3}>
 									<LayerList store={this.props.store} />
@@ -46,10 +48,10 @@ export class EditorView extends React.Component<EditorViewProps, EditorViewState
 						</Grid>
 					</div>
 				</div>
-				<div style={ { display: 'table-row' } }>
-					<div style={ { display: 'table-cell', height: 70 } }>
+				<div className={ styles.footerRow }>
+					<div className={ styles.footerCell }>
 						<Grid>
-							<Panel style={ { marginBottom: 0 } }>
+							<Panel>
 								Points <Badge>{ layer.points.length }</Badge>
 							</Panel>
 						</Grid>

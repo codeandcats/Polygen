@@ -13,6 +13,7 @@ import { selectLayer } from '../../../../actions/editor/projectFile/layer/select
 import { setLayerVisibility } from '../../../../actions/editor/projectFile/layer/setLayerVisibility';
 import { addLayer } from '../../../../actions/editor/projectFile/layers/addLayer';
 import { Store } from '../../../../reduxWithLessSux/store';
+import * as mainStyles from '../../styles';
 import { LayerListItem } from './layerListItem';
 import * as styles from './styles';
 
@@ -27,12 +28,12 @@ export class LayerList extends React.Component<LayerListProps, LayerListState> {
 
 	private renderPanelHeader() {
 		return (
-			<p className={ styles.layerListHeader }>
-				<label className='control-label'>Layers</label>
-				<Button bsSize='xs' className='pull-right' onClick={ () => addLayer(this.props.store) }>
+			<div className={ mainStyles.spaceBelow }>
+				<label className={ classNames('control-label', mainStyles.spaceRight) }>Layers</label>
+				<Button bsSize='sm' onClick={ () => addLayer(this.props.store) }>
 					<i className='fa fa-plus' />
 				</Button>
-			</p>
+			</div>
 		);
 	}
 
