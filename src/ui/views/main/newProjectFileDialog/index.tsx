@@ -21,7 +21,9 @@ export class NewProjectFileDialog extends React.Component<NewProjectFileDialogPr
 		};
 	}
 
-	private accept() {
+	private accept(event: React.FormEvent<Form> | React.MouseEvent<Button>) {
+		event.preventDefault();
+
 		const width = this.getDimensionValueIfValid('width');
 		const height = this.getDimensionValueIfValid('height');
 
@@ -88,13 +90,13 @@ export class NewProjectFileDialog extends React.Component<NewProjectFileDialogPr
 					<h2>Create new file</h2>
 				</Modal.Header>
 				<Modal.Body>
-					<Form horizontal onSubmit={ () => this.accept() }>
+					<Form horizontal onSubmit={ event => this.accept(event) }>
 						{ this.getDimensionControl('width') }
 						{ this.getDimensionControl('height') }
 					</Form>
 				</Modal.Body>
 				<Modal.Footer>
-					<Button bsStyle='primary' onClick={ () => this.accept() } disabled={ !isSubmitEnabled }>OK</Button>
+					<Button bsStyle='primary' onClick={ event => this.accept(event) } disabled={ !isSubmitEnabled }>OK</Button>
 					<Button onClick={ () => this.cancel() }>Cancel</Button>
 				</Modal.Footer>
 			</Modal>

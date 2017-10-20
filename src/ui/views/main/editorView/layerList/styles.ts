@@ -44,7 +44,8 @@ export const layerListItem = style({
 
 			$nest: {
 				'.btn:first-of-type': {
-					flexGrow: 1
+					flexGrow: 1,
+					textAlign: 'left'
 				}
 			}
 		}

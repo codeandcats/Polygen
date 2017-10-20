@@ -17,6 +17,7 @@ interface LayerListItemProps {
 	onRemoveLayer: (layer: Layer) => void;
 	onSelectLayer: (layer: Layer) => void;
 	onSetLayerVisibility: (layer: Layer, isVisible: boolean) => void;
+	onShowRenameLayerDialog: (layerIndex: number) => void;
 }
 
 interface LayerListItemState {
@@ -60,7 +61,7 @@ export class LayerListItem extends React.Component<LayerListItemProps, LayerList
 						<MenuItem
 							eventKey='1'
 							disabled={ !canMoveLayerUp }
-							onClick={ () => this.props.onMoveLayer(layer, layerIndex - 1) }
+							onClick={ () => this.props.onMoveLayer(layer, layerIndex + 1) }
 						>
 							<i className='fa fa-arrow-up icon-space-right' />
 							Move up
@@ -69,7 +70,7 @@ export class LayerListItem extends React.Component<LayerListItemProps, LayerList
 						<MenuItem
 							eventKey='2'
 							disabled={ !canMoveLayerDown }
-							onClick={ () => this.props.onMoveLayer(layer, layerIndex + 1) }
+							onClick={ () => this.props.onMoveLayer(layer, layerIndex - 1) }
 						>
 							<i className='fa fa-arrow-down icon-space-right' />
 							Move down
@@ -77,7 +78,17 @@ export class LayerListItem extends React.Component<LayerListItemProps, LayerList
 
 						<MenuItem divider />
 
-						<MenuItem eventKey='3' disabled={ !canRemoveLayer } onClick={ () => this.props.onRemoveLayer(layer) }>
+						<MenuItem
+							eventKey='3'
+							onClick={ () => this.props.onShowRenameLayerDialog(this.props.layerIndex) }
+						>
+							<i className='fa fa-tag icon-space-right' />
+							Rename
+						</MenuItem>
+
+						<MenuItem divider />
+
+						<MenuItem eventKey='4' disabled={ !canRemoveLayer } onClick={ () => this.props.onRemoveLayer(layer) }>
 							<i className='fa fa-times icon-space-right' />
 							Remove
 						</MenuItem>
