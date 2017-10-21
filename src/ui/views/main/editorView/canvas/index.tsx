@@ -1,12 +1,14 @@
 import * as React from 'react';
+import { Editor } from '../../../../../shared/models/editor';
 import { Rectangle } from '../../../../../shared/models/rectangle';
 import { Fps } from '../../../../utils/fps';
-import { drawTransparencyTiles } from '../../../../utils/graphics';
+import { drawProjectFile, drawTransparencyTiles } from '../../../../utils/graphics';
 import * as styles from './styles';
 
 interface CanvasProps {
 	width: number;
 	height: number;
+	editor: Editor;
 }
 
 interface CanvasState {
@@ -47,6 +49,8 @@ export class Canvas extends React.Component<CanvasProps, CanvasState> {
 			return;
 		}
 
+		const editor = this.props.editor;
+
 		this.fps.tick();
 
 		const rect = {
@@ -62,6 +66,8 @@ export class Canvas extends React.Component<CanvasProps, CanvasState> {
 		}
 
 		drawTransparencyTiles(context, rect, 10);
+
+		drawProjectFile(context, rect, editor);
 
 		this.renderFps(context);
 

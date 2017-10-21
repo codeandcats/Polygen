@@ -84,6 +84,8 @@ export class EditorView extends React.Component<EditorViewProps, EditorViewState
 			}
 		}
 
+		canvasLength = Math.ceil(canvasLength);
+
 		return {
 			width: canvasLength,
 			height: canvasLength
@@ -97,41 +99,10 @@ export class EditorView extends React.Component<EditorViewProps, EditorViewState
 			this.state.canvasSize.width !== canvasSize.width ||
 			this.state.canvasSize.height !== canvasSize.height
 		) {
-			console.log(`Setting canvas size to: ${ canvasSize.width } x ${ canvasSize.height }`);
 			this.setState({
 				canvasSize
 			});
 		}
-
-		// const editorBodyRow = document.getElementById(EditorView.EDITOR_BODY_ROW_ID);
-		// const editorContainerColumn = document.getElementById(EditorView.EDITOR_CONTAINER_COLUMN_ID);
-
-		// if (editorBodyRow && editorContainerColumn && this.editorToolbar) {
-		// 	let canvasWidth = $(editorContainerColumn).width();
-		// 	const editorBodyRowHeight = $(editorBodyRow).height();
-		// 	const editorToolbarHeight = this.editorToolbar.getHeight();
-
-		// 	if (canvasWidth && editorBodyRowHeight && editorToolbarHeight && (this.updateCanvasSizeCount < 10)) {
-		// 		canvasWidth = Math.ceil(canvasWidth);
-		// 		const canvasHeight = Math.ceil(editorBodyRowHeight - editorToolbarHeight - 30);
-
-		// 		console.log(`Calculated new canvas size at: ${ canvasWidth } x ${ canvasHeight }`);
-
-		// 		if (canvasWidth !== this.state.canvasSize.width) {
-		// 			if (canvasHeight !== this.state.canvasSize.height) {
-		// 				console.log(`Updating canvas size to: ${ canvasWidth } x ${ canvasHeight }`);
-		// 				// this.updateCanvasSizeCount++;
-		// 				this.setState({
-		// 					canvasSize: {
-		// 						...this.state.canvasSize,
-		// 						width: canvasWidth,
-		// 						height: canvasHeight
-		// 					}
-		// 				});
-		// 			}
-		// 		}
-		// 	}
-		// }
 	}
 
 	public render() {
@@ -157,7 +128,11 @@ export class EditorView extends React.Component<EditorViewProps, EditorViewState
 									</Row>
 									<Row>
 										<Col xs={12} id={ EditorView.EDITOR_CONTAINER_COLUMN_ID } ref={ () => this.updateCanvasSize() }>
-											<Canvas width={ this.state.canvasSize.width } height={ this.state.canvasSize.height } />
+											<Canvas
+												editor={ editor }
+												width={ this.state.canvasSize.width }
+												height={ this.state.canvasSize.height }
+											/>
 										</Col>
 									</Row>
 								</Col>
