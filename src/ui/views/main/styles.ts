@@ -16,3 +16,18 @@ export const spaceRight = style({
 export const spaceBelow = style({
 	marginBottom: px(10)
 });
+
+cssRule('.btn', {
+	transition: 'background-color .3s'
+});
+
+export const iconButton = style({
+	$nest: {
+		'i.fa': {
+			transition: 'transform .2s'
+		},
+		'&:hover i.fa': {
+			transform: 'scale(1.2)'
+		}
+	}
+});

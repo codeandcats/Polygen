@@ -2,6 +2,7 @@ import * as classNames from 'classnames';
 import * as React from 'react';
 import { Button, ButtonGroup, ControlLabel } from 'react-bootstrap';
 import * as mainStyles from '../../styles';
+import { iconButton } from '../../styles';
 
 interface EditorToolbarProps {
 }
@@ -21,8 +22,9 @@ export class EditorToolbar extends React.Component<EditorToolbarProps, EditorToo
 			<div className={ mainStyles.spaceBelow } ref={ toolbar => this.toolbarElement = toolbar }>
 				<ControlLabel className={ classNames('control-label', mainStyles.spaceRight) }>Tools</ControlLabel>
 				<ButtonGroup>
-					<Button bsSize='sm'><i className='fa fa-pencil' /></Button>
-					<Button bsSize='sm'><i className='fa fa-square-o' /></Button>
+					<Button bsSize='sm' className={iconButton}><i className='fa fa-hand-paper-o' /></Button>
+					<Button bsSize='sm' className={iconButton}><i className='fa fa-pencil' /></Button>
+					<Button bsSize='sm' className={iconButton}><i className='fa fa-square-o' /></Button>
 				</ButtonGroup>
 			</div>
 		);
