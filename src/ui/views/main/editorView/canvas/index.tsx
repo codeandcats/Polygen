@@ -5,6 +5,8 @@ import { drawTransparencyTiles } from '../../../../utils/graphics';
 import * as styles from './styles';
 
 interface CanvasProps {
+	width: number;
+	height: number;
 }
 
 interface CanvasState {
@@ -74,8 +76,8 @@ export class Canvas extends React.Component<CanvasProps, CanvasState> {
 		return (
 			<canvas
 				className={styles.canvas}
-				width={200}
-				height={200}
+				width={ this.props.width }
+				height={ this.props.height }
 				ref={ el => this.setCanvasElement(el) }
 			>
 			</canvas>

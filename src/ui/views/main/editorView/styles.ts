@@ -1,4 +1,4 @@
-import { percent } from 'csx';
+import { percent, px } from 'csx';
 import { style } from 'typestyle';
 
 export const editorView = style({
@@ -22,7 +22,7 @@ export const footerRow = style({
 
 export const footerCell = style({
 	display: 'table-cell',
-	height: 70,
+	height: px(70),
 
 	$nest: {
 		'.panel': {

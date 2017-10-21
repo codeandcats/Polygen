@@ -1,16 +1,17 @@
+import { percent, px } from 'csx';
 import { cssRule, style } from 'typestyle';
 
 export const layerList = style({
 	$nest: {
 		ul: {
 			padding: 0,
-			width: '100%'
+			width: percent(100)
 		}
 	}
 });
 
 export const layerListHeader = style({
-	marginBottom: 10,
+	marginBottom: px(10),
 	$nest: {
 		'.control-label': {
 			margin: 0
