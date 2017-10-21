@@ -16,7 +16,8 @@ export const openNewProjectFile = defineAction(
 				{
 					isVisible: true,
 					name: 'Layer 1',
-					points: []
+					points: [],
+					polygons: []
 				}
 			],
 			size: payload.size

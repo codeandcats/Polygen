@@ -12,7 +12,8 @@ export const addLayer = defineAction(
 				const newLayer: Layer = {
 					isVisible: true,
 					name: `Layer ${ projectFile.layers.length + 1 }`,
-					points: []
+					points: [],
+					polygons: []
 				};
 				const layers = [...projectFile.layers].concat(newLayer);
 
