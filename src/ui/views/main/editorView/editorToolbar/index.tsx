@@ -36,7 +36,13 @@ export class EditorToolbar extends React.Component<EditorToolbarProps, EditorToo
 									bsStyle={ isSelected ? 'primary' : 'default' }
 									className={ classNames(mainStyles.iconButton, { active: isSelected }) }
 									key={ tool.name }
-									onClick={ () => this.props.onSelectTool(tool.name) }
+									onClick={ () => {
+										if (isSelected) {
+											this.props.onSelectTool(undefined);
+										} else {
+											this.props.onSelectTool(tool.name);
+										}
+									} }
 									title={ tool.displayName }
 								>
 									<i className={ 'fa ' + tool.iconClassName } />
