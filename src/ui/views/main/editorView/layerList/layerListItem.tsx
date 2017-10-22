@@ -7,6 +7,7 @@ import {
 import { ApplicationState } from '../../../../../shared/models/applicationState';
 import { Editor } from '../../../../../shared/models/editor';
 import { Layer } from '../../../../../shared/models/layer';
+import * as mainStyles from '../../styles';
 import * as styles from './styles';
 
 interface LayerListItemProps {
@@ -36,24 +37,27 @@ export class LayerListItem extends React.Component<LayerListItemProps, LayerList
 				[styles.layerListItemInvisible]: !layer.isVisible
 			}
 		);
+		const buttonStyle = isSelected ? 'primary' : 'default';
 
 		return (
 			<li className={ layerItemClassNames }>
 				<ButtonGroup>
 					<Button
-						bsStyle={ isSelected ? 'primary' : 'default' }
+						bsStyle={ buttonStyle }
 						onClick={ () => this.props.onSelectLayer(layer) }
 					>{ layer.name }</Button>
 
 					<Button
-						bsStyle={ isSelected ? 'primary' : 'default' }
+						bsStyle={ buttonStyle }
+						className={ mainStyles.iconButton }
 						onClick={ () => this.props.onSetLayerVisibility(layer, !layer.isVisible) }
+						title={ layer.isVisible ? 'Hide layer' : 'Show layer' }
 					>
 						<i className={ 'fa ' + (layer.isVisible ? 'fa-eye' : 'fa-eye-slash') } />
 					</Button>
 
 					<DropdownButton
-						bsStyle={ isSelected ? 'primary' : 'default' }
+						bsStyle={ buttonStyle }
 						title=''
 						pullRight
 						id={`layer${ layerIndex }DropDownButton`}

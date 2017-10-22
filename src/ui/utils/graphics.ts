@@ -78,7 +78,7 @@ export function drawProjectFileBackground(context: CanvasRenderingContext2D, edi
 		context.beginPath();
 
 		context.lineWidth = 1;
-		context.strokeStyle = '#999';
+		context.strokeStyle = '#666';
 		context.fillStyle = 'rgba(255, 255, 255, .5)';
 
 		const halfWidth = editor.projectFile.size.width / 2;

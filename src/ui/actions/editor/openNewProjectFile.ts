@@ -28,6 +28,7 @@ export const openNewProjectFile = defineAction(
 			projectFile,
 			selectedLayerIndex: 0,
 			selectedPointIndices: [],
+			selectedToolName: undefined,
 			viewPort: {
 				zoom: 1,
 				pan: {

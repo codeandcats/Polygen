@@ -37,17 +37,6 @@ export class LayerList extends React.Component<LayerListProps, LayerListState> {
 		};
 	}
 
-	private renderPanelHeader() {
-		return (
-			<div className={ mainStyles.spaceBelow }>
-				<label className={ classNames('control-label', mainStyles.spaceRight) }>Layers</label>
-				<Button bsSize='sm' onClick={ () => addLayer(this.props.store) }>
-					<i className='fa fa-plus' />
-				</Button>
-			</div>
-		);
-	}
-
 	private cancelRenameLayerDialog() {
 		this.setState({
 			renamingLayerIndex: -1
@@ -80,7 +69,17 @@ export class LayerList extends React.Component<LayerListProps, LayerListState> {
 
 		return (
 			<div className={styles.layerList}>
-				{ this.renderPanelHeader() }
+				<div className={ mainStyles.spaceBelow }>
+					<label className={ classNames('control-label', mainStyles.spaceRight) }>Layers</label>
+					<Button
+						bsSize='sm'
+						className={ mainStyles.iconButton }
+						onClick={ () => addLayer(this.props.store) }
+						title='Add layer'
+					>
+						<i className='fa fa-plus' />
+					</Button>
+				</div>
 				<ul>
 					{
 						layersWithIndices.map(layerWithIndex =>

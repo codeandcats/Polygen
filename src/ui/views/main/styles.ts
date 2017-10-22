@@ -26,7 +26,7 @@ export const iconButton = style({
 		'i.fa': {
 			transition: 'transform .2s'
 		},
-		'&:hover i.fa': {
+		'&:hover i.fa, &.active i.fa': {
 			transform: 'scale(1.2)'
 		}
 	}

@@ -55,7 +55,7 @@ export const layerListItem = style({
 
 export const layerListItemInvisible = style({
 	$nest: {
-		'&>.btn-group': {
+		'&>.btn-group .btn': {
 			opacity: .75
 		}
 	}

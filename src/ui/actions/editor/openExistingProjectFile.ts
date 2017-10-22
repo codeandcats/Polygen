@@ -38,6 +38,7 @@ export const openExistingProjectFile = defineAction(
 				projectFile: payload.projectFile,
 				selectedLayerIndex: 0,
 				selectedPointIndices: [],
+				selectedToolName: undefined,
 				viewPort: {
 					zoom: 1,
 					pan: {

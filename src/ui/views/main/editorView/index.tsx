@@ -7,12 +7,14 @@ import {
 } from 'react-bootstrap';
 import { ApplicationState } from '../../../../shared/models/applicationState';
 import { Size } from '../../../../shared/models/size';
+import { selectTool } from '../../../actions/editor/selectTool';
 import { Store } from '../../../reduxWithLessSux/store';
 import { getCurrentBreakpointType } from '../../../utils/bootstrap';
 import { Canvas } from './canvas/index';
 import { EditorToolbar } from './editorToolbar';
 import { LayerList } from './layerList';
 import * as styles from './styles';
+import { addPoint } from '../../../actions/editor/projectFile/layer/points/addPoint';
 
 export interface EditorViewProps {
 	store: Store<ApplicationState>;
@@ -27,7 +29,6 @@ export class EditorView extends React.Component<EditorViewProps, EditorViewState
 	private static EDITOR_CONTAINER_COLUMN_ID = 'editorContainerColumn';
 
 	private updateCanvasSizeCount = 0;
-	private editorToolbar: EditorToolbar | null = null;
 	private windowResized = () => {
 		console.log('Window Resized');
 		this.updateCanvasSize();
@@ -123,7 +124,10 @@ export class EditorView extends React.Component<EditorViewProps, EditorViewState
 								<Col xs={8} sm={9}>
 									<Row>
 										<Col xs={12}>
-											<EditorToolbar ref={ toolbar => this.editorToolbar = toolbar } />
+											<EditorToolbar
+												selectedToolName={ editor.selectedToolName }
+												onSelectTool={ toolName => selectTool(this.props.store, { toolName }) }
+											/>
 										</Col>
 									</Row>
 									<Row>
@@ -132,6 +136,11 @@ export class EditorView extends React.Component<EditorViewProps, EditorViewState
 												editor={ editor }
 												width={ this.state.canvasSize.width }
 												height={ this.state.canvasSize.height }
+												onAddPoint={ point => addPoint(this.props.store, {
+													editorIndex: activeEditorIndex,
+													layerIndex: editor.selectedLayerIndex,
+													point
+												}) }
 											/>
 										</Col>
 									</Row>
