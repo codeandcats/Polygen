@@ -1,7 +1,7 @@
 import { Point } from '../../../shared/models/point';
 import { Rectangle } from '../../../shared/models/rectangle';
 import { MouseButton } from '../mouseButton';
-import { Tool, ToolHelper, ToolName } from './common';
+import { CanvasMouseEvent, Tool, ToolHelper, ToolName } from './common';
 
 interface PointBeingAdded {
 	point: Point;
@@ -34,12 +34,16 @@ export class PointTool extends Tool<PointToolState> {
 	}
 
 	public mouseUp(
-		helper: ToolHelper// ,
-		// event: React.MouseEvent<HTMLCanvasElement>
+		helper: ToolHelper,
+		event: CanvasMouseEvent
 	): void {
+		console.log(`PointTool.mouseUp: buttons = `, event.buttons);
 		helper.setMouseCursor(PointTool.CURSOR);
-		// if (event.button === MouseButton.left) {
-		// }
+		if (event.buttons.left) {
+			console.log(`Clicked at ${ event.viewPortPoint.x },${ event.viewPortPoint.y }`);
+			console.log(`Added at ${ event.projectFilePoint.x },${ event.projectFilePoint.y }`);
+			helper.actions.addPoint(event.projectFilePoint);
+		}
 	}
 
 	public render(
@@ -52,5 +56,8 @@ export class PointTool extends Tool<PointToolState> {
 		context = context;
 		bounds = bounds;
 		event = event;
+
+		// const editor = helper.getEditor();
+		// context.ellipse()
 	}
 }

@@ -11,13 +11,35 @@ export type ToolName = typeof ALL_TOOL_NAMES[number];
 
 declare let e: HTMLCanvasElement;
 
+export interface ToolHelperActions {
+	addPoint(point: Point): void;
+}
+
+export interface ToolHelperTranslation {
+	viewPortToProjectFile: (point: Point) => Point;
+	projectFileToViewPort: (point: Point) => Point;
+}
+
 export interface ToolHelper {
+	actions: ToolHelperActions;
 	getEditor(): Editor;
 	getMouseCursor(): string;
-	addPoint(point: Point): void;
 	getToolState(): any;
 	setMouseCursor(cursor: string): void;
 	setToolState(state: any): void;
+	translation: ToolHelperTranslation;
+}
+
+export interface CanvasMouseEventButtons {
+	left: boolean;
+	middle: boolean;
+	right: boolean;
+}
+
+export interface CanvasMouseEvent {
+	buttons: CanvasMouseEventButtons;
+	viewPortPoint: Point;
+	projectFilePoint: Point;
 }
 
 export abstract class Tool<TToolState> {
@@ -27,7 +49,7 @@ export abstract class Tool<TToolState> {
 
 	public mouseDown(
 		helper: ToolHelper,
-		event: React.MouseEvent<HTMLCanvasElement>
+		event: CanvasMouseEvent
 	): void {
 		// Just to remove compiler warnings about unused variables
 		helper = helper;
@@ -36,7 +58,7 @@ export abstract class Tool<TToolState> {
 
 	public mouseMove(
 		helper: ToolHelper,
-		event: React.MouseEvent<HTMLCanvasElement>
+		event: CanvasMouseEvent
 	): void {
 		// Just to remove compiler warnings about unused variables
 		helper = helper;
@@ -45,7 +67,7 @@ export abstract class Tool<TToolState> {
 
 	public mouseUp(
 		helper: ToolHelper,
-		event: React.MouseEvent<HTMLCanvasElement>
+		event: CanvasMouseEvent
 	): void {
 		// Just to remove compiler warnings about unused variables
 		helper = helper;

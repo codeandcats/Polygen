@@ -5,5 +5,11 @@ export const canvas = style({
 	borderColor: '333',
 	borderWidth: px(1),
 	borderStyle: 'solid',
-	marginBottom: px(10)
+	marginBottom: px(10),
+
+	$nest: {
+		'&:focus': {
+			outline: 'none'
+		}
+	}
 });

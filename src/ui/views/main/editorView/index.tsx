@@ -7,6 +7,7 @@ import {
 } from 'react-bootstrap';
 import { ApplicationState } from '../../../../shared/models/applicationState';
 import { Size } from '../../../../shared/models/size';
+import { addPoint } from '../../../actions/editor/projectFile/layer/points/addPoint';
 import { selectTool } from '../../../actions/editor/selectTool';
 import { Store } from '../../../reduxWithLessSux/store';
 import { getCurrentBreakpointType } from '../../../utils/bootstrap';
@@ -14,7 +15,6 @@ import { Canvas } from './canvas/index';
 import { EditorToolbar } from './editorToolbar';
 import { LayerList } from './layerList';
 import * as styles from './styles';
-import { addPoint } from '../../../actions/editor/projectFile/layer/points/addPoint';
 
 export interface EditorViewProps {
 	store: Store<ApplicationState>;

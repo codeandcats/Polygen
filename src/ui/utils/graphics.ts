@@ -3,8 +3,9 @@ import { Layer } from '../../shared/models/layer';
 import { Point } from '../../shared/models/point';
 import { ProjectFile } from '../../shared/models/projectFile';
 import { Rectangle } from '../../shared/models/rectangle';
+import { Tool } from '../models/tools/common';
 
-export function drawTransparencyTiles(context: CanvasRenderingContext2D, bounds: Rectangle, tileSize: number = 20) {
+export function renderTransparencyTiles(context: CanvasRenderingContext2D, bounds: Rectangle, tileSize: number = 20) {
 	context.save();
 	try {
 		const squareColour = ['#FFF', '#DDD'];
@@ -20,7 +21,22 @@ export function drawTransparencyTiles(context: CanvasRenderingContext2D, bounds:
 	}
 }
 
-export function drawProjectFile(context: CanvasRenderingContext2D, bounds: Rectangle, editor: Editor) {
+export function applyViewportTransform(
+	context: CanvasRenderingContext2D,
+	bounds: Rectangle,
+	editor: Editor
+) {
+	context.translate(
+		(bounds.width / 2) + editor.viewPort.pan.x,
+		(bounds.height / 2) + editor.viewPort.pan.y
+	);
+}
+
+export function renderProjectFile(
+	context: CanvasRenderingContext2D,
+	bounds: Rectangle,
+	editor: Editor
+) {
 	context.save();
 	try {
 		bounds = bounds;
@@ -29,18 +45,62 @@ export function drawProjectFile(context: CanvasRenderingContext2D, bounds: Recta
 		// context.fillRect(0, 0, 30, 30);
 		// context.strokeRect(0, 0, 30, 30);
 
-		context.translate(
-			bounds.width / 2,
-			bounds.height / 2
-		);
+		applyViewportTransform(context, bounds, editor);
 
 		drawProjectFileBackground(context, editor);
 
 		drawDebugCrossHair(context, { x: 0, y: 0 });
 
 		for (const layer of editor.projectFile.layers) {
-			// drawLayer(context, bounds, editor, layer);
+			renderLayer(context, bounds, editor, layer);
 		}
+	} finally {
+		context.restore();
+	}
+}
+
+function renderLayer(
+	context: CanvasRenderingContext2D,
+	bounds: Rectangle,
+	editor: Editor,
+	layer: Layer
+) {
+	// Just to shut compiler up
+	bounds = bounds;
+	editor = editor;
+
+	context.save();
+	try {
+		context.fillStyle = '#99f';
+		for (const point of layer.points) {
+			context.beginPath();
+			context.ellipse(
+				point.x,
+				point.y,
+				5,
+				5,
+				0,
+				0,
+				360
+			);
+			context.fill();
+		}
+	} finally {
+		context.restore();
+	}
+}
+
+export function renderTool(
+	context: CanvasRenderingContext2D,
+	bounds: Rectangle,
+	editor: Editor,
+	tool: Tool<any>
+) {
+	context.save();
+	try {
+		context.beginPath();
+		applyViewportTransform(context, bounds, editor);
+		tool.render(this.helper, context, bounds);
 	} finally {
 		context.restore();
 	}
