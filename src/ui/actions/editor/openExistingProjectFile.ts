@@ -1,9 +1,9 @@
-import { moveElement } from '../../../shared/lang/arrays';
 import { ApplicationState } from '../../../shared/models/applicationState';
 import { Editor } from '../../../shared/models/editor';
 import { Layer } from '../../../shared/models/layer';
 import { Point } from '../../../shared/models/point';
 import { ProjectFile } from '../../../shared/models/projectFile';
+import { moveElement } from '../../../shared/utils/arrays';
 import { defineAction } from '../../reduxWithLessSux/action';
 
 interface OpenExistingProjectFilePayload {

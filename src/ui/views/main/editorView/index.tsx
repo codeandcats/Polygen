@@ -9,6 +9,7 @@ import { ApplicationState } from '../../../../shared/models/applicationState';
 import { Size } from '../../../../shared/models/size';
 import { addPoint } from '../../../actions/editor/projectFile/layer/points/addPoint';
 import { selectTool } from '../../../actions/editor/selectTool';
+import { setPan } from '../../../actions/editor/setPan';
 import { Store } from '../../../reduxWithLessSux/store';
 import { getCurrentBreakpointType } from '../../../utils/bootstrap';
 import { Canvas } from './canvas/index';
@@ -141,6 +142,7 @@ export class EditorView extends React.Component<EditorViewProps, EditorViewState
 													layerIndex: editor.selectedLayerIndex,
 													point
 												}) }
+												onSetPan={ point => setPan(this.props.store, { pan: point }) }
 											/>
 										</Col>
 									</Row>
@@ -156,7 +158,7 @@ export class EditorView extends React.Component<EditorViewProps, EditorViewState
 					<div className={ styles.footerCell }>
 						<Grid fluid>
 							<Panel>
-								Points <Badge>{ layer.points.length }</Badge>
+								Points { layer.points.length }
 							</Panel>
 						</Grid>
 					</div>

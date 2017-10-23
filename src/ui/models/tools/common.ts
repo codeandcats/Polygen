@@ -1,8 +1,8 @@
-import { tuple } from '../../../shared/lang/tuple';
 import { ApplicationState } from '../../../shared/models/applicationState';
 import { Editor } from '../../../shared/models/editor';
 import { Point } from '../../../shared/models/point';
 import { Rectangle } from '../../../shared/models/rectangle';
+import { tuple } from '../../../shared/utils/tuple';
 import { Store } from '../../reduxWithLessSux/store';
 
 export const ALL_TOOL_NAMES = tuple('pan', 'point', 'selection');
@@ -13,6 +13,7 @@ declare let e: HTMLCanvasElement;
 
 export interface ToolHelperActions {
 	addPoint(point: Point): void;
+	setPan(point: Point): void;
 }
 
 export interface ToolHelperTranslation {
@@ -23,9 +24,9 @@ export interface ToolHelperTranslation {
 export interface ToolHelper {
 	actions: ToolHelperActions;
 	getEditor(): Editor;
-	getMouseCursor(): string;
+	getMouseCursor(): Cursor | string;
 	getToolState(): any | undefined;
-	setMouseCursor(cursor: string): void;
+	setMouseCursor(cursor: Cursor | string): void;
 	setToolState(stateOrCallback: any | ((state: any) => any)): void;
 	translation: ToolHelperTranslation;
 }
@@ -86,3 +87,16 @@ export abstract class Tool<TToolState> {
 		event = event;
 	}
 }
+
+export const ALL_CURSORS = tuple(
+	'default', 'none', 'help', 'pointer', 'progress',
+	'wait', 'cell', 'crosshair', 'text', 'vertical-text',
+	'copy', 'move', 'no-drop', 'not-allowed', 'all-scroll',
+	'col-resize', 'row-resize', 'n-resize', 'e-resize',
+	's-resize', 'w-resize', 'ne-resize', 'nw-resize',
+	'se-resize', 'sw-resize', 'ew-resize', 'ns-resize',
+	'nesw-resize', 'nwse-resize', 'zoom-in', 'zoom-out',
+	'grab', 'grabbing'
+);
+
+export type Cursor = typeof ALL_CURSORS[number];

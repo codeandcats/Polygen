@@ -4,7 +4,7 @@ import { Point } from '../../../../../shared/models/point';
 import { Rectangle } from '../../../../../shared/models/rectangle';
 import { MouseButton } from '../../../../models/mouseButton';
 import { TOOL_BY_NAME } from '../../../../models/tools';
-import { CanvasMouseEvent, Tool, ToolHelper } from '../../../../models/tools/common';
+import { CanvasMouseEvent, CanvasMouseEventButtons, Tool, ToolHelper } from '../../../../models/tools/common';
 import { PointTool } from '../../../../models/tools/pointTool';
 import { Fps } from '../../../../utils/fps';
 import { renderProjectFile, renderTool, renderTransparencyTiles } from '../../../../utils/graphics';
@@ -16,10 +16,24 @@ interface CanvasProps {
 	editor: Editor;
 
 	onAddPoint: (point: Point) => void;
+	onSetPan: (point: Point) => void;
+}
+
+interface CanvasMouseButtonsState {
+	left: boolean;
+	middle: boolean;
+	right: boolean;
+}
+
+interface CanvasMouseState {
+	buttons: CanvasMouseButtonsState;
+	projectFilePoint: Point;
+	viewPortPoint: Point;
 }
 
 interface CanvasState {
-	toolState: any;
+	mouse: CanvasMouseState | undefined;
+	toolState: any | undefined;
 }
 
 export class Canvas extends React.Component<CanvasProps, CanvasState> {
@@ -28,7 +42,8 @@ export class Canvas extends React.Component<CanvasProps, CanvasState> {
 	private fps = new Fps();
 	private helper: ToolHelper = {
 		actions: {
-			addPoint: point => this.props.onAddPoint(point)
+			addPoint: point => this.props.onAddPoint(point),
+			setPan: point => this.props.onSetPan(point)
 		},
 		getEditor: () => this.props.editor,
 		getMouseCursor: () => (this.canvas && this.canvas.style.cursor) || '',
@@ -83,6 +98,10 @@ export class Canvas extends React.Component<CanvasProps, CanvasState> {
 
 	constructor(props: CanvasProps, context: any) {
 		super(props, context);
+		this.state = {
+			mouse: undefined,
+			toolState: undefined
+		};
 	}
 
 	public componentDidMount() {
@@ -98,13 +117,24 @@ export class Canvas extends React.Component<CanvasProps, CanvasState> {
 		}
 	}
 
+	public shouldComponentUpdate(nextProps: CanvasProps) {
+		const willDimensionsChange = (
+			this.props.width !== nextProps.width ||
+			this.props.height !== nextProps.height
+		);
+		return willDimensionsChange;
+	}
+
 	private getSelectedTool(): Tool<any> | undefined {
 		if (this.props.editor.selectedToolName) {
 			return TOOL_BY_NAME[this.props.editor.selectedToolName];
 		}
 	}
 
-	private getMouseEventInfo(event: React.MouseEvent<HTMLCanvasElement>): CanvasMouseEvent | undefined {
+	private getMouseState(
+		event: React.MouseEvent<HTMLCanvasElement>,
+		shouldCaptureButtons: boolean
+	): CanvasMouseState | undefined {
 		if (this.canvas) {
 			const $canvas = $(this.canvas);
 			const offset = $canvas.offset();
@@ -119,12 +149,22 @@ export class Canvas extends React.Component<CanvasProps, CanvasState> {
 				const projectFilePoint = this.helper.translation
 					.viewPortToProjectFile(viewPortPoint);
 
+				const existingStateButtons: CanvasMouseButtonsState | undefined = (
+					(this.state.mouse || {} as Partial<CanvasMouseState>).buttons
+				);
+
+				const buttons = shouldCaptureButtons ? {
+					left: event.button === MouseButton.left,
+					middle: event.button === MouseButton.middle,
+					right: event.button === MouseButton.right
+				} : existingStateButtons || {
+					left: false,
+					middle: false,
+					right: false
+				};
+
 				return {
-					buttons: {
-						left: event.button === MouseButton.left,
-						middle: event.button === MouseButton.middle,
-						right: event.button === MouseButton.right
-					},
+					buttons,
 					viewPortPoint,
 					projectFilePoint
 				};
@@ -135,32 +175,53 @@ export class Canvas extends React.Component<CanvasProps, CanvasState> {
 	}
 
 	private mouseDown(event: React.MouseEvent<HTMLCanvasElement>): void {
+		const mouse = this.getMouseState(event, true);
+		if (!mouse) {
+			return;
+		}
+
+		this.setState({ mouse });
+
 		const tool = this.getSelectedTool();
 		if (tool) {
-			const mouseEvent = this.getMouseEventInfo(event);
-			if (mouseEvent) {
-				tool.mouseDown(this.helper, mouseEvent);
-			}
+			tool.mouseDown(this.helper, mouse);
 		}
 	}
 
 	private mouseMove(event: React.MouseEvent<HTMLCanvasElement>): void {
+		const mouse = this.getMouseState(event, false);
+		if (!mouse) {
+			return;
+		}
+
+		this.setState({ mouse });
+
 		const tool = this.getSelectedTool();
 		if (tool) {
-			const mouseEvent = this.getMouseEventInfo(event);
-			if (mouseEvent) {
-				tool.mouseMove(this.helper, mouseEvent);
-			}
+			tool.mouseMove(this.helper, mouse);
 		}
 	}
 
 	private mouseUp(event: React.MouseEvent<HTMLCanvasElement>): void {
+		const mouse = this.getMouseState(event, true);
+		if (!mouse) {
+			return;
+		}
+
+		this.setState({
+			mouse: {
+				...mouse,
+				buttons: {
+					left: false,
+					middle: false,
+					right: false
+				}
+			}
+		});
+
 		const tool = this.getSelectedTool();
 		if (tool) {
-			const mouseEvent = this.getMouseEventInfo(event);
-			if (mouseEvent) {
-				tool.mouseUp(this.helper, mouseEvent);
-			}
+			tool.mouseUp(this.helper, mouse);
 		}
 	}
 

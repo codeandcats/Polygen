@@ -1,7 +1,7 @@
-import { moveElement } from '../../../../../shared/lang/arrays';
 import { ApplicationState } from '../../../../../shared/models/applicationState';
 import { Layer } from '../../../../../shared/models/layer';
 import { Point } from '../../../../../shared/models/point';
+import { moveElement } from '../../../../../shared/utils/arrays';
 import { defineAction } from '../../../../reduxWithLessSux/action';
 
 export const addLayer = defineAction(

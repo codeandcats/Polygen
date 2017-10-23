@@ -40,35 +40,20 @@ export function renderProjectFile(
 	context.save();
 	try {
 		bounds = bounds;
-		// context.fillStyle = '#ff0';
-		// context.strokeStyle = '#f00';
-		// context.fillRect(0, 0, 30, 30);
-		// context.strokeRect(0, 0, 30, 30);
 
 		applyViewportTransform(context, bounds, editor);
 
 		drawProjectFileBackground(context, editor);
 
-		drawDebugCrossHair(context, { x: 0, y: 0 });
-
 		for (const layer of editor.projectFile.layers) {
-			renderLayer(context, bounds, editor, layer);
+			renderLayer(context, layer);
 		}
 	} finally {
 		context.restore();
 	}
 }
 
-function renderLayer(
-	context: CanvasRenderingContext2D,
-	bounds: Rectangle,
-	editor: Editor,
-	layer: Layer
-) {
-	// Just to shut compiler up
-	bounds = bounds;
-	editor = editor;
-
+function renderLayer(context: CanvasRenderingContext2D, layer: Layer) {
 	context.save();
 	try {
 		for (const point of layer.points) {
@@ -115,15 +100,6 @@ export function renderPoint(context: CanvasRenderingContext2D, point: Point) {
 	context.stroke();
 }
 
-// export function drawLayer(context: CanvasRenderingContext2D, bounds: Rectangle, editor: Editor, layer: Layer) {
-// 	context.save();
-// 	try {
-// 		context.
-// 	} finally {
-// 		context.restore();
-// 	}
-// }
-
 interface GradientColorStep {
 	stop: number;
 	fillStyle: string;
@@ -147,7 +123,7 @@ export function drawProjectFileBackground(context: CanvasRenderingContext2D, edi
 		context.beginPath();
 
 		context.lineWidth = 1;
-		context.strokeStyle = '#666';
+		context.strokeStyle = '#333';
 		context.fillStyle = 'rgba(255, 255, 255, .5)';
 
 		const halfWidth = editor.projectFile.size.width / 2;

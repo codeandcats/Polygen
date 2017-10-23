@@ -1,6 +1,6 @@
-import { moveElement } from '../../../../../shared/lang/arrays';
 import { ApplicationState } from '../../../../../shared/models/applicationState';
 import { Point } from '../../../../../shared/models/point';
+import { moveElement } from '../../../../../shared/utils/arrays';
 import { defineAction } from '../../../../reduxWithLessSux/action';
 
 interface MoveLayerPayload {
