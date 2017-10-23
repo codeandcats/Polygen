@@ -16,3 +16,9 @@ export function getAnimationProgress(startTime: number, duration: number, curren
 
 	return progress;
 }
+
+export function tween(from: number, to: number, progress: number) {
+	const distance = to - from;
+	const result = from + (distance * progress);
+	return result;
+}
