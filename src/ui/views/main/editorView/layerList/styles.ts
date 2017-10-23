@@ -3,7 +3,7 @@ import { cssRule, style } from 'typestyle';
 
 export const layerList = style({
 	$nest: {
-		ul: {
+		'>ul': {
 			padding: 0,
 			width: percent(100)
 		}
