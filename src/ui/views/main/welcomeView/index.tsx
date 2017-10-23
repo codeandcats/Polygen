@@ -65,7 +65,7 @@ export class WelcomeView extends React.Component<WelcomeViewProps, WelcomeViewSt
 						</ButtonToolbar>
 					</Jumbotron>
 					<NewProjectFileDialog
-						defaultSize={ { width: 400, height: 400 } }
+						defaultSize={ { width: 200, height: 300 } }
 						isVisible={ this.state.isOpenNewProjectFileDialogVisible }
 						onAccept={ size => this.openNewProjectFile(size) }
 						onCancel={ () => this.hideNewProjectFileDialog() }
