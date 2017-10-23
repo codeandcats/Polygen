@@ -35,6 +35,7 @@
     "bootstrap": "3.3.7",
     "classnames": "2.2.5",
     "csx": "8.5.0",
+    "eases": "1.0.8",
     "font-awesome": "4.7.0",
     "jquery": "3.2.1",
     "react": "16.0.0",

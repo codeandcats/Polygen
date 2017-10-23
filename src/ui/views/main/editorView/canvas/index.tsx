@@ -23,8 +23,9 @@ interface CanvasState {
 }
 
 export class Canvas extends React.Component<CanvasProps, CanvasState> {
-	private fps = new Fps();
 	private canvas: HTMLCanvasElement | null;
+	private animationFrameTimer: number | undefined;
+	private fps = new Fps();
 	private helper: ToolHelper = {
 		actions: {
 			addPoint: point => this.props.onAddPoint(point)
@@ -36,11 +37,19 @@ export class Canvas extends React.Component<CanvasProps, CanvasState> {
 				this.canvas.style.cursor = cursor;
 			}
 		},
-		getToolState: () => this.state.toolState,
-		setToolState: (toolState: any) => {
-			this.setState({
-				toolState
-			});
+		getToolState: () => this.state && this.state.toolState,
+		setToolState: (stateOrCallback: any | ((state: any) => any)) => {
+			if (typeof stateOrCallback === 'function') {
+				this.setState(state => {
+					return {
+						toolState: stateOrCallback(state && state.toolState)
+					};
+				});
+			} else {
+				this.setState({
+					toolState: stateOrCallback
+				});
+			}
 		},
 		translation: {
 			projectFileToViewPort: point => {
@@ -78,12 +87,15 @@ export class Canvas extends React.Component<CanvasProps, CanvasState> {
 
 	public componentDidMount() {
 		if (this.canvas) {
-			requestAnimationFrame(() => this.renderFrame());
+			this.animationFrameTimer = requestAnimationFrame(() => this.renderFrame());
 		}
 	}
 
 	public componentWillUnmount() {
 		this.canvas = null;
+		if (this.animationFrameTimer) {
+			cancelAnimationFrame(this.animationFrameTimer);
+		}
 	}
 
 	private getSelectedTool(): Tool<any> | undefined {
@@ -169,6 +181,8 @@ export class Canvas extends React.Component<CanvasProps, CanvasState> {
 	}
 
 	private renderFrame() {
+		this.animationFrameTimer = undefined;
+
 		if (!this.canvas) {
 			return;
 		}
@@ -195,12 +209,12 @@ export class Canvas extends React.Component<CanvasProps, CanvasState> {
 
 		const tool = this.getSelectedTool();
 		if (tool) {
-			renderTool(context, canvasBounds, editor, tool);
+			renderTool(context, canvasBounds, this.helper, tool);
 		}
 
 		this.renderFps(context);
 
-		requestAnimationFrame(() => this.renderFrame());
+		this.animationFrameTimer = requestAnimationFrame(() => this.renderFrame());
 	}
 
 	private setCanvasElement(canvas: HTMLCanvasElement | null) {

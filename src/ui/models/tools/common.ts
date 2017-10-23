@@ -24,9 +24,9 @@ export interface ToolHelper {
 	actions: ToolHelperActions;
 	getEditor(): Editor;
 	getMouseCursor(): string;
-	getToolState(): any;
+	getToolState(): any | undefined;
 	setMouseCursor(cursor: string): void;
-	setToolState(state: any): void;
+	setToolState(stateOrCallback: any | ((state: any) => any)): void;
 	translation: ToolHelperTranslation;
 }
 

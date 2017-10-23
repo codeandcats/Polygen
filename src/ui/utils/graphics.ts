@@ -3,7 +3,7 @@ import { Layer } from '../../shared/models/layer';
 import { Point } from '../../shared/models/point';
 import { ProjectFile } from '../../shared/models/projectFile';
 import { Rectangle } from '../../shared/models/rectangle';
-import { Tool } from '../models/tools/common';
+import { Tool, ToolHelper } from '../models/tools/common';
 
 export function renderTransparencyTiles(context: CanvasRenderingContext2D, bounds: Rectangle, tileSize: number = 20) {
 	context.save();
@@ -71,19 +71,8 @@ function renderLayer(
 
 	context.save();
 	try {
-		context.fillStyle = '#99f';
 		for (const point of layer.points) {
-			context.beginPath();
-			context.ellipse(
-				point.x,
-				point.y,
-				5,
-				5,
-				0,
-				0,
-				360
-			);
-			context.fill();
+			renderPoint(context, point);
 		}
 	} finally {
 		context.restore();
@@ -93,17 +82,37 @@ function renderLayer(
 export function renderTool(
 	context: CanvasRenderingContext2D,
 	bounds: Rectangle,
-	editor: Editor,
+	helper: ToolHelper,
 	tool: Tool<any>
 ) {
 	context.save();
 	try {
 		context.beginPath();
+		const editor = helper.getEditor();
 		applyViewportTransform(context, bounds, editor);
-		tool.render(this.helper, context, bounds);
+		tool.render(helper, context, bounds);
 	} finally {
 		context.restore();
 	}
+}
+
+export function renderPoint(context: CanvasRenderingContext2D, point: Point) {
+	const RADIUS = 4;
+	context.beginPath();
+	context.lineWidth = 1;
+	context.fillStyle = '#333';
+	context.strokeStyle = '#eee';
+	context.ellipse(
+		point.x,
+		point.y,
+		RADIUS,
+		RADIUS,
+		0,
+		0,
+		360
+	);
+	context.fill();
+	context.stroke();
 }
 
 // export function drawLayer(context: CanvasRenderingContext2D, bounds: Rectangle, editor: Editor, layer: Layer) {
