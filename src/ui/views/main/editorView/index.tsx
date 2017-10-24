@@ -8,6 +8,7 @@ import {
 import { ApplicationState } from '../../../../shared/models/applicationState';
 import { Size } from '../../../../shared/models/size';
 import { addPoint } from '../../../actions/editor/projectFile/layer/points/addPoint';
+import { moveSelectedPoints } from '../../../actions/editor/projectFile/layer/points/moveSelectedPoints';
 import { removeSelection } from '../../../actions/editor/projectFile/layer/points/removeSelection';
 import { selectAllPoints } from '../../../actions/editor/projectFile/layer/points/selectAllPoints';
 import { selectPoints } from '../../../actions/editor/projectFile/layer/points/selectPoints';
@@ -19,7 +20,6 @@ import { Canvas } from './canvas/index';
 import { EditorToolbar } from './editorToolbar';
 import { LayerList } from './layerList';
 import * as styles from './styles';
-import { moveSelectedPoints } from '../../../actions/editor/projectFile/layer/points/moveSelectedPoints';
 
 export interface EditorViewProps {
 	store: Store<ApplicationState>;
@@ -165,7 +165,9 @@ export class EditorView extends React.Component<EditorViewProps, EditorViewState
 					<div className={ styles.footerCell }>
 						<Grid fluid>
 							<Panel>
-								Points: { layer.points.length }
+								<span>Points: <Badge>{ layer.points.length }</Badge></span>
+								&nbsp;
+								<span>Polygons: <Badge>{ layer.polygons.length }</Badge></span>
 							</Panel>
 						</Grid>
 					</div>
