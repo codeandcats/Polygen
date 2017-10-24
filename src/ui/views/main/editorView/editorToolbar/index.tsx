@@ -33,7 +33,7 @@ export class EditorToolbar extends React.Component<EditorToolbarProps, EditorToo
 							return (
 								<OverlayTrigger
 									key={ tool.name }
-									overlay={ <Tooltip>{ tool.displayName }</Tooltip> }
+									overlay={ <Tooltip id={ 'toolButtonTooltip_' + tool.name }>{ tool.displayName }</Tooltip> }
 									placement='bottom'
 								>
 									<Button

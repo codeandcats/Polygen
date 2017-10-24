@@ -72,7 +72,7 @@ export class LayerList extends React.Component<LayerListProps, LayerListState> {
 				<div className={ mainStyles.spaceBelow }>
 					<label className={ classNames('control-label', mainStyles.spaceRight) }>Layers</label>
 					<OverlayTrigger
-							overlay={ <Tooltip>Add layer</Tooltip> }
+							overlay={ <Tooltip id='addLayerTooltip'>Add layer</Tooltip> }
 							placement='bottom'
 						>
 						<Button
