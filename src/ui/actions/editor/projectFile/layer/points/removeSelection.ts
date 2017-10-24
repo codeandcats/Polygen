@@ -3,8 +3,8 @@ import { Point } from '../../../../../../shared/models/point';
 import { recalculatePolygons } from '../../../../../../shared/utils/geometry';
 import { defineAction } from '../../../../../reduxWithLessSux/action';
 
-export const removeSelectedPoints = defineAction(
-	'removeSelectedPoints', (state: ApplicationState) => {
+export const removeSelection = defineAction(
+	'removeSelection', (state: ApplicationState) => {
 		const editors = state.editors.map((editor, editorIndex) => {
 			if (editorIndex === state.activeEditorIndex) {
 				const selectedPointIndices = editor.selectedPointIndices;
@@ -26,9 +26,9 @@ export const removeSelectedPoints = defineAction(
 								};
 							}
 							return layer;
-						}),
-						selectedPointIndices: []
-					}
+						})
+					},
+					selectedPointIndices: []
 				};
 			}
 			return editor;

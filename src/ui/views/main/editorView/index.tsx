@@ -8,6 +8,8 @@ import {
 import { ApplicationState } from '../../../../shared/models/applicationState';
 import { Size } from '../../../../shared/models/size';
 import { addPoint } from '../../../actions/editor/projectFile/layer/points/addPoint';
+import { removeSelection } from '../../../actions/editor/projectFile/layer/points/removeSelection';
+import { selectAllPoints } from '../../../actions/editor/projectFile/layer/points/selectAllPoints';
 import { selectPoints } from '../../../actions/editor/projectFile/layer/points/selectPoints';
 import { selectTool } from '../../../actions/editor/selectTool';
 import { setPan } from '../../../actions/editor/setPan';
@@ -17,6 +19,7 @@ import { Canvas } from './canvas/index';
 import { EditorToolbar } from './editorToolbar';
 import { LayerList } from './layerList';
 import * as styles from './styles';
+import { moveSelectedPoints } from '../../../actions/editor/projectFile/layer/points/moveSelectedPoints';
 
 export interface EditorViewProps {
 	store: Store<ApplicationState>;
@@ -142,6 +145,9 @@ export class EditorView extends React.Component<EditorViewProps, EditorViewState
 													layerIndex: editor.selectedLayerIndex,
 													point
 												}) }
+												onDeleteSelection={ () => removeSelection(this.props.store) }
+												onMoveSelection={ moveBy => moveSelectedPoints(this.props.store, { moveBy }) }
+												onSelectAll={ () => selectAllPoints(this.props.store) }
 												onSelectPoints={ pointIndices => selectPoints(this.props.store, { pointIndices }) }
 												onSetPan={ point => setPan(this.props.store, { pan: point }) }
 											/>

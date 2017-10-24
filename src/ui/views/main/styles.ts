@@ -1,4 +1,4 @@
-import { px } from 'csx';
+import { important, px } from 'csx';
 import { cssRule, style } from 'typestyle';
 
 cssRule('body', {
@@ -30,4 +30,8 @@ export const iconButton = style({
 			transform: 'scale(1.2)'
 		}
 	}
+});
+
+cssRule('*:focus', {
+	outlineWidth: important(px(3) as any)
 });

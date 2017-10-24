@@ -39,6 +39,7 @@
     "eases": "1.0.8",
     "font-awesome": "4.7.0",
     "jquery": "3.2.1",
+    "key-code": "0.0.1",
     "react": "16.0.0",
     "react-bootstrap": "0.31.3",
     "react-dom": "16.0.0",

@@ -1,3 +1,4 @@
+import * as KeyCode from 'key-code';
 import * as React from 'react';
 import { Editor } from '../../../../../shared/models/editor';
 import { Point } from '../../../../../shared/models/point';
@@ -16,6 +17,9 @@ interface CanvasProps {
 	editor: Editor;
 
 	onAddPoint: (point: Point) => void;
+	onDeleteSelection: () => void;
+	onMoveSelection: (moveBy: Point) => void;
+	onSelectAll: () => void;
 	onSelectPoints: (pointIndices: number[]) => void;
 	onSetPan: (point: Point) => void;
 }
@@ -171,6 +175,54 @@ export class Canvas extends React.Component<CanvasProps, CanvasState> {
 		return undefined;
 	}
 
+	private keyDown(event: React.KeyboardEvent<HTMLCanvasElement>) {
+		const SMALL_MOVE_AMOUNT = 1;
+		const LARGE_MOVE_AMOUNT = 5;
+		const getMoveAmount = () => event.shiftKey ? LARGE_MOVE_AMOUNT : SMALL_MOVE_AMOUNT;
+
+		switch (event.keyCode) {
+			case KeyCode.DELETE:
+			case KeyCode.BACKSPACE:
+				if (this.props.editor.selectedPointIndices.length) {
+					this.props.onDeleteSelection();
+					event.preventDefault();
+				}
+				break;
+
+			case KeyCode.A:
+				if (event.metaKey || event.ctrlKey) {
+					this.props.onSelectAll();
+					event.preventDefault();
+				}
+				break;
+
+			case KeyCode.LEFT:
+				this.props.onMoveSelection({ x: -getMoveAmount(), y: 0 });
+				event.preventDefault();
+				break;
+
+			case KeyCode.RIGHT:
+				this.props.onMoveSelection({ x: getMoveAmount(), y: 0 });
+				event.preventDefault();
+				break;
+
+			case KeyCode.UP:
+				this.props.onMoveSelection({ x: 0, y: -getMoveAmount() });
+				event.preventDefault();
+				break;
+
+			case KeyCode.DOWN:
+				this.props.onMoveSelection({ x: 0, y: getMoveAmount() });
+				event.preventDefault();
+				break;
+
+			default:
+				// tslint:disable-next-line:max-line-length
+				console.log(`Canvas Key Down: key = "${ event.key }", code = ${ event.keyCode }, meta = ${ event.metaKey }, ctrl = ${ event.ctrlKey }, alt = ${ event.altKey }, shift = ${ event.shiftKey }`);
+				break;
+		}
+	}
+
 	private mouseDown(event: React.MouseEvent<HTMLCanvasElement>): void {
 		const mouse = this.getMouseState(event, true);
 		if (!mouse) {
@@ -287,6 +339,7 @@ export class Canvas extends React.Component<CanvasProps, CanvasState> {
 				className={styles.canvas}
 				width={ this.props.width }
 				height={ this.props.height }
+				onKeyDown={ event => this.keyDown(event) }
 				onMouseDown={ event => this.mouseDown(event) }
 				onMouseMove={ event => this.mouseMove(event) }
 				onMouseUp={ event => this.mouseUp(event) }
