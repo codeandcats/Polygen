@@ -2,7 +2,7 @@ import * as classNames from 'classnames';
 import * as React from 'react';
 import {
 	Button, ButtonGroup, ControlLabel, DropdownButton,
-	ListGroup, ListGroupItem, MenuItem, Panel
+	ListGroup, ListGroupItem, MenuItem, OverlayTrigger, Panel, Tooltip
 } from 'react-bootstrap';
 import { ApplicationState } from '../../../../../shared/models/applicationState';
 import { Editor } from '../../../../../shared/models/editor';
@@ -71,14 +71,19 @@ export class LayerList extends React.Component<LayerListProps, LayerListState> {
 			<div className={styles.layerList}>
 				<div className={ mainStyles.spaceBelow }>
 					<label className={ classNames('control-label', mainStyles.spaceRight) }>Layers</label>
-					<Button
-						bsSize='sm'
-						className={ mainStyles.iconButton }
-						onClick={ () => addLayer(this.props.store) }
-						title='Add layer'
-					>
-						<i className='fa fa-plus' />
-					</Button>
+					<OverlayTrigger
+							overlay={ <Tooltip>Add layer</Tooltip> }
+							placement='bottom'
+						>
+						<Button
+							bsSize='sm'
+							className={ mainStyles.iconButton }
+							onClick={ () => addLayer(this.props.store) }
+							title='Add layer'
+						>
+							<i className='fa fa-plus' />
+						</Button>
+					</OverlayTrigger>
 				</div>
 				<ul>
 					{

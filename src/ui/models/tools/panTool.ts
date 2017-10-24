@@ -9,7 +9,7 @@ interface PanToolState {
 export class PanTool extends Tool<PanToolState> {
 	public readonly name: ToolName = 'pan';
 	public readonly iconClassName = 'fa-hand-paper-o';
-	public readonly displayName = 'Pan';
+	public readonly displayName = 'Pan Tool';
 
 	private calculateNewPan(helper: ToolHelper, currentViewPortPoint: Point): Point {
 		const pan = helper.getEditor().viewPort.pan || { x: 0, y: 0 };

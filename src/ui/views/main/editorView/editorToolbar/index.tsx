@@ -1,6 +1,6 @@
 import * as classNames from 'classnames';
 import * as React from 'react';
-import { Button, ButtonGroup, ControlLabel } from 'react-bootstrap';
+import { Button, ButtonGroup, ControlLabel, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { ToolName } from '../../../../models/tools/common';
 import { TOOL_BY_NAME } from '../../../../models/tools/index';
 import * as mainStyles from '../../styles';
@@ -31,22 +31,26 @@ export class EditorToolbar extends React.Component<EditorToolbarProps, EditorToo
 							const tool = TOOL_BY_NAME[toolName];
 							const isSelected = toolName === this.props.selectedToolName;
 							return (
-								<Button
-									bsSize='sm'
-									bsStyle={ isSelected ? 'primary' : 'default' }
-									className={ classNames(mainStyles.iconButton, { active: isSelected }) }
+								<OverlayTrigger
 									key={ tool.name }
-									onClick={ () => {
-										if (isSelected) {
-											this.props.onSelectTool(undefined);
-										} else {
-											this.props.onSelectTool(tool.name);
-										}
-									} }
-									title={ tool.displayName }
+									overlay={ <Tooltip>{ tool.displayName }</Tooltip> }
+									placement='bottom'
 								>
-									<i className={ 'fa ' + tool.iconClassName } />
-								</Button>
+									<Button
+										bsSize='sm'
+										bsStyle={ isSelected ? 'primary' : 'default' }
+										className={ classNames(mainStyles.iconButton, { active: isSelected }) }
+										onClick={ () => {
+											if (isSelected) {
+												this.props.onSelectTool(undefined);
+											} else {
+												this.props.onSelectTool(tool.name);
+											}
+										} }
+									>
+										<i className={ 'fa ' + tool.iconClassName } />
+									</Button>
+								</OverlayTrigger>
 							);
 						})
 					}

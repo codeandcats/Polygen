@@ -18,7 +18,7 @@ interface PointToolState {
 export class PointTool extends Tool<PointToolState> {
 	public readonly name: ToolName = 'point';
 	public readonly iconClassName = 'fa-pencil';
-	public readonly displayName = 'Point';
+	public readonly displayName = 'Point Tool';
 
 	private static readonly ANIMATION_DURATION = 400;
 
