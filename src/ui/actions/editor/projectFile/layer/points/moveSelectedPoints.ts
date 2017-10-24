@@ -1,5 +1,6 @@
 import { ApplicationState } from '../../../../../../shared/models/applicationState';
 import { Point } from '../../../../../../shared/models/point';
+import { recalculatePolygons } from '../../../../../../shared/utils/geometry';
 import { defineAction } from '../../../../../reduxWithLessSux/action';
 
 interface MoveSelectedPointsPayload {
@@ -17,17 +18,20 @@ export const moveSelectedPoints = defineAction(
 						...projectFile,
 						layers: projectFile.layers.map((layer, layerIndex) => {
 							if (layerIndex === editor.selectedLayerIndex) {
+								const points = layer.points.map((point, pointIndex) => {
+									if (editor.selectedPointIndices.indexOf(pointIndex) > -1) {
+										return {
+											x: point.x + payload.moveBy.x,
+											y: point.y + payload.moveBy.y
+										};
+									}
+									return point;
+								});
+								const polygons = recalculatePolygons(points);
 								return {
 									...layer,
-									points: layer.points.map((point, pointIndex) => {
-										if (editor.selectedPointIndices.indexOf(pointIndex) > -1) {
-											return {
-												x: point.x + payload.moveBy.x,
-												y: point.y + payload.moveBy.y
-											};
-										}
-										return point;
-									})
+									points,
+									polygons
 								};
 							}
 							return layer;

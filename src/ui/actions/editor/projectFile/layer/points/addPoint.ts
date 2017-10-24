@@ -1,5 +1,6 @@
 import { ApplicationState } from '../../../../../../shared/models/applicationState';
 import { Point } from '../../../../../../shared/models/point';
+import { recalculatePolygons } from '../../../../../../shared/utils/geometry';
 import { defineAction } from '../../../../../reduxWithLessSux/action';
 
 interface AddPointActionPayload {
@@ -19,11 +20,14 @@ export const addPoint = defineAction(
 						...projectFile,
 						layers: projectFile.layers.map((layer, layerIndex) => {
 							if (layerIndex === payload.layerIndex) {
+								const points = layer.points.concat({
+									...payload.point
+								});
+								const polygons = recalculatePolygons(points);
 								return {
 									...layer,
-									points: layer.points.concat({
-										...payload.point
-									})
+									points,
+									polygons
 								};
 							}
 							return layer;

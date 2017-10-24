@@ -33,6 +33,7 @@
     "app-root-path": "2.0.1",
     "assert-never": "1.0.0",
     "bootstrap": "3.3.7",
+    "cdt2d": "1.0.0",
     "classnames": "2.2.5",
     "csx": "8.5.0",
     "eases": "1.0.8",

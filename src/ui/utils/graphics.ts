@@ -1,6 +1,7 @@
 import { Editor } from '../../shared/models/editor';
 import { Layer } from '../../shared/models/layer';
 import { Point } from '../../shared/models/point';
+import { Polygon } from '../../shared/models/polygon';
 import { ProjectFile } from '../../shared/models/projectFile';
 import { Rectangle } from '../../shared/models/rectangle';
 import { Tool, ToolHelper } from '../models/tools/common';
@@ -56,6 +57,9 @@ export function renderProjectFile(
 function renderLayer(context: CanvasRenderingContext2D, layer: Layer) {
 	context.save();
 	try {
+		for (const polygon of layer.polygons) {
+			renderPolygon(context, layer.points,  polygon);
+		}
 		for (const point of layer.points) {
 			renderPoint(context, point);
 		}
@@ -96,6 +100,22 @@ export function renderPoint(context: CanvasRenderingContext2D, point: Point) {
 		0,
 		360
 	);
+	context.fill();
+	context.stroke();
+}
+
+export function renderPolygon(context: CanvasRenderingContext2D, points: Point[], polygon: Polygon) {
+	context.beginPath();
+
+	context.lineWidth = 1;
+	context.fillStyle = '#ccc';
+	context.strokeStyle = '#333';
+	const polygonPoints = polygon.pointIndices.map(pointIndex => points[pointIndex]);
+
+	context.moveTo(polygonPoints[0].x, polygonPoints[0].y);
+	context.lineTo(polygonPoints[1].x, polygonPoints[1].y);
+	context.lineTo(polygonPoints[2].x, polygonPoints[2].y);
+	context.closePath();
 	context.fill();
 	context.stroke();
 }
