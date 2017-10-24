@@ -8,6 +8,7 @@ import {
 import { ApplicationState } from '../../../../shared/models/applicationState';
 import { Size } from '../../../../shared/models/size';
 import { addPoint } from '../../../actions/editor/projectFile/layer/points/addPoint';
+import { selectPoints } from '../../../actions/editor/projectFile/layer/points/selectPoints';
 import { selectTool } from '../../../actions/editor/selectTool';
 import { setPan } from '../../../actions/editor/setPan';
 import { Store } from '../../../reduxWithLessSux/store';
@@ -31,7 +32,6 @@ export class EditorView extends React.Component<EditorViewProps, EditorViewState
 
 	private updateCanvasSizeCount = 0;
 	private windowResized = () => {
-		console.log('Window Resized');
 		this.updateCanvasSize();
 	}
 
@@ -142,6 +142,7 @@ export class EditorView extends React.Component<EditorViewProps, EditorViewState
 													layerIndex: editor.selectedLayerIndex,
 													point
 												}) }
+												onSelectPoints={ pointIndices => selectPoints(this.props.store, { pointIndices }) }
 												onSetPan={ point => setPan(this.props.store, { pan: point }) }
 											/>
 										</Col>
@@ -158,7 +159,7 @@ export class EditorView extends React.Component<EditorViewProps, EditorViewState
 					<div className={ styles.footerCell }>
 						<Grid fluid>
 							<Panel>
-								Points { layer.points.length }
+								Points: { layer.points.length }
 							</Panel>
 						</Grid>
 					</div>

@@ -4,7 +4,7 @@ import { Rectangle } from '../../../shared/models/rectangle';
 import { getAnimationProgress } from '../../utils/animation';
 import { renderPoint } from '../../utils/graphics';
 import { MouseButton } from '../mouseButton';
-import { CanvasMouseEvent, Tool, ToolHelper, ToolName } from './common';
+import { CanvasMouseState, Tool, ToolHelper, ToolName } from './common';
 
 interface PointBeingAdded {
 	point: Point;
@@ -34,11 +34,11 @@ export class PointTool extends Tool<PointToolState> {
 
 	public mouseUp(
 		helper: ToolHelper,
-		event: CanvasMouseEvent
+		mouse: CanvasMouseState
 	): void {
 		helper.setMouseCursor(PointTool.CURSOR);
-		if (event.buttons.left) {
-			this.startPointAnimation(helper, event.projectFilePoint);
+		if (mouse.buttons.left) {
+			this.startPointAnimation(helper, mouse.projectFilePoint);
 		}
 	}
 
@@ -96,7 +96,7 @@ export class PointTool extends Tool<PointToolState> {
 				// const radius = 3 * eases.elasticOut(animationProgress);
 				const radius = 3;
 				// context.fillStyle = `rgba(51, 51, 51, ${ eases.linear(animationProgress) })`;
-				renderPoint(context, { x: 0, y: 0 });
+				renderPoint(context, { x: 0, y: 0 }, false);
 			} finally {
 				context.restore();
 			}

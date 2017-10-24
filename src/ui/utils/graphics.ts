@@ -6,9 +6,17 @@ import { ProjectFile } from '../../shared/models/projectFile';
 import { Rectangle } from '../../shared/models/rectangle';
 import { Tool, ToolHelper } from '../models/tools/common';
 
-export function renderTransparencyTiles(context: CanvasRenderingContext2D, bounds: Rectangle, tileSize: number = 20) {
+export function runInTransaction(context: CanvasRenderingContext2D, callback: () => void) {
 	context.save();
 	try {
+		callback();
+	} finally {
+		context.restore();
+	}
+}
+
+export function renderTransparencyTiles(context: CanvasRenderingContext2D, bounds: Rectangle, tileSize: number = 20) {
+	runInTransaction(context, () => {
 		const squareColour = ['#FFF', '#DDD'];
 		for (let y = 0; y * tileSize < bounds.height; y++) {
 			for (let x = 0; x * tileSize < bounds.width; x++) {
@@ -17,9 +25,7 @@ export function renderTransparencyTiles(context: CanvasRenderingContext2D, bound
 				context.fillRect(x * tileSize, y * tileSize, tileSize, tileSize);
 			}
 		}
-	} finally {
-		context.restore();
-	}
+	});
 }
 
 export function applyViewportTransform(
@@ -38,8 +44,7 @@ export function renderProjectFile(
 	bounds: Rectangle,
 	editor: Editor
 ) {
-	context.save();
-	try {
+	runInTransaction(context, () => {
 		bounds = bounds;
 
 		applyViewportTransform(context, bounds, editor);
@@ -47,25 +52,28 @@ export function renderProjectFile(
 		drawProjectFileBackground(context, editor);
 
 		for (const layer of editor.projectFile.layers) {
-			renderLayer(context, layer);
+			renderLayer(context, layer, editor.selectedPointIndices);
 		}
-	} finally {
-		context.restore();
-	}
+	});
 }
 
-function renderLayer(context: CanvasRenderingContext2D, layer: Layer) {
-	context.save();
-	try {
+function renderLayer(context: CanvasRenderingContext2D, layer: Layer, selectedPointIndices: number[]) {
+	runInTransaction(context, () => {
 		for (const polygon of layer.polygons) {
 			renderPolygon(context, layer.points,  polygon);
 		}
-		for (const point of layer.points) {
-			renderPoint(context, point);
+
+		const selectedPointMap = selectedPointIndices.reduce((result, index) => {
+			result[index] = true;
+			return result;
+		}, {} as { [index: number]: boolean | undefined });
+
+		for (let pointIndex = 0; pointIndex < layer.points.length; pointIndex++) {
+			const point = layer.points[pointIndex];
+			const isSelected = !!selectedPointMap[pointIndex];
+			renderPoint(context, point, isSelected);
 		}
-	} finally {
-		context.restore();
-	}
+	});
 }
 
 export function renderTool(
@@ -74,34 +82,45 @@ export function renderTool(
 	helper: ToolHelper,
 	tool: Tool<any>
 ) {
-	context.save();
-	try {
+	runInTransaction(context, () => {
 		context.beginPath();
 		const editor = helper.getEditor();
 		applyViewportTransform(context, bounds, editor);
 		tool.render(helper, context, bounds);
-	} finally {
-		context.restore();
-	}
+	});
 }
 
-export function renderPoint(context: CanvasRenderingContext2D, point: Point) {
-	const RADIUS = 4;
-	context.beginPath();
-	context.lineWidth = 1;
-	context.fillStyle = '#333';
-	context.strokeStyle = '#eee';
-	context.ellipse(
-		point.x,
-		point.y,
-		RADIUS,
-		RADIUS,
-		0,
-		0,
-		360
-	);
-	context.fill();
-	context.stroke();
+export function renderPoint(context: CanvasRenderingContext2D, point: Point, isSelected: boolean) {
+	const POINT_FILL_COLOR = '#333';
+	const POINT_STROKE_COLOR = '#eee';
+	const RADIUS = 3;
+
+	runInTransaction(context, () => {
+		context.beginPath();
+
+		context.ellipse(
+			point.x,
+			point.y,
+			RADIUS,
+			RADIUS,
+			0,
+			0,
+			360
+		);
+
+		context.lineWidth = 1;
+		context.fillStyle = isSelected ? SELECTION_COLOR : POINT_FILL_COLOR;
+
+		context.fill();
+
+		if (isSelected) {
+			renderSelectionStroke(context);
+		} else {
+			context.strokeStyle = POINT_STROKE_COLOR;
+		}
+
+		context.stroke();
+	});
 }
 
 export function renderPolygon(context: CanvasRenderingContext2D, points: Point[], polygon: Polygon) {
@@ -117,6 +136,45 @@ export function renderPolygon(context: CanvasRenderingContext2D, points: Point[]
 	context.lineTo(polygonPoints[2].x, polygonPoints[2].y);
 	context.closePath();
 	context.fill();
+	context.stroke();
+}
+
+const SELECTION_COLOR = '#337ab7';
+
+export function renderSelectionRectangle(context: CanvasRenderingContext2D, rectangleInProjectSpace: Rectangle) {
+	runInTransaction(context, () => {
+		context.beginPath();
+
+		context.rect(
+			rectangleInProjectSpace.x,
+			rectangleInProjectSpace.y,
+			rectangleInProjectSpace.width,
+			rectangleInProjectSpace.height
+		);
+
+		context.fillStyle = SELECTION_COLOR;
+		context.globalAlpha = .15;
+		context.fill();
+		context.globalAlpha = 1;
+
+		renderSelectionStroke(context);
+	});
+}
+
+function renderSelectionStroke(context: CanvasRenderingContext2D) {
+	const SELECTION_STROKE_COLOR_1 = '#fff';
+	const SELECTION_STROKE_COLOR_2 = SELECTION_COLOR;
+
+	context.lineWidth = 1;
+	context.strokeStyle = SELECTION_STROKE_COLOR_1;
+	context.stroke();
+
+	const DASH_LENGTH = 5;
+	const STEP_ANIMATION_DURATION = 400;
+
+	context.lineDashOffset = DASH_LENGTH * 2 * ((Date.now() % STEP_ANIMATION_DURATION) / STEP_ANIMATION_DURATION);
+	context.setLineDash([DASH_LENGTH, DASH_LENGTH]);
+	context.strokeStyle = SELECTION_STROKE_COLOR_2;
 	context.stroke();
 }
 
@@ -138,8 +196,7 @@ function createGradient(
 }
 
 export function drawProjectFileBackground(context: CanvasRenderingContext2D, editor: Editor) {
-	context.save();
-	try {
+	runInTransaction(context, () => {
 		context.beginPath();
 
 		context.lineWidth = 1;
@@ -183,16 +240,13 @@ export function drawProjectFileBackground(context: CanvasRenderingContext2D, edi
 		);
 		context.rect(-halfWidth + SHADOW_OFFSET, halfHeight + 1, editor.projectFile.size.width, SHADOW_OFFSET);
 		context.fill();
-
-	} finally {
-		context.restore();
-	}
+	});
 }
 
 export function drawDebugCrossHair(context: CanvasRenderingContext2D, point: Point, strokeStyle: string = '#f00') {
 	const CROSS_HAIR_RADIUS = 15;
-	context.save();
-	try {
+
+	runInTransaction(context, () => {
 		context.beginPath();
 
 		context.lineWidth = .5;
@@ -242,7 +296,5 @@ export function drawDebugCrossHair(context: CanvasRenderingContext2D, point: Poi
 		);
 
 		context.stroke();
-	} finally {
-		context.restore();
-	}
+	});
 }

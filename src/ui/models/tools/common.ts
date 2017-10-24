@@ -14,6 +14,7 @@ declare let e: HTMLCanvasElement;
 export interface ToolHelperActions {
 	addPoint(point: Point): void;
 	setPan(point: Point): void;
+	selectPoints(pointIndices: number[]): void;
 }
 
 export interface ToolHelperTranslation {
@@ -31,16 +32,16 @@ export interface ToolHelper {
 	translation: ToolHelperTranslation;
 }
 
-export interface CanvasMouseEventButtons {
+export interface CanvasMouseButtonsState {
 	left: boolean;
 	middle: boolean;
 	right: boolean;
 }
 
-export interface CanvasMouseEvent {
-	buttons: CanvasMouseEventButtons;
-	viewPortPoint: Point;
+export interface CanvasMouseState {
+	buttons: CanvasMouseButtonsState;
 	projectFilePoint: Point;
+	viewPortPoint: Point;
 }
 
 export abstract class Tool<TToolState> {
@@ -50,7 +51,7 @@ export abstract class Tool<TToolState> {
 
 	public mouseDown(
 		helper: ToolHelper,
-		event: CanvasMouseEvent
+		event: CanvasMouseState
 	): void {
 		// Just to remove compiler warnings about unused variables
 		helper = helper;
@@ -59,7 +60,7 @@ export abstract class Tool<TToolState> {
 
 	public mouseMove(
 		helper: ToolHelper,
-		event: CanvasMouseEvent
+		event: CanvasMouseState
 	): void {
 		// Just to remove compiler warnings about unused variables
 		helper = helper;
@@ -68,7 +69,7 @@ export abstract class Tool<TToolState> {
 
 	public mouseUp(
 		helper: ToolHelper,
-		event: CanvasMouseEvent
+		event: CanvasMouseState
 	): void {
 		// Just to remove compiler warnings about unused variables
 		helper = helper;

@@ -1,6 +1,6 @@
 import { Point } from '../../../shared/models/point';
 import { addPoints, subtractPoints } from '../../../shared/utils/geometry';
-import { CanvasMouseEvent, Tool, ToolHelper, ToolName } from './common';
+import { CanvasMouseState, Tool, ToolHelper, ToolName } from './common';
 
 interface PanToolState {
 	panStart: Point | undefined;
@@ -26,27 +26,27 @@ export class PanTool extends Tool<PanToolState> {
 
 	public mouseDown(
 		helper: ToolHelper,
-		event: CanvasMouseEvent
+		mouse: CanvasMouseState
 	): void {
 		helper.setMouseCursor('-webkit-grab');
-		if (event.buttons.left) {
+		if (mouse.buttons.left) {
 			helper.setMouseCursor('-webkit-grabbing');
 			helper.setToolState({
-				panStart: { ...event.viewPortPoint }
+				panStart: { ...mouse.viewPortPoint }
 			});
 		}
 	}
 
 	public mouseMove(
 		helper: ToolHelper,
-		event: CanvasMouseEvent
+		mouse: CanvasMouseState
 	): void {
-		if (event.buttons.left) {
+		if (mouse.buttons.left) {
 			helper.setMouseCursor('-webkit-grabbing');
-			const pan = this.calculateNewPan(helper, event.viewPortPoint);
+			const pan = this.calculateNewPan(helper, mouse.viewPortPoint);
 			helper.actions.setPan(pan);
 			helper.setToolState({
-				panStart: { ...event.viewPortPoint }
+				panStart: { ...mouse.viewPortPoint }
 			});
 		} else {
 			helper.setMouseCursor('-webkit-grab');
@@ -55,11 +55,11 @@ export class PanTool extends Tool<PanToolState> {
 
 	public mouseUp(
 		helper: ToolHelper,
-		event: CanvasMouseEvent
+		mouse: CanvasMouseState
 	): void {
-		if (event.buttons.left) {
+		if (mouse.buttons.left) {
 			helper.setMouseCursor('-webkit-grab');
-			const pan = this.calculateNewPan(helper, event.viewPortPoint);
+			const pan = this.calculateNewPan(helper, mouse.viewPortPoint);
 			helper.actions.setPan(pan);
 			helper.setToolState({
 				panStart: undefined

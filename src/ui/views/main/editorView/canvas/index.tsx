@@ -4,10 +4,10 @@ import { Point } from '../../../../../shared/models/point';
 import { Rectangle } from '../../../../../shared/models/rectangle';
 import { MouseButton } from '../../../../models/mouseButton';
 import { TOOL_BY_NAME } from '../../../../models/tools';
-import { CanvasMouseEvent, CanvasMouseEventButtons, Tool, ToolHelper } from '../../../../models/tools/common';
+import { CanvasMouseButtonsState, CanvasMouseState, Tool, ToolHelper } from '../../../../models/tools/common';
 import { PointTool } from '../../../../models/tools/pointTool';
 import { Fps } from '../../../../utils/fps';
-import { renderProjectFile, renderTool, renderTransparencyTiles } from '../../../../utils/graphics';
+import { renderProjectFile, renderTool, renderTransparencyTiles, runInTransaction } from '../../../../utils/graphics';
 import * as styles from './styles';
 
 interface CanvasProps {
@@ -16,19 +16,8 @@ interface CanvasProps {
 	editor: Editor;
 
 	onAddPoint: (point: Point) => void;
+	onSelectPoints: (pointIndices: number[]) => void;
 	onSetPan: (point: Point) => void;
-}
-
-interface CanvasMouseButtonsState {
-	left: boolean;
-	middle: boolean;
-	right: boolean;
-}
-
-interface CanvasMouseState {
-	buttons: CanvasMouseButtonsState;
-	projectFilePoint: Point;
-	viewPortPoint: Point;
 }
 
 interface CanvasState {
@@ -43,6 +32,7 @@ export class Canvas extends React.Component<CanvasProps, CanvasState> {
 	private helper: ToolHelper = {
 		actions: {
 			addPoint: point => this.props.onAddPoint(point),
+			selectPoints: pointIndices => this.props.onSelectPoints(pointIndices),
 			setPan: point => this.props.onSetPan(point)
 		},
 		getEditor: () => this.props.editor,
@@ -271,16 +261,18 @@ export class Canvas extends React.Component<CanvasProps, CanvasState> {
 			return;
 		}
 
-		renderTransparencyTiles(context, canvasBounds, 10);
+		runInTransaction(context, () => {
+			renderTransparencyTiles(context, canvasBounds, 10);
 
-		renderProjectFile(context, canvasBounds, editor);
+			renderProjectFile(context, canvasBounds, editor);
 
-		const tool = this.getSelectedTool();
-		if (tool) {
-			renderTool(context, canvasBounds, this.helper, tool);
-		}
+			const tool = this.getSelectedTool();
+			if (tool) {
+				renderTool(context, canvasBounds, this.helper, tool);
+			}
 
-		this.renderFps(context);
+			this.renderFps(context);
+		});
 
 		this.animationFrameTimer = requestAnimationFrame(() => this.renderFrame());
 	}

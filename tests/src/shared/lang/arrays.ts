@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { moveElement } from '../../../../src/shared/lang/arrays';
+import { moveElement } from '../../../../src/shared/utils/arrays';
 
 describe('moveElement', () => {
 
