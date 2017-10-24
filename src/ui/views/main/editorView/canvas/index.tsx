@@ -122,6 +122,13 @@ export class Canvas extends React.Component<CanvasProps, CanvasState> {
 			this.props.width !== nextProps.width ||
 			this.props.height !== nextProps.height
 		);
+
+		const currentToolName = this.props.editor && this.props.editor.selectedToolName;
+		const nextToolName = nextProps.editor && nextProps.editor.selectedToolName;
+		if (currentToolName !== nextToolName && !nextToolName) {
+			this.helper.setMouseCursor('default');
+		}
+
 		return willDimensionsChange;
 	}
 
