@@ -14,6 +14,7 @@ export const openNewProjectFile = defineAction(
 		const projectFile: ProjectFile = {
 			layers: [
 				{
+					imageSource: undefined,
 					isVisible: true,
 					name: 'Layer 1',
 					points: [],

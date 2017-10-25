@@ -3,6 +3,7 @@ import * as React from 'react';
 import { Editor } from '../../../../../shared/models/editor';
 import { Point } from '../../../../../shared/models/point';
 import { Rectangle } from '../../../../../shared/models/rectangle';
+import { ImageCache } from '../../../../models/imageCache';
 import { MouseButton } from '../../../../models/mouseButton';
 import { TOOL_BY_NAME } from '../../../../models/tools';
 import { CanvasMouseButtonsState, CanvasMouseState, Tool, ToolHelper } from '../../../../models/tools/common';
@@ -15,6 +16,7 @@ interface CanvasProps {
 	width: number;
 	height: number;
 	editor: Editor;
+	imageCache: ImageCache;
 
 	onAddPoint: (point: Point) => void;
 	onDeleteSelection: () => void;

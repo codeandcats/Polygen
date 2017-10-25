@@ -6,15 +6,19 @@ import {
 } from 'react-bootstrap';
 import { ApplicationState } from '../../../../../shared/models/applicationState';
 import { Editor } from '../../../../../shared/models/editor';
+import { ImageSource } from '../../../../../shared/models/imageSource';
 import { Layer } from '../../../../../shared/models/layer';
+import { Nullable } from '../../../../../shared/models/nullable';
 import { moveLayer } from '../../../../actions/editor/projectFile/layer/moveLayer';
 import { removeLayer } from '../../../../actions/editor/projectFile/layer/removeLayer';
 import { renameLayer } from '../../../../actions/editor/projectFile/layer/renameLayer';
 import { selectLayer } from '../../../../actions/editor/projectFile/layer/selectLayer';
+import { setLayerImage } from '../../../../actions/editor/projectFile/layer/setLayerImage';
 import { setLayerVisibility } from '../../../../actions/editor/projectFile/layer/setLayerVisibility';
 import { addLayer } from '../../../../actions/editor/projectFile/layers/addLayer';
 import { Store } from '../../../../reduxWithLessSux/store';
 import * as mainStyles from '../../styles';
+import { LayerBackgroundDialog } from './layerBackgroundDialog/index';
 import { LayerListItem } from './layerListItem';
 import { RenameLayerDialog } from './renameLayerDialog/index';
 import * as styles from './styles';
@@ -24,7 +28,8 @@ interface LayerListProps {
 }
 
 interface LayerListState {
-	renamingLayerIndex: number;
+	indexOfLayerBeingRenamed: number;
+	indexOfLayerHavingBackgroundUpdated: number;
 }
 
 export class LayerList extends React.Component<LayerListProps, LayerListState> {
@@ -33,26 +38,27 @@ export class LayerList extends React.Component<LayerListProps, LayerListState> {
 		super(props, context);
 
 		this.state = {
-			renamingLayerIndex: -1
+			indexOfLayerBeingRenamed: -1,
+			indexOfLayerHavingBackgroundUpdated: -1
 		};
 	}
 
 	private cancelRenameLayerDialog() {
 		this.setState({
-			renamingLayerIndex: -1
+			indexOfLayerBeingRenamed: -1
 		});
 	}
 
-	private showRenameLayerDialog(layerIndex: number) {
+	private cancelUpdatingLayerImageDialog() {
 		this.setState({
-			renamingLayerIndex: layerIndex
+			indexOfLayerHavingBackgroundUpdated: -1
 		});
 	}
 
 	private renameLayer(layerIndex: number, layerName: string) {
 		renameLayer(this.props.store, { layerIndex, layerName });
 		this.setState({
-			renamingLayerIndex: -1
+			indexOfLayerBeingRenamed: -1
 		});
 	}
 
@@ -101,6 +107,7 @@ export class LayerList extends React.Component<LayerListProps, LayerListState> {
 									)
 								}
 								onShowRenameLayerDialog={ () => this.showRenameLayerDialog(layerWithIndex.index) }
+								onShowLayerBackgroundDialog={ () => this.showLayerBackgroundDialog(layerWithIndex.index) }
 								onRemoveLayer={ () => removeLayer(this.props.store, { layerIndex: layerWithIndex.index }) }
 							/>
 						)
@@ -108,13 +115,44 @@ export class LayerList extends React.Component<LayerListProps, LayerListState> {
 				</ul>
 				<RenameLayerDialog
 					layerName={
-						this.state.renamingLayerIndex === -1 ? '' : editor.projectFile.layers[this.state.renamingLayerIndex].name
+						this.state.indexOfLayerBeingRenamed === -1 ?
+						'' :
+						editor.projectFile.layers[this.state.indexOfLayerBeingRenamed].name
 					}
-					isVisible={ this.state.renamingLayerIndex > -1 }
-					onAccept={ layerName => this.renameLayer(this.state.renamingLayerIndex, layerName) }
+					isVisible={ this.state.indexOfLayerBeingRenamed > -1 }
+					onAccept={ layerName => this.renameLayer(this.state.indexOfLayerBeingRenamed, layerName) }
 					onCancel={ () => this.cancelRenameLayerDialog() }
+				/>
+				<LayerBackgroundDialog
+					imageSource={
+						this.state.indexOfLayerHavingBackgroundUpdated === -1 ?
+						undefined :
+						editor.projectFile.layers[this.state.indexOfLayerHavingBackgroundUpdated].imageSource
+					}
+					isVisible={ this.state.indexOfLayerHavingBackgroundUpdated > -1 }
+					onAccept={ imageSource => this.setLayerImage(this.state.indexOfLayerHavingBackgroundUpdated, imageSource) }
+					onCancel={ () => this.cancelUpdatingLayerImageDialog() }
 				/>
 			</div>
 		);
+	}
+
+	private setLayerImage(layerIndex: number, imageSource: Nullable<ImageSource>) {
+		setLayerImage(this.props.store, { layerIndex, imageSource });
+		this.setState({
+			indexOfLayerHavingBackgroundUpdated: -1
+		});
+	}
+
+	private showRenameLayerDialog(layerIndex: number) {
+		this.setState({
+			indexOfLayerBeingRenamed: layerIndex
+		});
+	}
+
+	private showLayerBackgroundDialog(layerIndex: number) {
+		this.setState({
+			indexOfLayerHavingBackgroundUpdated: layerIndex
+		});
 	}
 }

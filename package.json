@@ -32,6 +32,7 @@
   "dependencies": {
     "app-root-path": "2.0.1",
     "assert-never": "1.0.0",
+    "b64-to-blob": "1.2.19",
     "bootstrap": "3.3.7",
     "bootswatch": "3.3.7",
     "cdt2d": "1.0.0",
@@ -45,7 +46,8 @@
     "react-bootstrap": "0.31.3",
     "react-dom": "16.0.0",
     "react-redux": "5.0.6",
-    "typestyle": "1.4.3"
+    "typestyle": "1.4.3",
+    "uuid": "3.1.0"
   },
   "devDependencies": {
     "@types/app-root-path": "1.2.4",
@@ -58,6 +60,7 @@
     "@types/react-bootstrap": "0.31.6",
     "@types/react-dom": "16.0.1",
     "@types/react-redux": "5.0.10",
+    "@types/uuid": "3.4.3",
     "chai": "4.1.2",
     "concurrently": "3.5.0",
     "cross-env": "5.0.5",

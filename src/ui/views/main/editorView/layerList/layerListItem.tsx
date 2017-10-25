@@ -19,6 +19,7 @@ interface LayerListItemProps {
 	onSelectLayer: (layer: Layer) => void;
 	onSetLayerVisibility: (layer: Layer, isVisible: boolean) => void;
 	onShowRenameLayerDialog: (layerIndex: number) => void;
+	onShowLayerBackgroundDialog: (layerIndex: number) => void;
 }
 
 interface LayerListItemState {
@@ -88,6 +89,14 @@ export class LayerListItem extends React.Component<LayerListItemProps, LayerList
 						>
 							<i className='fa fa-tag icon-space-right' />
 							Rename
+						</MenuItem>
+
+						<MenuItem
+							eventKey='3'
+							onClick={ () => this.props.onShowLayerBackgroundDialog(this.props.layerIndex) }
+						>
+							<i className='fa fa-picture-o icon-space-right' />
+							Set background image
 						</MenuItem>
 
 						<MenuItem divider />

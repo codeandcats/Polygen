@@ -14,6 +14,7 @@ import { selectAllPoints } from '../../../actions/editor/projectFile/layer/point
 import { selectPoints } from '../../../actions/editor/projectFile/layer/points/selectPoints';
 import { selectTool } from '../../../actions/editor/selectTool';
 import { setPan } from '../../../actions/editor/setPan';
+import { ImageCache } from '../../../models/imageCache';
 import { Store } from '../../../reduxWithLessSux/store';
 import { getCurrentBreakpointType } from '../../../utils/bootstrap';
 import { Canvas } from './canvas/index';
@@ -37,6 +38,8 @@ export class EditorView extends React.Component<EditorViewProps, EditorViewState
 	private windowResized = () => {
 		this.updateCanvasSize();
 	}
+
+	private imageCache = new ImageCache();
 
 	constructor(props: EditorViewProps, context: any) {
 		super(props, context);
@@ -140,6 +143,7 @@ export class EditorView extends React.Component<EditorViewProps, EditorViewState
 												editor={ editor }
 												width={ this.state.canvasSize.width }
 												height={ this.state.canvasSize.height }
+												imageCache={ this.imageCache }
 												onAddPoint={ point => addPoint(this.props.store, {
 													editorIndex: activeEditorIndex,
 													layerIndex: editor.selectedLayerIndex,

@@ -10,6 +10,7 @@ export const addLayer = defineAction(
 			if (editorIndex === state.activeEditorIndex) {
 				const projectFile = editor.projectFile;
 				const newLayer: Layer = {
+					imageSource: undefined,
 					isVisible: true,
 					name: `Layer ${ projectFile.layers.length + 1 }`,
 					points: [],
