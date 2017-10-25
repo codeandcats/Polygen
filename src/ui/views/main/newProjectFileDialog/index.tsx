@@ -3,9 +3,9 @@ import { Button, ButtonGroup, Col, ControlLabel, Form, FormControl, FormGroup, M
 import { Size } from '../../../../shared/models/size';
 
 export interface NewProjectFileDialogProps {
-	defaultSize: Size;
+	defaultDimensions: Size;
 	isVisible: boolean;
-	onAccept: (size: Size) => void;
+	onAccept: (dimensions: Size) => void;
 	onCancel: () => void;
 }
 
@@ -17,7 +17,7 @@ export class NewProjectFileDialog extends React.Component<NewProjectFileDialogPr
 	constructor(props: NewProjectFileDialogProps, context?: any) {
 		super(props, context);
 		this.state = {
-			fields: { ...props.defaultSize }
+			fields: { ...props.defaultDimensions }
 		};
 	}
 

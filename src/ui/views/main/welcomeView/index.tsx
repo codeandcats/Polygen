@@ -33,8 +33,8 @@ export class WelcomeView extends React.Component<WelcomeViewProps, WelcomeViewSt
 		this.setState({ isOpenNewProjectFileDialogVisible: false });
 	}
 
-	private openNewProjectFile(size: Size) {
-		openNewProjectFile(this.props.store, { size });
+	private openNewProjectFile(dimensions: Size) {
+		openNewProjectFile(this.props.store, { dimensions });
 	}
 
 	private showOpenProjectFileDialog() {
@@ -65,9 +65,9 @@ export class WelcomeView extends React.Component<WelcomeViewProps, WelcomeViewSt
 						</ButtonToolbar>
 					</Jumbotron>
 					<NewProjectFileDialog
-						defaultSize={ { width: 200, height: 300 } }
+						defaultDimensions={ { width: 200, height: 300 } }
 						isVisible={ this.state.isOpenNewProjectFileDialogVisible }
-						onAccept={ size => this.openNewProjectFile(size) }
+						onAccept={ dimensions => this.openNewProjectFile(dimensions) }
 						onCancel={ () => this.hideNewProjectFileDialog() }
 					/>
 				</Grid>

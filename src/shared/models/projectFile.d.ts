@@ -2,6 +2,6 @@ import { Layer } from './layer';
 import { Size } from './size';
 
 export interface ProjectFile {
-	size: Size;
+	dimensions: Size;
 	layers: Layer[];
 }

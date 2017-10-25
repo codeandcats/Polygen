@@ -203,14 +203,14 @@ export function drawProjectFileBackground(context: CanvasRenderingContext2D, edi
 		context.strokeStyle = '#333';
 		context.fillStyle = 'rgba(255, 255, 255, .5)';
 
-		const halfWidth = editor.projectFile.size.width / 2;
-		const halfHeight = editor.projectFile.size.height / 2;
+		const halfWidth = editor.projectFile.dimensions.width / 2;
+		const halfHeight = editor.projectFile.dimensions.height / 2;
 
 		context.rect(
 			-halfWidth,
 			-halfHeight,
-			editor.projectFile.size.width,
-			editor.projectFile.size.height
+			editor.projectFile.dimensions.width,
+			editor.projectFile.dimensions.height
 		);
 
 		context.stroke();
@@ -229,7 +229,7 @@ export function drawProjectFileBackground(context: CanvasRenderingContext2D, edi
 			halfWidth + 1, 0, halfWidth + 1 + SHADOW_OFFSET, 0,
 			SHADOW_COLOR_STOPS
 		);
-		context.rect(halfWidth + 1, -halfHeight + SHADOW_OFFSET, SHADOW_OFFSET, editor.projectFile.size.height);
+		context.rect(halfWidth + 1, -halfHeight + SHADOW_OFFSET, SHADOW_OFFSET, editor.projectFile.dimensions.height);
 		context.fill();
 
 		context.beginPath();
@@ -238,7 +238,7 @@ export function drawProjectFileBackground(context: CanvasRenderingContext2D, edi
 			0, halfHeight + 1, 0, halfHeight + 1 + SHADOW_OFFSET,
 			SHADOW_COLOR_STOPS
 		);
-		context.rect(-halfWidth + SHADOW_OFFSET, halfHeight + 1, editor.projectFile.size.width, SHADOW_OFFSET);
+		context.rect(-halfWidth + SHADOW_OFFSET, halfHeight + 1, editor.projectFile.dimensions.width, SHADOW_OFFSET);
 		context.fill();
 	});
 }

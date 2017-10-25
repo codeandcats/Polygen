@@ -5,7 +5,7 @@ import { Size } from '../../../shared/models/size';
 import { defineAction } from '../../reduxWithLessSux/action';
 
 interface OpenNewProjectFilePayload {
-	size: Size;
+	dimensions: Size;
 }
 
 export const openNewProjectFile = defineAction(
@@ -21,7 +21,7 @@ export const openNewProjectFile = defineAction(
 					polygons: []
 				}
 			],
-			size: payload.size
+			dimensions: payload.dimensions
 		};
 		const editor: Editor = {
 			fileName: undefined,
