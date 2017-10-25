@@ -14,14 +14,25 @@ export const moveLayer = defineAction(
 			if (editorIndex === state.activeEditorIndex) {
 				const projectFile = editor.projectFile;
 				let layers = [...projectFile.layers];
+
+				if (payload.toIndex < 0 || payload.toIndex >= layers.length) {
+					return editor;
+				}
+
 				layers = moveElement(layers, payload.layerIndex, payload.toIndex);
+				const selectedLayerIndex = (
+					editor.selectedLayerIndex === payload.layerIndex ?
+					payload.toIndex :
+					editor.selectedLayerIndex
+				);
 
 				return {
 					...editor,
 					projectFile: {
 						...projectFile,
 						layers
-					}
+					},
+					selectedLayerIndex
 				};
 			}
 			return editor;
