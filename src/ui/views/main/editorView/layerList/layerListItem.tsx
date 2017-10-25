@@ -30,8 +30,8 @@ export class LayerListItem extends React.Component<LayerListItemProps, LayerList
 		const { isSelected, layerIndex, layers } = this.props;
 		const layer = layers[layerIndex];
 		const canRemoveLayer = layers.length > 1;
-		const canMoveLayerDown = layerIndex < layers.length - 1;
-		const canMoveLayerUp = layerIndex > 0;
+		const canMoveLayerDown = layerIndex > 0;
+		const canMoveLayerUp = layerIndex < layers.length - 1;
 		const layerItemClassNames = classNames(
 			styles.layerListItem,
 			{
