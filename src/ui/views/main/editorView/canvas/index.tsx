@@ -220,7 +220,7 @@ export class Canvas extends React.Component<CanvasProps, CanvasState> {
 
 			default:
 				// tslint:disable-next-line:max-line-length
-				console.log(`Canvas Key Down: key = "${ event.key }", code = ${ event.keyCode }, meta = ${ event.metaKey }, ctrl = ${ event.ctrlKey }, alt = ${ event.altKey }, shift = ${ event.shiftKey }`);
+				(console.debug || console.log)(`Canvas Key Down: key = "${ event.key }", code = ${ event.keyCode }, meta = ${ event.metaKey }, ctrl = ${ event.ctrlKey }, alt = ${ event.altKey }, shift = ${ event.shiftKey }`);
 				break;
 		}
 	}

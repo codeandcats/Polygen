@@ -1,9 +1,10 @@
-import { ApplicationState } from '../../../shared/models/applicationState';
+import { ApplicationState, MAX_RECENT_FILE_NAME_COUNT } from '../../../shared/models/applicationState';
 import { Editor } from '../../../shared/models/editor';
 import { Layer } from '../../../shared/models/layer';
 import { Point } from '../../../shared/models/point';
 import { ProjectFile } from '../../../shared/models/projectFile';
 import { moveElement } from '../../../shared/utils/arrays';
+import { makeMostRecent } from '../../../shared/utils/recentItemList';
 import { defineAction } from '../../reduxWithLessSux/action';
 
 interface OpenExistingProjectFilePayload {
@@ -51,13 +52,9 @@ export const openExistingProjectFile = defineAction(
 			editorIndex = editors.length - 1;
 		}
 
-		let recentFileNames = [...state.recentFileNames];
-		const recentFileNameIndex = recentFileNames.indexOf(payload.fileName);
-		if (recentFileNameIndex === -1) {
-			recentFileNames.push(payload.fileName);
-		} else {
-			recentFileNames = moveElement(recentFileNames, recentFileNameIndex, 0);
-		}
+		const recentFileNames = makeMostRecent(state.recentFileNames || [], payload.fileName, {
+			maxListSize: MAX_RECENT_FILE_NAME_COUNT
+		});
 
 		return {
 			...state,

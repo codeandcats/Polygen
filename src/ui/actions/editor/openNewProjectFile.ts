@@ -43,6 +43,13 @@ export const openNewProjectFile = defineAction(
 
 		return {
 			...state,
+			dialogs: {
+				...state.dialogs,
+				newProjectFile: {
+					...state.dialogs.newProjectFile,
+					isVisible: false
+				}
+			},
 			editors,
 			activeEditorIndex
 		};

@@ -1,7 +1,8 @@
-import { ApplicationState } from '../../../shared/models/applicationState';
+import { ApplicationState, MAX_RECENT_FILE_NAME_COUNT } from '../../../shared/models/applicationState';
 import { Editor } from '../../../shared/models/editor';
 import { ProjectFile } from '../../../shared/models/projectFile';
 import { Size } from '../../../shared/models/size';
+import { makeMostRecent } from '../../../shared/utils/recentItemList';
 import { defineAction } from '../../reduxWithLessSux/action';
 
 interface SaveActiveProjectFilePayload {
@@ -21,9 +22,15 @@ export const saveActiveProjectFile = defineAction(
 			}
 			return editor;
 		});
+
+		const recentFileNames = makeMostRecent(state.recentFileNames || [], payload.fileName, {
+			maxListSize: MAX_RECENT_FILE_NAME_COUNT
+		});
+
 		return {
 			...state,
-			editors
+			editors,
+			recentFileNames
 		};
 	}
 ).getDispatcher();

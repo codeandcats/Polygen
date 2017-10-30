@@ -1,9 +1,11 @@
+import { Dialogs } from './dialogs';
 import { Editor } from './editor';
 import { ProjectFile } from './projectFile';
 import { ViewPort } from './viewPort';
 
 export interface ApplicationState {
 	activeEditorIndex: number;
+	dialogs: Dialogs;
 	editors: Editor[];
 	recentFileNames: string[];
 	viewPort: ViewPort;
@@ -11,6 +13,15 @@ export interface ApplicationState {
 
 export const DEFAULT_APPLICATION_STATE: ApplicationState = {
 	activeEditorIndex: -1,
+	dialogs: {
+		newProjectFile: {
+			dimensions: {
+				width: 200,
+				height: 300
+			},
+			isVisible: false
+		}
+	},
 	editors: [],
 	recentFileNames: [],
 	viewPort: {
@@ -21,3 +32,5 @@ export const DEFAULT_APPLICATION_STATE: ApplicationState = {
 		}
 	}
 };
+
+export const MAX_RECENT_FILE_NAME_COUNT = 10;
