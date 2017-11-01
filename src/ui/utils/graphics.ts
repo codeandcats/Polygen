@@ -6,28 +6,6 @@ import { ProjectFile } from '../../shared/models/projectFile';
 import { Rectangle } from '../../shared/models/rectangle';
 import { Tool, ToolHelper } from '../models/tools/common';
 
-export function runInTransaction(context: CanvasRenderingContext2D, callback: () => void) {
-	context.save();
-	try {
-		callback();
-	} finally {
-		context.restore();
-	}
-}
-
-export function renderTransparencyTiles(context: CanvasRenderingContext2D, bounds: Rectangle, tileSize: number = 20) {
-	runInTransaction(context, () => {
-		const squareColour = ['#FFF', '#DDD'];
-		for (let y = 0; y * tileSize < bounds.height; y++) {
-			for (let x = 0; x * tileSize < bounds.width; x++) {
-				const colourIndex = (x + y) % 2;
-				context.fillStyle = squareColour[colourIndex];
-				context.fillRect(x * tileSize, y * tileSize, tileSize, tileSize);
-			}
-		}
-	});
-}
-
 export function applyViewportTransform(
 	context: CanvasRenderingContext2D,
 	bounds: Rectangle,
@@ -39,22 +17,21 @@ export function applyViewportTransform(
 	);
 }
 
-export function renderProjectFile(
+interface GradientColorStep {
+	stop: number;
+	fillStyle: string;
+}
+
+function createGradient(
 	context: CanvasRenderingContext2D,
-	bounds: Rectangle,
-	editor: Editor
+	x1: number, y1: number, x2: number, y2: number,
+	colorStops: GradientColorStep[]
 ) {
-	runInTransaction(context, () => {
-		bounds = bounds;
-
-		applyViewportTransform(context, bounds, editor);
-
-		drawProjectFileBackground(context, editor);
-
-		for (const layer of editor.projectFile.layers) {
-			renderLayer(context, layer, editor.selectedPointIndices);
-		}
-	});
+	const gradient = context.createLinearGradient(x1, y1, x2, y2);
+	for (const colorStop of colorStops) {
+		gradient.addColorStop(colorStop.stop, colorStop.fillStyle);
+	}
+	return gradient;
 }
 
 function renderLayer(context: CanvasRenderingContext2D, layer: Layer, selectedPointIndices: number[]) {
@@ -73,20 +50,6 @@ function renderLayer(context: CanvasRenderingContext2D, layer: Layer, selectedPo
 			const isSelected = !!selectedPointMap[pointIndex];
 			renderPoint(context, point, isSelected);
 		}
-	});
-}
-
-export function renderTool(
-	context: CanvasRenderingContext2D,
-	bounds: Rectangle,
-	helper: ToolHelper,
-	tool: Tool<any>
-) {
-	runInTransaction(context, () => {
-		context.beginPath();
-		const editor = helper.getEditor();
-		applyViewportTransform(context, bounds, editor);
-		tool.render(helper, context, bounds);
 	});
 }
 
@@ -139,6 +102,24 @@ export function renderPolygon(context: CanvasRenderingContext2D, points: Point[]
 	context.stroke();
 }
 
+export function renderProjectFile(
+	context: CanvasRenderingContext2D,
+	bounds: Rectangle,
+	editor: Editor
+) {
+	runInTransaction(context, () => {
+		bounds = bounds;
+
+		applyViewportTransform(context, bounds, editor);
+
+		renderProjectFileBackground(context, editor);
+
+		for (const layer of editor.projectFile.layers) {
+			renderLayer(context, layer, editor.selectedPointIndices);
+		}
+	});
+}
+
 const SELECTION_COLOR = '#337ab7';
 
 export function renderSelectionRectangle(context: CanvasRenderingContext2D, rectangleInProjectSpace: Rectangle) {
@@ -178,24 +159,43 @@ function renderSelectionStroke(context: CanvasRenderingContext2D) {
 	context.stroke();
 }
 
-interface GradientColorStep {
-	stop: number;
-	fillStyle: string;
-}
-
-function createGradient(
+export function renderTool(
 	context: CanvasRenderingContext2D,
-	x1: number, y1: number, x2: number, y2: number,
-	colorStops: GradientColorStep[]
+	bounds: Rectangle,
+	helper: ToolHelper,
+	tool: Tool<any>
 ) {
-	const gradient = context.createLinearGradient(x1, y1, x2, y2);
-	for (const colorStop of colorStops) {
-		gradient.addColorStop(colorStop.stop, colorStop.fillStyle);
-	}
-	return gradient;
+	runInTransaction(context, () => {
+		context.beginPath();
+		const editor = helper.getEditor();
+		applyViewportTransform(context, bounds, editor);
+		tool.render(helper, context, bounds);
+	});
 }
 
-export function drawProjectFileBackground(context: CanvasRenderingContext2D, editor: Editor) {
+export function renderTransparencyTiles(context: CanvasRenderingContext2D, bounds: Rectangle, tileSize: number = 20) {
+	runInTransaction(context, () => {
+		const squareColour = ['#FFF', '#DDD'];
+		for (let y = 0; y * tileSize < bounds.height; y++) {
+			for (let x = 0; x * tileSize < bounds.width; x++) {
+				const colourIndex = (x + y) % 2;
+				context.fillStyle = squareColour[colourIndex];
+				context.fillRect(x * tileSize, y * tileSize, tileSize, tileSize);
+			}
+		}
+	});
+}
+
+export function runInTransaction(context: CanvasRenderingContext2D, callback: () => void) {
+	context.save();
+	try {
+		callback();
+	} finally {
+		context.restore();
+	}
+}
+
+export function renderProjectFileBackground(context: CanvasRenderingContext2D, editor: Editor) {
 	runInTransaction(context, () => {
 		context.beginPath();
 
@@ -243,7 +243,7 @@ export function drawProjectFileBackground(context: CanvasRenderingContext2D, edi
 	});
 }
 
-export function drawDebugCrossHair(context: CanvasRenderingContext2D, point: Point, strokeStyle: string = '#f00') {
+export function renderDebugCrosshair(context: CanvasRenderingContext2D, point: Point, strokeStyle: string = '#f00') {
 	const CROSS_HAIR_RADIUS = 15;
 
 	runInTransaction(context, () => {
