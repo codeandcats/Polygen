@@ -5,6 +5,7 @@ import { ImageSource } from '../../shared/models/imageSource';
 interface CachedImage {
 	blob: Blob;
 	element: HTMLImageElement;
+	hasElementLoaded: boolean;
 	objectUrl: string;
 }
 
@@ -34,13 +35,24 @@ export class ImageCache {
 			const blob = b64toBlob(imageSource.data);
 			const objectUrl = URL.createObjectURL(blob);
 			const element = document.createElement('img');
-			element.src = objectUrl;
+			element.crossOrigin = 'Anonymous';
 
 			item = {
 				blob,
 				element,
-				objectUrl
+				hasElementLoaded: false,
+				objectUrl,
 			};
+
+			element.addEventListener('load', () => {
+				if (item) {
+					item.hasElementLoaded = true;
+				}
+			}, false);
+
+			this.cache[imageSource.id] = item;
+
+			element.src = objectUrl;
 		}
 
 		return item;

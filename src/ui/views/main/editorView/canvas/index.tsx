@@ -318,7 +318,7 @@ export class Canvas extends React.Component<CanvasProps, CanvasState> {
 		runInTransaction(context, () => {
 			renderTransparencyTiles(context, canvasBounds, 10);
 
-			renderProjectFile(context, canvasBounds, editor);
+			renderProjectFile(context, canvasBounds, editor, this.props.imageCache);
 
 			const tool = this.getSelectedTool();
 			if (tool) {

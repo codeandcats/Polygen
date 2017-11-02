@@ -4,6 +4,8 @@ import { Point } from '../../shared/models/point';
 import { Polygon } from '../../shared/models/polygon';
 import { ProjectFile } from '../../shared/models/projectFile';
 import { Rectangle } from '../../shared/models/rectangle';
+import { Size } from '../../shared/models/size';
+import { ImageCache } from '../models/imageCache';
 import { Tool, ToolHelper } from '../models/tools/common';
 
 export function applyViewportTransform(
@@ -34,8 +36,42 @@ function createGradient(
 	return gradient;
 }
 
-function renderLayer(context: CanvasRenderingContext2D, layer: Layer, selectedPointIndices: number[]) {
+export function getImageBounds(projectFileDimensions: Size, layer: Layer): Rectangle {
+	const halfWidth = projectFileDimensions.width / 2;
+	const halfHeight = projectFileDimensions.height / 2;
+	const x1 = halfWidth * layer.image.topLeft.x;
+	const y1 = halfHeight * layer.image.topLeft.y;
+	const x2 = halfWidth * layer.image.bottomRight.x;
+	const y2 = halfHeight * layer.image.bottomRight.y;
+	const width = x2 - x1;
+	const height = y2 - y1;
+	return {
+		x: x1,
+		y: y1,
+		width,
+		height
+	};
+}
+
+function renderLayer(
+	context: CanvasRenderingContext2D,
+	projectFileDimensions: Size,
+	layer: Layer,
+	selectedPointIndices: number[],
+	isSelectedLayer: boolean,
+	imageCache: ImageCache
+) {
 	runInTransaction(context, () => {
+		if (isSelectedLayer) {
+			if (layer.image.source) {
+				const image = imageCache.getImage(layer.image.source);
+				if (image.hasElementLoaded) {
+					const bounds = getImageBounds(projectFileDimensions, layer);
+					context.drawImage(image.element, bounds.x, bounds.y, bounds.width, bounds.height);
+				}
+			}
+		}
+
 		for (const polygon of layer.polygons) {
 			renderPolygon(context, layer.points,  polygon);
 		}
@@ -105,7 +141,8 @@ export function renderPolygon(context: CanvasRenderingContext2D, points: Point[]
 export function renderProjectFile(
 	context: CanvasRenderingContext2D,
 	bounds: Rectangle,
-	editor: Editor
+	editor: Editor,
+	imageCache: ImageCache
 ) {
 	runInTransaction(context, () => {
 		bounds = bounds;
@@ -114,8 +151,10 @@ export function renderProjectFile(
 
 		renderProjectFileBackground(context, editor);
 
-		for (const layer of editor.projectFile.layers) {
-			renderLayer(context, layer, editor.selectedPointIndices);
+		for (let layerIndex = 0; layerIndex < editor.projectFile.layers.length; layerIndex++) {
+			const layer = editor.projectFile.layers[layerIndex];
+			const isSelectedLayer = layerIndex === editor.selectedLayerIndex;
+			renderLayer(context, editor.projectFile.dimensions, layer, editor.selectedPointIndices, isSelectedLayer, imageCache);
 		}
 	});
 }
@@ -142,7 +181,7 @@ export function renderSelectionRectangle(context: CanvasRenderingContext2D, rect
 	});
 }
 
-function renderSelectionStroke(context: CanvasRenderingContext2D) {
+export function renderSelectionStroke(context: CanvasRenderingContext2D) {
 	const SELECTION_STROKE_COLOR_1 = '#fff';
 	const SELECTION_STROKE_COLOR_2 = SELECTION_COLOR;
 

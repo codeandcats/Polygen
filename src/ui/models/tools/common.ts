@@ -5,7 +5,7 @@ import { Rectangle } from '../../../shared/models/rectangle';
 import { tuple } from '../../../shared/utils/tuple';
 import { Store } from '../../reduxWithLessSux/store';
 
-export const ALL_TOOL_NAMES = tuple('pan', 'point', 'selection');
+export const ALL_TOOL_NAMES = tuple('imageBounds', 'pan', 'point', 'selection');
 
 export type ToolName = typeof ALL_TOOL_NAMES[number];
 
@@ -48,6 +48,24 @@ export abstract class Tool<TToolState> {
 	public abstract readonly name: ToolName;
 	public abstract readonly iconClassName: string;
 	public abstract readonly displayName: string;
+
+	public keyDown(
+		helper: ToolHelper,
+		event: React.KeyboardEvent<HTMLCanvasElement>
+	) {
+		// Just to remove compiler warnings about unused variables
+		helper = helper;
+		event = event;
+	}
+
+	public keyUp(
+		helper: ToolHelper,
+		event: React.KeyboardEvent<HTMLCanvasElement>
+	) {
+		// Just to remove compiler warnings about unused variables
+		helper = helper;
+		event = event;
+	}
 
 	public mouseDown(
 		helper: ToolHelper,

@@ -73,6 +73,8 @@ export class LayerList extends React.Component<LayerListProps, LayerListState> {
 			}))
 			.sort((a, b) => b.index - a.index);
 
+		const layerHavingBackgroundUpdated = editor.projectFile.layers[this.state.indexOfLayerHavingBackgroundUpdated];
+
 		return (
 			<div className={styles.layerList}>
 				<div className={ mainStyles.spaceBelow }>
@@ -127,7 +129,7 @@ export class LayerList extends React.Component<LayerListProps, LayerListState> {
 					imageSource={
 						this.state.indexOfLayerHavingBackgroundUpdated === -1 ?
 						undefined :
-						editor.projectFile.layers[this.state.indexOfLayerHavingBackgroundUpdated].imageSource
+						layerHavingBackgroundUpdated && layerHavingBackgroundUpdated.image.source
 					}
 					isVisible={ this.state.indexOfLayerHavingBackgroundUpdated > -1 }
 					onAccept={ imageSource => this.setLayerImage(this.state.indexOfLayerHavingBackgroundUpdated, imageSource) }
@@ -137,8 +139,8 @@ export class LayerList extends React.Component<LayerListProps, LayerListState> {
 		);
 	}
 
-	private setLayerImage(layerIndex: number, imageSource: Nullable<ImageSource>) {
-		setLayerImage(this.props.store, { layerIndex, imageSource });
+	private setLayerImage(layerIndex: number, source: Nullable<ImageSource>) {
+		setLayerImage(this.props.store, { layerIndex, source });
 		this.setState({
 			indexOfLayerHavingBackgroundUpdated: -1
 		});

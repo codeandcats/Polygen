@@ -5,7 +5,7 @@ import { defineAction } from '../../../../reduxWithLessSux/action';
 
 interface SetLayerImagePayload {
 	layerIndex: number;
-	imageSource: Nullable<ImageSource>;
+	source: Nullable<ImageSource>;
 }
 
 export const setLayerImage = defineAction(
@@ -20,7 +20,10 @@ export const setLayerImage = defineAction(
 							if (layerIndex === payload.layerIndex) {
 								layer = {
 									...layer,
-									imageSource: payload.imageSource
+									image: {
+										...layer.image,
+										source: payload.source
+									}
 								};
 							}
 							return layer;
