@@ -3,7 +3,7 @@ import * as path from 'path';
 import * as React from 'react';
 import { Button, ButtonToolbar, Col, Grid, Jumbotron, Modal, Row } from 'react-bootstrap';
 import { ApplicationState } from '../../../../shared/models/applicationState';
-import { ProjectFile } from '../../../../shared/models/projectFile';
+import { PolygenDocument } from '../../../../shared/models/polygenDocument';
 import { Size } from '../../../../shared/models/size';
 import { openNewProjectFile } from '../../../actions/editor/openNewProjectFile';
 import { showNewProjectFileDialog } from '../../../actions/showNewProjectFileDialog';

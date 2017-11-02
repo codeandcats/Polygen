@@ -18,8 +18,8 @@ export interface ToolHelperActions {
 }
 
 export interface ToolHelperTranslation {
-	viewPortToProjectFile: (point: Point) => Point;
-	projectFileToViewPort: (point: Point) => Point;
+	viewPortToDocument: (point: Point) => Point;
+	documentToViewPort: (point: Point) => Point;
 }
 
 export interface ToolHelper {
@@ -40,7 +40,7 @@ export interface CanvasMouseButtonsState {
 
 export interface CanvasMouseState {
 	buttons: CanvasMouseButtonsState;
-	projectFilePoint: Point;
+	documentPoint: Point;
 	viewPortPoint: Point;
 }
 

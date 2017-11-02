@@ -38,7 +38,7 @@ export class PointTool extends Tool<PointToolState> {
 	): void {
 		helper.setMouseCursor(PointTool.CURSOR);
 		if (mouse.buttons.left) {
-			this.startPointAnimation(helper, mouse.projectFilePoint);
+			this.startPointAnimation(helper, mouse.documentPoint);
 		}
 	}
 

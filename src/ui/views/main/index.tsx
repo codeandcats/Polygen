@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { ApplicationState } from '../../../shared/models/applicationState';
-import { ProjectFile } from '../../../shared/models/projectFile';
+import { PolygenDocument } from '../../../shared/models/polygenDocument';
 import { openNewProjectFile } from '../../actions/editor/openNewProjectFile';
 import { hideNewProjectFileDialog } from '../../actions/hideNewProjectFileDialog';
 import { Store } from '../../reduxWithLessSux/store';

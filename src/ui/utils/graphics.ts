@@ -1,8 +1,8 @@
 import { Editor } from '../../shared/models/editor';
 import { Layer } from '../../shared/models/layer';
 import { Point } from '../../shared/models/point';
+import { PolygenDocument } from '../../shared/models/polygenDocument';
 import { Polygon } from '../../shared/models/polygon';
-import { ProjectFile } from '../../shared/models/projectFile';
 import { Rectangle } from '../../shared/models/rectangle';
 import { Size } from '../../shared/models/size';
 import { ImageCache } from '../models/imageCache';
@@ -36,9 +36,9 @@ function createGradient(
 	return gradient;
 }
 
-export function getImageBounds(projectFileDimensions: Size, layer: Layer): Rectangle {
-	const halfWidth = projectFileDimensions.width / 2;
-	const halfHeight = projectFileDimensions.height / 2;
+export function getImageBounds(documentDimensions: Size, layer: Layer): Rectangle {
+	const halfWidth = documentDimensions.width / 2;
+	const halfHeight = documentDimensions.height / 2;
 	const x1 = halfWidth * layer.image.topLeft.x;
 	const y1 = halfHeight * layer.image.topLeft.y;
 	const x2 = halfWidth * layer.image.bottomRight.x;
@@ -55,7 +55,7 @@ export function getImageBounds(projectFileDimensions: Size, layer: Layer): Recta
 
 function renderLayer(
 	context: CanvasRenderingContext2D,
-	projectFileDimensions: Size,
+	documentDimensions: Size,
 	layer: Layer,
 	selectedPointIndices: number[],
 	isSelectedLayer: boolean,
@@ -66,7 +66,7 @@ function renderLayer(
 			if (layer.image.source) {
 				const image = imageCache.getImage(layer.image.source);
 				if (image.hasElementLoaded) {
-					const bounds = getImageBounds(projectFileDimensions, layer);
+					const bounds = getImageBounds(documentDimensions, layer);
 					context.drawImage(image.element, bounds.x, bounds.y, bounds.width, bounds.height);
 				}
 			}
@@ -151,10 +151,10 @@ export function renderProjectFile(
 
 		renderProjectFileBackground(context, editor);
 
-		for (let layerIndex = 0; layerIndex < editor.projectFile.layers.length; layerIndex++) {
-			const layer = editor.projectFile.layers[layerIndex];
+		for (let layerIndex = 0; layerIndex < editor.document.layers.length; layerIndex++) {
+			const layer = editor.document.layers[layerIndex];
 			const isSelectedLayer = layerIndex === editor.selectedLayerIndex;
-			renderLayer(context, editor.projectFile.dimensions, layer, editor.selectedPointIndices, isSelectedLayer, imageCache);
+			renderLayer(context, editor.document.dimensions, layer, editor.selectedPointIndices, isSelectedLayer, imageCache);
 		}
 	});
 }
@@ -242,14 +242,14 @@ export function renderProjectFileBackground(context: CanvasRenderingContext2D, e
 		context.strokeStyle = '#333';
 		context.fillStyle = 'rgba(255, 255, 255, .5)';
 
-		const halfWidth = editor.projectFile.dimensions.width / 2;
-		const halfHeight = editor.projectFile.dimensions.height / 2;
+		const halfWidth = editor.document.dimensions.width / 2;
+		const halfHeight = editor.document.dimensions.height / 2;
 
 		context.rect(
 			-halfWidth,
 			-halfHeight,
-			editor.projectFile.dimensions.width,
-			editor.projectFile.dimensions.height
+			editor.document.dimensions.width,
+			editor.document.dimensions.height
 		);
 
 		context.stroke();
@@ -268,7 +268,7 @@ export function renderProjectFileBackground(context: CanvasRenderingContext2D, e
 			halfWidth + 1, 0, halfWidth + 1 + SHADOW_OFFSET, 0,
 			SHADOW_COLOR_STOPS
 		);
-		context.rect(halfWidth + 1, -halfHeight + SHADOW_OFFSET, SHADOW_OFFSET, editor.projectFile.dimensions.height);
+		context.rect(halfWidth + 1, -halfHeight + SHADOW_OFFSET, SHADOW_OFFSET, editor.document.dimensions.height);
 		context.fill();
 
 		context.beginPath();
@@ -277,7 +277,7 @@ export function renderProjectFileBackground(context: CanvasRenderingContext2D, e
 			0, halfHeight + 1, 0, halfHeight + 1 + SHADOW_OFFSET,
 			SHADOW_COLOR_STOPS
 		);
-		context.rect(-halfWidth + SHADOW_OFFSET, halfHeight + 1, editor.projectFile.dimensions.width, SHADOW_OFFSET);
+		context.rect(-halfWidth + SHADOW_OFFSET, halfHeight + 1, editor.document.dimensions.width, SHADOW_OFFSET);
 		context.fill();
 	});
 }

@@ -8,7 +8,7 @@ export const addLayer = defineAction(
 	'addLayer', (state: ApplicationState) => {
 		const editors = state.editors.map((editor, editorIndex) => {
 			if (editorIndex === state.activeEditorIndex) {
-				const projectFile = editor.projectFile;
+				const document = editor.document;
 				const newLayer: Layer = {
 					image: {
 						topLeft: { x: -1, y: -1 },
@@ -16,16 +16,16 @@ export const addLayer = defineAction(
 						source: undefined
 					},
 					isVisible: true,
-					name: `Layer ${ projectFile.layers.length + 1 }`,
+					name: `Layer ${ document.layers.length + 1 }`,
 					points: [],
 					polygons: []
 				};
-				const layers = [...projectFile.layers].concat(newLayer);
+				const layers = [...document.layers].concat(newLayer);
 
 				return {
 					...editor,
-					projectFile: {
-						...projectFile,
+					document: {
+						...document,
 						layers
 					},
 					selectedLayerIndex: layers.length - 1

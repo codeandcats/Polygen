@@ -3,29 +3,20 @@ import { Point } from '../../../../../../shared/models/point';
 import { recalculatePolygons } from '../../../../../../shared/utils/geometry';
 import { defineAction } from '../../../../../reduxWithLessSux/action';
 
-interface MoveSelectedPointsPayload {
-	moveBy: Point;
-}
-
-export const moveSelectedPoints = defineAction(
-	'moveSelectedPoints', (state: ApplicationState, payload: MoveSelectedPointsPayload) => {
+export const removeSelection = defineAction(
+	'removeSelection', (state: ApplicationState) => {
 		const editors = state.editors.map((editor, editorIndex) => {
 			if (editorIndex === state.activeEditorIndex) {
-				const projectFile = editor.projectFile;
+				const selectedPointIndices = editor.selectedPointIndices;
+				const document = editor.document;
 				return {
 					...editor,
-					projectFile: {
-						...projectFile,
-						layers: projectFile.layers.map((layer, layerIndex) => {
+					document: {
+						...document,
+						layers: document.layers.map((layer, layerIndex) => {
 							if (layerIndex === editor.selectedLayerIndex) {
-								const points = layer.points.map((point, pointIndex) => {
-									if (editor.selectedPointIndices.indexOf(pointIndex) > -1) {
-										return {
-											x: point.x + payload.moveBy.x,
-											y: point.y + payload.moveBy.y
-										};
-									}
-									return point;
+								const points = layer.points.filter((_, pointIndex) => {
+									return editor.selectedPointIndices.indexOf(pointIndex) === -1;
 								});
 								const polygons = recalculatePolygons(points);
 								return {
@@ -36,7 +27,8 @@ export const moveSelectedPoints = defineAction(
 							}
 							return layer;
 						})
-					}
+					},
+					selectedPointIndices: []
 				};
 			}
 			return editor;

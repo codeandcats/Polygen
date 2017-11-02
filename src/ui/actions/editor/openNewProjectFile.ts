@@ -1,6 +1,6 @@
 import { ApplicationState } from '../../../shared/models/applicationState';
 import { Editor } from '../../../shared/models/editor';
-import { ProjectFile } from '../../../shared/models/projectFile';
+import { PolygenDocument } from '../../../shared/models/polygenDocument';
 import { Size } from '../../../shared/models/size';
 import { defineAction } from '../../reduxWithLessSux/action';
 
@@ -11,7 +11,7 @@ interface OpenNewProjectFilePayload {
 export const openNewProjectFile = defineAction(
 	'openNewProjectFile',
 	(state: ApplicationState, payload: OpenNewProjectFilePayload) => {
-		const projectFile: ProjectFile = {
+		const document: PolygenDocument = {
 			layers: [
 				{
 					image: {
@@ -30,7 +30,7 @@ export const openNewProjectFile = defineAction(
 		const editor: Editor = {
 			fileName: undefined,
 			hasUnsavedChanges: true,
-			projectFile,
+			document,
 			selectedLayerIndex: 0,
 			selectedPointIndices: [],
 			selectedToolName: undefined,

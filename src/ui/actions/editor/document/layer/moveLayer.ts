@@ -12,8 +12,8 @@ export const moveLayer = defineAction(
 	'moveLayer', (state: ApplicationState, payload: MoveLayerPayload) => {
 		const editors = state.editors.map((editor, editorIndex) => {
 			if (editorIndex === state.activeEditorIndex) {
-				const projectFile = editor.projectFile;
-				let layers = [...projectFile.layers];
+				const document = editor.document;
+				let layers = [...document.layers];
 
 				if (payload.toIndex < 0 || payload.toIndex >= layers.length) {
 					return editor;
@@ -28,8 +28,8 @@ export const moveLayer = defineAction(
 
 				return {
 					...editor,
-					projectFile: {
-						...projectFile,
+					document: {
+						...document,
 						layers
 					},
 					selectedLayerIndex

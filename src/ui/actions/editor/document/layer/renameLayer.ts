@@ -10,8 +10,8 @@ export const renameLayer = defineAction(
 	'renameLayer', (state: ApplicationState, payload: RenameLayerPayload) => {
 		const editors = state.editors.map((editor, editorIndex) => {
 			if (editorIndex === state.activeEditorIndex) {
-				const projectFile = editor.projectFile;
-				const layers = projectFile.layers.map((layer, layerIndex) => {
+				const document = editor.document;
+				const layers = document.layers.map((layer, layerIndex) => {
 					if (layerIndex === payload.layerIndex) {
 						layer = {
 							...layer,
@@ -23,8 +23,8 @@ export const renameLayer = defineAction(
 
 				return {
 					...editor,
-					projectFile: {
-						...projectFile,
+					document: {
+						...document,
 						layers
 					}
 				};

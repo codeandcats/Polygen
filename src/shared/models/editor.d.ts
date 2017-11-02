@@ -1,11 +1,11 @@
-import { ProjectFile } from './projectFile';
+import { PolygenDocument } from './polygenDocument';
 import { ViewPort } from './viewPort';
 import { ToolName } from '../../ui/models/tools/common';
 
 export interface Editor {
 	fileName: string | undefined;
 	hasUnsavedChanges: boolean;
-	projectFile: ProjectFile;
+	document: PolygenDocument;
 	selectedLayerIndex: number;
 	selectedPointIndices: number[];
 	selectedToolName: ToolName | undefined;

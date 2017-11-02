@@ -1,6 +1,6 @@
 import { Dialogs } from './dialogs';
 import { Editor } from './editor';
-import { ProjectFile } from './projectFile';
+import { PolygenDocument } from './polygenDocument';
 import { ViewPort } from './viewPort';
 
 export interface ApplicationState {

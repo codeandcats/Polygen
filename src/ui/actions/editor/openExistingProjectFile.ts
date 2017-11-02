@@ -2,14 +2,14 @@ import { ApplicationState, MAX_RECENT_FILE_NAME_COUNT } from '../../../shared/mo
 import { Editor } from '../../../shared/models/editor';
 import { Layer } from '../../../shared/models/layer';
 import { Point } from '../../../shared/models/point';
-import { ProjectFile } from '../../../shared/models/projectFile';
+import { PolygenDocument } from '../../../shared/models/polygenDocument';
 import { moveElement } from '../../../shared/utils/arrays';
 import { makeMostRecent } from '../../../shared/utils/recentItemList';
 import { defineAction } from '../../reduxWithLessSux/action';
 
 interface OpenExistingProjectFilePayload {
 	fileName: string;
-	projectFile: ProjectFile;
+	document: PolygenDocument;
 }
 
 function indexOfEditorByFileName(editors: Editor[], fileName: string): number {
@@ -36,7 +36,7 @@ export const openExistingProjectFile = defineAction(
 			const editor: Editor = {
 				fileName: payload.fileName,
 				hasUnsavedChanges: false,
-				projectFile: payload.projectFile,
+				document: payload.document,
 				selectedLayerIndex: 0,
 				selectedPointIndices: [],
 				selectedToolName: undefined,

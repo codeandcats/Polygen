@@ -52,11 +52,11 @@ export class SelectionTool extends Tool<SelectionToolState> {
 		if (mouse.buttons.left) {
 			const toolState: SelectionToolState = helper.getToolState() || {};
 			if (toolState.startPoint) {
-				const startPoint = helper.translation.viewPortToProjectFile(toolState.startPoint);
-				const endPoint = { ...mouse.projectFilePoint };
+				const startPoint = helper.translation.viewPortToDocument(toolState.startPoint);
+				const endPoint = { ...mouse.documentPoint };
 				const selectionRectangle = pointsToRectangle(startPoint, endPoint);
 				const editor = helper.getEditor();
-				const points = editor.projectFile.layers[editor.selectedLayerIndex].points;
+				const points = editor.document.layers[editor.selectedLayerIndex].points;
 				const pointIndices = getIndicesOfPointsInRectangle(points, selectionRectangle);
 				helper.actions.selectPoints(pointIndices);
 			}
@@ -77,8 +77,8 @@ export class SelectionTool extends Tool<SelectionToolState> {
 			return;
 		}
 
-		const startPoint = helper.translation.viewPortToProjectFile(toolState.startPoint);
-		const endPoint = helper.translation.viewPortToProjectFile(toolState.endPoint);
+		const startPoint = helper.translation.viewPortToDocument(toolState.startPoint);
+		const endPoint = helper.translation.viewPortToDocument(toolState.endPoint);
 
 		const rectangle = pointsToRectangle(startPoint, endPoint);
 		renderSelectionRectangle(context, rectangle);

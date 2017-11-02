@@ -3,21 +3,25 @@ import { Point } from '../../../../../../shared/models/point';
 import { recalculatePolygons } from '../../../../../../shared/utils/geometry';
 import { defineAction } from '../../../../../reduxWithLessSux/action';
 
-export const removeSelection = defineAction(
-	'removeSelection', (state: ApplicationState) => {
+interface AddPointActionPayload {
+	point: Point;
+}
+
+export const addPoint = defineAction(
+	'addPoint', (state: ApplicationState, payload: AddPointActionPayload) => {
 		const editors = state.editors.map((editor, editorIndex) => {
 			if (editorIndex === state.activeEditorIndex) {
-				const selectedPointIndices = editor.selectedPointIndices;
-				const projectFile = editor.projectFile;
+				const document = editor.document;
+				const points = document.layers[editor.selectedLayerIndex].points.concat({
+					...payload.point
+				});
+				const selectedPointIndices = [points.length - 1];
 				return {
 					...editor,
-					projectFile: {
-						...projectFile,
-						layers: projectFile.layers.map((layer, layerIndex) => {
+					document: {
+						...document,
+						layers: document.layers.map((layer, layerIndex) => {
 							if (layerIndex === editor.selectedLayerIndex) {
-								const points = layer.points.filter((_, pointIndex) => {
-									return editor.selectedPointIndices.indexOf(pointIndex) === -1;
-								});
 								const polygons = recalculatePolygons(points);
 								return {
 									...layer,
@@ -28,7 +32,7 @@ export const removeSelection = defineAction(
 							return layer;
 						})
 					},
-					selectedPointIndices: []
+					selectedPointIndices
 				};
 			}
 			return editor;

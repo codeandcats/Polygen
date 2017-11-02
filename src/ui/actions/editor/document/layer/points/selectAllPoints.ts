@@ -5,7 +5,7 @@ export const selectAllPoints = defineAction(
 	'selectAllPoints', (state: ApplicationState) => {
 		const editors = state.editors.map((editor, editorIndex) => {
 			if (editorIndex === state.activeEditorIndex) {
-				const layer = editor.projectFile.layers[editor.selectedLayerIndex];
+				const layer = editor.document.layers[editor.selectedLayerIndex];
 				const selectedPointIndices = layer.points.map((_, index) => index);
 				return {
 					...editor,

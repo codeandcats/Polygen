@@ -36,8 +36,8 @@ export class ImageBoundsTool extends Tool<ImageBoundsToolState> {
 		context: CanvasRenderingContext2D
 	): void {
 		const editor = helper.getEditor();
-		const layer = editor.projectFile.layers[editor.selectedLayerIndex];
-		const bounds = getImageBounds(editor.projectFile.dimensions, layer);
+		const layer = editor.document.layers[editor.selectedLayerIndex];
+		const bounds = getImageBounds(editor.document.dimensions, layer);
 
 		if (layer.image.source) {
 			context.rect(bounds.x, bounds.y, bounds.width, bounds.height);

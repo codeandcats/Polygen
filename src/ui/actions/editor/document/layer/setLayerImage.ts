@@ -1,24 +1,29 @@
 import { ApplicationState } from '../../../../../shared/models/applicationState';
+import { ImageSource } from '../../../../../shared/models/imageSource';
+import { Nullable } from '../../../../../shared/models/nullable';
 import { defineAction } from '../../../../reduxWithLessSux/action';
 
-interface SetLayerVisibilityPayload {
+interface SetLayerImagePayload {
 	layerIndex: number;
-	isVisible: boolean;
+	source: Nullable<ImageSource>;
 }
 
-export const setLayerVisibility = defineAction(
-	'setLayerVisibility', (state: ApplicationState, payload: SetLayerVisibilityPayload) => {
+export const setLayerImage = defineAction(
+	'setLayerImage', (state: ApplicationState, payload: SetLayerImagePayload) => {
 		const editors = state.editors.map((editor, editorIndex) => {
 			if (editorIndex === state.activeEditorIndex) {
 				return {
 					...editor,
-					projectFile: {
-						...editor.projectFile,
-						layers: editor.projectFile.layers.map((layer, layerIndex) => {
+					document: {
+						...editor.document,
+						layers: editor.document.layers.map((layer, layerIndex) => {
 							if (layerIndex === payload.layerIndex) {
 								layer = {
 									...layer,
-									isVisible: payload.isVisible
+									image: {
+										...layer.image,
+										source: payload.source
+									}
 								};
 							}
 							return layer;

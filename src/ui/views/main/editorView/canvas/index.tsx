@@ -63,7 +63,7 @@ export class Canvas extends React.Component<CanvasProps, CanvasState> {
 			}
 		},
 		translation: {
-			projectFileToViewPort: point => {
+			documentToViewPort: point => {
 				const editor = this.props.editor;
 
 				const halfCanvasWidth = this.props.width / 2;
@@ -76,7 +76,7 @@ export class Canvas extends React.Component<CanvasProps, CanvasState> {
 
 				return result;
 			},
-			viewPortToProjectFile: point => {
+			viewPortToDocument: point => {
 				const halfCanvasWidth = this.props.width / 2;
 				const halfCanvasHeight = this.props.height / 2;
 
@@ -149,8 +149,8 @@ export class Canvas extends React.Component<CanvasProps, CanvasState> {
 					y: event.clientY - offset.top
 				};
 
-				const projectFilePoint = this.helper.translation
-					.viewPortToProjectFile(viewPortPoint);
+				const documentPoint = this.helper.translation
+					.viewPortToDocument(viewPortPoint);
 
 				const existingStateButtons: CanvasMouseButtonsState | undefined = (
 					(this.state.mouse || {} as Partial<CanvasMouseState>).buttons
@@ -169,7 +169,7 @@ export class Canvas extends React.Component<CanvasProps, CanvasState> {
 				return {
 					buttons,
 					viewPortPoint,
-					projectFilePoint
+					documentPoint
 				};
 			}
 		}

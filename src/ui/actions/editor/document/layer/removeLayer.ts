@@ -10,8 +10,8 @@ export const removeLayer = defineAction(
 		const editors = state.editors.map((editor, editorIndex) => {
 			if (editorIndex === state.activeEditorIndex) {
 				let { selectedLayerIndex } = editor;
-				const projectFile = editor.projectFile;
-				let layers = [...projectFile.layers];
+				const document = editor.document;
+				let layers = [...document.layers];
 				if (layers.length > 1) {
 					layers = layers.filter((_, index) => index !== payload.layerIndex);
 				}
@@ -19,8 +19,8 @@ export const removeLayer = defineAction(
 
 				return {
 					...editor,
-					projectFile: {
-						...projectFile,
+					document: {
+						...document,
 						layers
 					},
 					selectedLayerIndex

@@ -1,7 +1,7 @@
 import { Layer } from './layer';
 import { Size } from './size';
 
-export interface ProjectFile {
+export interface PolygenDocument {
 	dimensions: Size;
 	layers: Layer[];
 }

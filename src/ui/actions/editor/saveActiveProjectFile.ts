@@ -1,6 +1,6 @@
 import { ApplicationState, MAX_RECENT_FILE_NAME_COUNT } from '../../../shared/models/applicationState';
 import { Editor } from '../../../shared/models/editor';
-import { ProjectFile } from '../../../shared/models/projectFile';
+import { PolygenDocument } from '../../../shared/models/polygenDocument';
 import { Size } from '../../../shared/models/size';
 import { makeMostRecent } from '../../../shared/utils/recentItemList';
 import { defineAction } from '../../reduxWithLessSux/action';

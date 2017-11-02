@@ -6,7 +6,7 @@ import * as ReactDOM from 'react-dom';
 import { FluxMenuItemDefinition, FluxMenuRenderer } from '../../../shared/fluxMenu';
 import { ApplicationState } from '../../../shared/models/applicationState';
 import { Editor } from '../../../shared/models/editor';
-import { ProjectFile } from '../../../shared/models/projectFile';
+import { PolygenDocument } from '../../../shared/models/polygenDocument';
 import settingsFile from '../../../shared/models/settings';
 import { closeActiveProjectFile } from '../../actions/editor/closeActiveProjectFile';
 import { openExistingProjectFile } from '../../actions/editor/openExistingProjectFile';
@@ -177,10 +177,10 @@ export class Application {
 			return fs
 				.readFile(fileName, { encoding: 'utf8' })
 				.then(json => {
-					const projectFile: ProjectFile = JSON.parse(json);
+					const document: PolygenDocument = JSON.parse(json);
 					openExistingProjectFile(this.store, {
 						fileName,
-						projectFile
+						document
 					});
 				});
 		}
@@ -236,7 +236,7 @@ export class Application {
 	}
 
 	private async saveExactProjectFile(editor: Editor, fileName: string): Promise<void> {
-		const json = JSON.stringify(editor.projectFile, null, '\t');
+		const json = JSON.stringify(editor.document, null, '\t');
 		await fs.writeFile(fileName, json, { encoding: 'utf8' });
 		await saveActiveProjectFile(this.store, { fileName });
 	}

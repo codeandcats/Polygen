@@ -7,11 +7,11 @@ import {
 } from 'react-bootstrap';
 import { ApplicationState } from '../../../../shared/models/applicationState';
 import { Size } from '../../../../shared/models/size';
-import { addPoint } from '../../../actions/editor/projectFile/layer/points/addPoint';
-import { moveSelectedPoints } from '../../../actions/editor/projectFile/layer/points/moveSelectedPoints';
-import { removeSelection } from '../../../actions/editor/projectFile/layer/points/removeSelection';
-import { selectAllPoints } from '../../../actions/editor/projectFile/layer/points/selectAllPoints';
-import { selectPoints } from '../../../actions/editor/projectFile/layer/points/selectPoints';
+import { addPoint } from '../../../actions/editor/document/layer/points/addPoint';
+import { moveSelectedPoints } from '../../../actions/editor/document/layer/points/moveSelectedPoints';
+import { removeSelection } from '../../../actions/editor/document/layer/points/removeSelection';
+import { selectAllPoints } from '../../../actions/editor/document/layer/points/selectAllPoints';
+import { selectPoints } from '../../../actions/editor/document/layer/points/selectPoints';
 import { selectTool } from '../../../actions/editor/selectTool';
 import { setPan } from '../../../actions/editor/setPan';
 import { ImageCache } from '../../../models/imageCache';
@@ -116,7 +116,7 @@ export class EditorView extends React.Component<EditorViewProps, EditorViewState
 	public render() {
 		const { activeEditorIndex, editors } = this.props.store.getState();
 		const editor = editors[activeEditorIndex];
-		const layer = editor.projectFile.layers[editor.selectedLayerIndex];
+		const layer = editor.document.layers[editor.selectedLayerIndex];
 
 		return (
 			<div className={ styles.editorView }>
