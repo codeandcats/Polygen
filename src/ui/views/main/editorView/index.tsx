@@ -144,11 +144,7 @@ export class EditorView extends React.Component<EditorViewProps, EditorViewState
 												width={ this.state.canvasSize.width }
 												height={ this.state.canvasSize.height }
 												imageCache={ this.imageCache }
-												onAddPoint={ point => addPoint(this.props.store, {
-													editorIndex: activeEditorIndex,
-													layerIndex: editor.selectedLayerIndex,
-													point
-												}) }
+												onAddPoint={ point => addPoint(this.props.store, { point }) }
 												onDeleteSelection={ () => removeSelection(this.props.store) }
 												onMoveSelection={ moveBy => moveSelectedPoints(this.props.store, { moveBy }) }
 												onSelectAll={ () => selectAllPoints(this.props.store) }
