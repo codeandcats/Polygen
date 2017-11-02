@@ -53,6 +53,13 @@ export function getImageBounds(documentDimensions: Size, layer: Layer): Rectangl
 	};
 }
 
+export function getAbsoluteDocumentPoint(relativeDocumentPoint: Point, documentDimensions: Size): Point {
+	return {
+		x: relativeDocumentPoint.x * (documentDimensions.width / 2),
+		y: relativeDocumentPoint.y * (documentDimensions.height / 2)
+	};
+}
+
 function renderLayer(
 	context: CanvasRenderingContext2D,
 	documentDimensions: Size,
@@ -73,7 +80,7 @@ function renderLayer(
 		}
 
 		for (const polygon of layer.polygons) {
-			renderPolygon(context, layer.points,  polygon);
+			renderPolygon(context, layer.points, polygon, documentDimensions);
 		}
 
 		const selectedPointMap = selectedPointIndices.reduce((result, index) => {
@@ -84,15 +91,22 @@ function renderLayer(
 		for (let pointIndex = 0; pointIndex < layer.points.length; pointIndex++) {
 			const point = layer.points[pointIndex];
 			const isSelected = !!selectedPointMap[pointIndex];
-			renderPoint(context, point, isSelected);
+			renderPoint(context, point, documentDimensions, isSelected);
 		}
 	});
 }
 
-export function renderPoint(context: CanvasRenderingContext2D, point: Point, isSelected: boolean) {
+export function renderPoint(
+	context: CanvasRenderingContext2D,
+	point: Point,
+	documentDimensions: Size,
+	isSelected: boolean
+) {
 	const POINT_FILL_COLOR = '#333';
 	const POINT_STROKE_COLOR = '#eee';
 	const RADIUS = 3;
+
+	point = getAbsoluteDocumentPoint(point, documentDimensions);
 
 	runInTransaction(context, () => {
 		context.beginPath();
@@ -122,13 +136,20 @@ export function renderPoint(context: CanvasRenderingContext2D, point: Point, isS
 	});
 }
 
-export function renderPolygon(context: CanvasRenderingContext2D, points: Point[], polygon: Polygon) {
+export function renderPolygon(
+	context: CanvasRenderingContext2D,
+	points: Point[],
+	polygon: Polygon,
+	documentDimensions: Size
+) {
 	context.beginPath();
 
 	context.lineWidth = 1;
 	context.fillStyle = '#ccc';
 	context.strokeStyle = '#333';
-	const polygonPoints = polygon.pointIndices.map(pointIndex => points[pointIndex]);
+	const polygonPoints = polygon.pointIndices.map(pointIndex => {
+		return getAbsoluteDocumentPoint(points[pointIndex], documentDimensions);
+	});
 
 	context.moveTo(polygonPoints[0].x, polygonPoints[0].y);
 	context.lineTo(polygonPoints[1].x, polygonPoints[1].y);

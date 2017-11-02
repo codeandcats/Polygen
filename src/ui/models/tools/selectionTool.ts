@@ -1,6 +1,6 @@
 import { Point } from '../../../shared/models/point';
 import { getIndicesOfPointsInRectangle, pointsToRectangle } from '../../../shared/utils/geometry';
-import { renderSelectionRectangle } from '../../utils/graphics';
+import { getAbsoluteDocumentPoint, renderSelectionRectangle } from '../../utils/graphics';
 import { CanvasMouseState, Tool, ToolHelper, ToolName } from './common';
 
 interface SelectionToolState {
@@ -77,8 +77,13 @@ export class SelectionTool extends Tool<SelectionToolState> {
 			return;
 		}
 
-		const startPoint = helper.translation.viewPortToDocument(toolState.startPoint);
-		const endPoint = helper.translation.viewPortToDocument(toolState.endPoint);
+		const documentDimensions = helper.getEditor().document.dimensions;
+
+		let startPoint = helper.translation.viewPortToDocument(toolState.startPoint);
+		let endPoint = helper.translation.viewPortToDocument(toolState.endPoint);
+
+		startPoint = getAbsoluteDocumentPoint(startPoint, documentDimensions);
+		endPoint = getAbsoluteDocumentPoint(endPoint, documentDimensions);
 
 		const rectangle = pointsToRectangle(startPoint, endPoint);
 		renderSelectionRectangle(context, rectangle);

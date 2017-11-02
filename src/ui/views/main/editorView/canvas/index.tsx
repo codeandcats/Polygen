@@ -3,6 +3,7 @@ import * as React from 'react';
 import { Editor } from '../../../../../shared/models/editor';
 import { Point } from '../../../../../shared/models/point';
 import { Rectangle } from '../../../../../shared/models/rectangle';
+import { Size } from '../../../../../shared/models/size';
 import { ImageCache } from '../../../../models/imageCache';
 import { MouseButton } from '../../../../models/mouseButton';
 import { TOOL_BY_NAME } from '../../../../models/tools';
@@ -66,25 +67,44 @@ export class Canvas extends React.Component<CanvasProps, CanvasState> {
 			documentToViewPort: point => {
 				const editor = this.props.editor;
 
-				const halfCanvasWidth = this.props.width / 2;
-				const halfCanvasHeight = this.props.height / 2;
+				const documentHalfSize: Size = {
+					width: editor.document.dimensions.width / 2,
+					height: editor.document.dimensions.height / 2
+				};
+
+				point = {
+					x: point.x * documentHalfSize.width,
+					y: point.y * documentHalfSize.height
+				};
+
+				const canvasCenter: Point = {
+					x: this.props.width / 2,
+					y: this.props.height / 2
+				};
 
 				const result: Point = {
-					x: halfCanvasWidth + editor.viewPort.pan.x + (point.x * editor.viewPort.zoom),
-					y: halfCanvasHeight + editor.viewPort.pan.y + (point.y * editor.viewPort.zoom),
+					x: canvasCenter.x + editor.viewPort.pan.x + (point.x * editor.viewPort.zoom),
+					y: canvasCenter.y + editor.viewPort.pan.y + (point.y * editor.viewPort.zoom),
 				};
 
 				return result;
 			},
 			viewPortToDocument: point => {
-				const halfCanvasWidth = this.props.width / 2;
-				const halfCanvasHeight = this.props.height / 2;
-
 				const editor = this.props.editor;
 
+				const documentHalfSize: Size = {
+					width: editor.document.dimensions.width / 2,
+					height: editor.document.dimensions.height / 2
+				};
+
+				const canvasCenter: Point = {
+					x: this.props.width / 2,
+					y: this.props.height / 2
+				};
+
 				const result: Point = {
-					x: (point.x - halfCanvasWidth - editor.viewPort.pan.x) / editor.viewPort.zoom,
-					y: (point.y - halfCanvasHeight - editor.viewPort.pan.y) / editor.viewPort.zoom
+					x: ((point.x - canvasCenter.x - editor.viewPort.pan.x) / editor.viewPort.zoom) / documentHalfSize.width,
+					y: ((point.y - canvasCenter.y - editor.viewPort.pan.y) / editor.viewPort.zoom) / documentHalfSize.height
 				};
 
 				return result;

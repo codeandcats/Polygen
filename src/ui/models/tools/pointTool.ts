@@ -2,7 +2,7 @@ import * as eases from 'eases';
 import { Point } from '../../../shared/models/point';
 import { Rectangle } from '../../../shared/models/rectangle';
 import { getAnimationProgress } from '../../utils/animation';
-import { renderPoint } from '../../utils/graphics';
+import { getAbsoluteDocumentPoint, renderPoint } from '../../utils/graphics';
 import { MouseButton } from '../mouseButton';
 import { CanvasMouseState, Tool, ToolHelper, ToolName } from './common';
 
@@ -80,6 +80,7 @@ export class PointTool extends Tool<PointToolState> {
 		helper: ToolHelper,
 		context: CanvasRenderingContext2D
 	): void {
+		const documentDimensions = helper.getEditor().document.dimensions;
 		const currentTime = Date.now();
 		const toolState: PointToolState = helper.getToolState();
 		const pointsBeingAdded = (toolState && toolState.pointsBeingAdded) || [] as PointBeingAdded[];
@@ -89,14 +90,16 @@ export class PointTool extends Tool<PointToolState> {
 				const animationProgress = getAnimationProgress(pointBeingAdded.time, PointTool.ANIMATION_DURATION, currentTime);
 				const scaleAnimationProgress = eases.elasticOut(animationProgress);
 
-				context.translate(pointBeingAdded.point.x, pointBeingAdded.point.y);
+				const absoluteDocumentPoint = getAbsoluteDocumentPoint(pointBeingAdded.point, documentDimensions);
+
+				context.translate(absoluteDocumentPoint.x, absoluteDocumentPoint.y);
 				const scale = scaleAnimationProgress;
 				context.scale(scale, scale);
 
 				// const radius = 3 * eases.elasticOut(animationProgress);
 				const radius = 3;
 				// context.fillStyle = `rgba(51, 51, 51, ${ eases.linear(animationProgress) })`;
-				renderPoint(context, { x: 0, y: 0 }, false);
+				renderPoint(context, { x: 0, y: 0 }, documentDimensions, false);
 			} finally {
 				context.restore();
 			}
