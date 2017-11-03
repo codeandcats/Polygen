@@ -228,19 +228,25 @@ function renderLayer(
 			}
 		}
 
-		for (const polygon of layer.polygons) {
-			renderPolygon(context, layer.points, polygon, documentDimensions);
-		}
+		runInTransaction(context, () => {
+			context.globalAlpha = .5;
 
-		const selectedPointMap = selectedPointIndices.reduce((result, index) => {
-			result[index] = true;
-			return result;
-		}, {} as { [index: number]: boolean | undefined });
+			for (const polygon of layer.polygons) {
+				renderPolygon(context, layer.points, polygon, documentDimensions);
+			}
+		});
 
-		for (let pointIndex = 0; pointIndex < layer.points.length; pointIndex++) {
-			const point = layer.points[pointIndex];
-			const isSelected = !!selectedPointMap[pointIndex];
-			renderPoint(context, point, documentDimensions, isSelected);
+		if (isSelectedLayer) {
+			const selectedPointMap = selectedPointIndices.reduce((result, index) => {
+				result[index] = true;
+				return result;
+			}, {} as { [index: number]: boolean | undefined });
+
+			for (let pointIndex = 0; pointIndex < layer.points.length; pointIndex++) {
+				const point = layer.points[pointIndex];
+				const isSelected = !!selectedPointMap[pointIndex];
+				renderPoint(context, point, documentDimensions, isSelected);
+			}
 		}
 	});
 }
@@ -270,7 +276,7 @@ export function renderPoint(
 			360
 		);
 
-		context.lineWidth = 1;
+		context.lineWidth = .5;
 		context.fillStyle = isSelected ? SELECTION_COLOR : POINT_FILL_COLOR;
 
 		context.fill();
