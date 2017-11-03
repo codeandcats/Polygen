@@ -10,10 +10,13 @@ export const selectLayer = defineAction(
 		const editors = state.editors.map((editor, editorIndex) => {
 			if (editorIndex === state.activeEditorIndex) {
 				const selectedLayerIndex = payload.layerIndex;
-				return {
-					...editor,
-					selectedLayerIndex
-				};
+				if (selectedLayerIndex !== editor.selectedLayerIndex) {
+					return {
+						...editor,
+						selectedLayerIndex,
+						selectedPointIndices: []
+					};
+				}
 			}
 			return editor;
 		});
