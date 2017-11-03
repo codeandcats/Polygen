@@ -1,10 +1,16 @@
 import { ApplicationState } from '../../../../../../shared/models/applicationState';
 import { Point } from '../../../../../../shared/models/point';
 import { recalculatePolygons } from '../../../../../../shared/utils/geometry';
+import { ImageCache } from '../../../../../models/imageCache';
 import { defineAction } from '../../../../../reduxWithLessSux/action';
+import { getAbsoluteDocumentPoint, recalculatePolygonColours } from '../../../../../utils/graphics';
+
+interface RemoveSelectionPayload {
+	imageCache: ImageCache;
+}
 
 export const removeSelection = defineAction(
-	'removeSelection', (state: ApplicationState) => {
+	'removeSelection', (state: ApplicationState, payload: RemoveSelectionPayload) => {
 		const editors = state.editors.map((editor, editorIndex) => {
 			if (editorIndex === state.activeEditorIndex) {
 				const selectedPointIndices = editor.selectedPointIndices;
@@ -18,7 +24,16 @@ export const removeSelection = defineAction(
 								const points = layer.points.filter((_, pointIndex) => {
 									return editor.selectedPointIndices.indexOf(pointIndex) === -1;
 								});
-								const polygons = recalculatePolygons(points);
+								let polygons = recalculatePolygons(points);
+
+								polygons = recalculatePolygonColours({
+									document,
+									imageCache: payload.imageCache,
+									layer,
+									points,
+									polygons
+								});
+
 								return {
 									...layer,
 									points,

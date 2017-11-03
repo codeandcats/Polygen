@@ -198,9 +198,26 @@ export class Canvas extends React.Component<CanvasProps, CanvasState> {
 	}
 
 	private keyDown(event: React.KeyboardEvent<HTMLCanvasElement>) {
-		const SMALL_MOVE_AMOUNT = 1;
-		const LARGE_MOVE_AMOUNT = 5;
-		const getMoveAmount = () => event.shiftKey ? LARGE_MOVE_AMOUNT : SMALL_MOVE_AMOUNT;
+		const SMALL_MOVE_MULTIPLIER = 1;
+		const LARGE_MOVE_MULTIPLIER = 5;
+
+		const editor = this.props.editor;
+
+		const getMoveAmount = (direction: Point): Point => {
+			const canvasMoveDistanceInPixels =
+				event.shiftKey ?
+				LARGE_MOVE_MULTIPLIER :
+				SMALL_MOVE_MULTIPLIER;
+
+			const documentMoveDistanceInPixels = canvasMoveDistanceInPixels * editor.viewPort.zoom;
+
+			const amount = {
+				x: direction.x * (documentMoveDistanceInPixels / (editor.document.dimensions.width / 2)),
+				y: direction.y * (documentMoveDistanceInPixels / (editor.document.dimensions.height / 2))
+			};
+
+			return amount;
+		};
 
 		switch (event.keyCode) {
 			case KeyCode.DELETE:
@@ -219,22 +236,22 @@ export class Canvas extends React.Component<CanvasProps, CanvasState> {
 				break;
 
 			case KeyCode.LEFT:
-				this.props.onMoveSelection({ x: -getMoveAmount(), y: 0 });
+				this.props.onMoveSelection(getMoveAmount({ x: -1, y: 0 }));
 				event.preventDefault();
 				break;
 
 			case KeyCode.RIGHT:
-				this.props.onMoveSelection({ x: getMoveAmount(), y: 0 });
+				this.props.onMoveSelection(getMoveAmount({ x: 1, y: 0 }));
 				event.preventDefault();
 				break;
 
 			case KeyCode.UP:
-				this.props.onMoveSelection({ x: 0, y: -getMoveAmount() });
+				this.props.onMoveSelection(getMoveAmount({ x: 0, y: -1 }));
 				event.preventDefault();
 				break;
 
 			case KeyCode.DOWN:
-				this.props.onMoveSelection({ x: 0, y: getMoveAmount() });
+				this.props.onMoveSelection(getMoveAmount({ x: 0, y: 1 }));
 				event.preventDefault();
 				break;
 

@@ -1,10 +1,13 @@
 import { ApplicationState } from '../../../../../../shared/models/applicationState';
 import { Point } from '../../../../../../shared/models/point';
 import { recalculatePolygons } from '../../../../../../shared/utils/geometry';
+import { ImageCache } from '../../../../../models/imageCache';
 import { defineAction } from '../../../../../reduxWithLessSux/action';
+import { getAbsoluteDocumentPoint, recalculatePolygonColours } from '../../../../../utils/graphics';
 
 interface AddPointActionPayload {
 	point: Point;
+	imageCache: ImageCache;
 }
 
 export const addPoint = defineAction(
@@ -16,21 +19,30 @@ export const addPoint = defineAction(
 					...payload.point
 				});
 				const selectedPointIndices = [points.length - 1];
+				const layers = document.layers.map((layer, layerIndex) => {
+					if (layerIndex === editor.selectedLayerIndex) {
+						let polygons = recalculatePolygons(points);
+						polygons = recalculatePolygonColours({
+							document,
+							imageCache: payload.imageCache,
+							layer,
+							points,
+							polygons
+						});
+						return {
+							...layer,
+							points,
+							polygons
+						};
+					}
+					return layer;
+				});
+
 				return {
 					...editor,
 					document: {
 						...document,
-						layers: document.layers.map((layer, layerIndex) => {
-							if (layerIndex === editor.selectedLayerIndex) {
-								const polygons = recalculatePolygons(points);
-								return {
-									...layer,
-									points,
-									polygons
-								};
-							}
-							return layer;
-						})
+						layers
 					},
 					selectedPointIndices
 				};

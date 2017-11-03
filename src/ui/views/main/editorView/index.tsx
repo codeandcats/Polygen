@@ -12,6 +12,7 @@ import { moveSelectedPoints } from '../../../actions/editor/document/layer/point
 import { removeSelection } from '../../../actions/editor/document/layer/points/removeSelection';
 import { selectAllPoints } from '../../../actions/editor/document/layer/points/selectAllPoints';
 import { selectPoints } from '../../../actions/editor/document/layer/points/selectPoints';
+import { updatePolygonColors } from '../../../actions/editor/document/layer/polygons/updatePolygonColors';
 import { selectTool } from '../../../actions/editor/selectTool';
 import { setPan } from '../../../actions/editor/setPan';
 import { ImageCache } from '../../../models/imageCache';
@@ -144,9 +145,9 @@ export class EditorView extends React.Component<EditorViewProps, EditorViewState
 												width={ this.state.canvasSize.width }
 												height={ this.state.canvasSize.height }
 												imageCache={ this.imageCache }
-												onAddPoint={ point => addPoint(this.props.store, { point }) }
-												onDeleteSelection={ () => removeSelection(this.props.store) }
-												onMoveSelection={ moveBy => moveSelectedPoints(this.props.store, { moveBy }) }
+												onAddPoint={ point => addPoint(this.props.store, { point, imageCache: this.imageCache }) }
+												onDeleteSelection={ () => removeSelection(this.props.store, { imageCache: this.imageCache }) }
+												onMoveSelection={ moveBy => moveSelectedPoints(this.props.store, { moveBy, imageCache: this.imageCache }) }
 												onSelectAll={ () => selectAllPoints(this.props.store) }
 												onSelectPoints={ pointIndices => selectPoints(this.props.store, { pointIndices }) }
 												onSetPan={ point => setPan(this.props.store, { pan: point }) }
@@ -174,5 +175,11 @@ export class EditorView extends React.Component<EditorViewProps, EditorViewState
 				</div>
 			</div>
 		);
+	}
+
+	public updatePolygonColors() {
+		updatePolygonColors(this.props.store, {
+			imageCache: this.imageCache
+		});
 	}
 }

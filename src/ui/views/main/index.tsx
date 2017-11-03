@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { ApplicationState } from '../../../shared/models/applicationState';
+import { Nullable } from '../../../shared/models/nullable';
 import { PolygenDocument } from '../../../shared/models/polygenDocument';
 import { openNewProjectFile } from '../../actions/editor/openNewProjectFile';
 import { hideNewProjectFileDialog } from '../../actions/hideNewProjectFileDialog';
@@ -26,6 +27,12 @@ export class MainWindow extends React.Component<MainWindowProps, MainWindowState
 		super();
 	}
 
+	private editorView: Nullable<EditorView>;
+
+	public getEditorView(): Nullable<EditorView> {
+		return this.editorView;
+	}
+
 	public render() {
 		const state = this.props.store.getState();
 
@@ -46,7 +53,10 @@ export class MainWindow extends React.Component<MainWindowProps, MainWindowState
 						onShowNewProjectFileDialog={ () => this.props.onShowNewProjectFileDialog() }
 						onShowOpenProjectFileDialog={ () => this.props.onShowOpenProjectFileDialog() }
 					/> :
-					<EditorView store={this.props.store} />
+					<EditorView
+						ref={ editorView => this.editorView = editorView }
+						store={this.props.store}
+					/>
 				}
 				<BootstrapLabel />
 			</div>

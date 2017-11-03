@@ -1,9 +1,12 @@
 import { ApplicationState } from '../../../../../../shared/models/applicationState';
 import { Point } from '../../../../../../shared/models/point';
 import { recalculatePolygons } from '../../../../../../shared/utils/geometry';
+import { ImageCache } from '../../../../../models/imageCache';
 import { defineAction } from '../../../../../reduxWithLessSux/action';
+import { getAbsoluteDocumentPoint, recalculatePolygonColours } from '../../../../../utils/graphics';
 
 interface MoveSelectedPointsPayload {
+	imageCache: ImageCache;
 	moveBy: Point;
 }
 
@@ -27,7 +30,17 @@ export const moveSelectedPoints = defineAction(
 									}
 									return point;
 								});
-								const polygons = recalculatePolygons(points);
+
+								let polygons = recalculatePolygons(points);
+
+								polygons = recalculatePolygonColours({
+									document,
+									imageCache: payload.imageCache,
+									layer,
+									points,
+									polygons
+								});
+
 								return {
 									...layer,
 									points,

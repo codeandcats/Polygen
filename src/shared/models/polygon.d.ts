@@ -2,6 +2,6 @@ import { Point } from './point';
 import { Rgb } from './rgb';
 
 export interface Polygon {
-	pointIndices: number[];
+	pointIndices: [number, number, number];
 	color: Rgb;
 }

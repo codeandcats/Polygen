@@ -6,9 +6,11 @@ import * as ReactDOM from 'react-dom';
 import { FluxMenuItemDefinition, FluxMenuRenderer } from '../../../shared/fluxMenu';
 import { ApplicationState } from '../../../shared/models/applicationState';
 import { Editor } from '../../../shared/models/editor';
+import { Nullable } from '../../../shared/models/nullable';
 import { PolygenDocument } from '../../../shared/models/polygenDocument';
 import settingsFile from '../../../shared/models/settings';
 import { closeActiveProjectFile } from '../../actions/editor/closeActiveProjectFile';
+import { updatePolygonColors } from '../../actions/editor/document/layer/polygons/updatePolygonColors';
 import { openExistingProjectFile } from '../../actions/editor/openExistingProjectFile';
 import { openNewProjectFile } from '../../actions/editor/openNewProjectFile';
 import { saveActiveProjectFile } from '../../actions/editor/saveActiveProjectFile';
@@ -81,10 +83,23 @@ export class Application {
 				},
 				{
 					role: 'toggledevtools'
+				},
+				{
+					accelerator: 'CmdOrCtrl+U',
+					label: 'Update Polygon Colors',
+					click: () => {
+						const editorView = this.mainWindow && this.mainWindow.getEditorView();
+						if (editorView) {
+							editorView.updatePolygonColors();
+						}
+					},
+					enabled: state => state.activeEditorIndex !== -1
 				}
 			]
 		}
 	];
+
+	private mainWindow: Nullable<MainWindow>;
 
 	private menu = new FluxMenuRenderer<ApplicationState>({
 		definitions: this.MENU_DEFINITIONS
@@ -110,10 +125,11 @@ export class Application {
 		this.store.subscribe(() => {
 			ReactDOM.render(
 				<MainWindow
-					store={this.store}
 					onOpenProjectFile={ fileName => this.openExactProjectFile(fileName) }
 					onShowNewProjectFileDialog={ () => this.openNewProjectFile() }
 					onShowOpenProjectFileDialog={ () => this.openProjectFile() }
+					ref={ mainWindow => this.mainWindow = mainWindow }
+					store={this.store}
 				/>,
 				container
 			);

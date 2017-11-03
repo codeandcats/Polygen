@@ -1,10 +1,15 @@
 import { Editor } from '../../shared/models/editor';
 import { Layer } from '../../shared/models/layer';
+import { LayerImage } from '../../shared/models/layerImage';
+import { LayerPixelData } from '../../shared/models/layerImagePixelData';
 import { Point } from '../../shared/models/point';
 import { PolygenDocument } from '../../shared/models/polygenDocument';
 import { Polygon } from '../../shared/models/polygon';
 import { Rectangle } from '../../shared/models/rectangle';
+import { Rgb } from '../../shared/models/rgb';
 import { Size } from '../../shared/models/size';
+import { forEachPointWithinPolygon, getCenter, isPointInRectangle } from '../../shared/utils/geometry';
+import { clamp } from '../../shared/utils/math';
 import { ImageCache } from '../models/imageCache';
 import { Tool, ToolHelper } from '../models/tools/common';
 
@@ -58,6 +63,150 @@ export function getAbsoluteDocumentPoint(relativeDocumentPoint: Point, documentD
 		x: relativeDocumentPoint.x * (documentDimensions.width / 2),
 		y: relativeDocumentPoint.y * (documentDimensions.height / 2)
 	};
+}
+
+export function getLayerPixelData(
+	document: PolygenDocument,
+	layer: Layer,
+	imageCache: ImageCache
+): LayerPixelData {
+	const { width, height } = document.dimensions;
+	const canvas = window.document.createElement('canvas');
+	canvas.width = width;
+	canvas.height = height;
+
+	const context = canvas.getContext('2d');
+
+	if (!context) {
+		throw new Error('Could not get context for canvas');
+	}
+
+	if (!layer.image.source) {
+		return {
+			data: new Uint8ClampedArray(4 * document.dimensions.width * document.dimensions.height),
+			width,
+			height
+		};
+	}
+
+	const center = getCenter(document.dimensions);
+
+	context.translate(center.x, center.y);
+
+	const imageBounds = getImageBounds(document.dimensions, layer);
+
+	const element = imageCache.getImage(layer.image.source).element;
+
+	context.drawImage(element, imageBounds.x, imageBounds.y, imageBounds.width, imageBounds.height);
+
+	const imageData = context.getImageData(0, 0, document.dimensions.width, document.dimensions.height);
+
+	return {
+		data: imageData.data,
+		width,
+		height
+	};
+}
+
+export function getPolygonAverageColor(pixelData: LayerPixelData, polygon: [Point, Point, Point]): Rgb {
+	let totalR = 0;
+	let totalG = 0;
+	let totalB = 0;
+	let pixelCount = 0;
+
+	const layerBounds = {
+		x: 0,
+		y: 0,
+		width: pixelData.width,
+		height: pixelData.height
+	};
+
+	const BYTES_PER_PIXEL = 4;
+	const bytesPerRow = pixelData.width * BYTES_PER_PIXEL;
+
+	forEachPointWithinPolygon(polygon, point => {
+		if (!isPointInRectangle(point, layerBounds)) {
+			return;
+		}
+
+		const pixelIndex = (point.y * bytesPerRow) + (BYTES_PER_PIXEL * point.x);
+
+		const currentR = clamp(0, 255, pixelData.data[pixelIndex]);
+		const currentG = clamp(0, 255, pixelData.data[pixelIndex + 1]);
+		const currentB = clamp(0, 255, pixelData.data[pixelIndex + 2]);
+
+		totalR += currentR;
+		totalG += currentG;
+		totalB += currentB;
+
+		pixelCount++;
+	});
+
+	const r = pixelCount === 0 ? 0 : clamp(0, 255, Math.round(totalR / pixelCount));
+	const g = pixelCount === 0 ? 0 : clamp(0, 255, Math.round(totalG / pixelCount));
+	const b = pixelCount === 0 ? 0 : clamp(0, 255, Math.round(totalB / pixelCount));
+
+	return {
+		r,
+		g,
+		b
+	};
+}
+
+interface RecalculatePolygonColoursOptions {
+	document: PolygenDocument;
+	imageCache: ImageCache;
+	layer: Layer;
+	points?: Point[];
+	polygons?: Polygon[];
+}
+
+export function recalculatePolygonColours(options: RecalculatePolygonColoursOptions): Polygon[] {
+	const { document, imageCache, layer } = options;
+	let polygons = options.polygons || options.layer.polygons;
+	const points = options.points || options.layer.points;
+
+	if (!layer.image.source) {
+		return polygons.map(polygon => {
+			return {
+				...polygon,
+				color: {
+					r: 0,
+					g: 0,
+					b: 0
+				}
+			};
+		});
+	}
+
+	const image = options.imageCache.getImage(layer.image.source);
+	if (!image.hasElementLoaded) {
+		return layer.polygons;
+	}
+
+	const layerPixelData = getLayerPixelData(document, layer, imageCache);
+
+	polygons = polygons.map(polygon => {
+		const polygonPoints = polygon.pointIndices
+			.map(index => {
+				let point = (points as Point[])[index];
+				point = getAbsoluteDocumentPoint(point, document.dimensions);
+				point = {
+					x: point.x + (document.dimensions.width / 2),
+					y: point.y + (document.dimensions.height / 2)
+				};
+				return point;
+			}) as [Point, Point, Point];
+
+		const color = getPolygonAverageColor(layerPixelData, polygonPoints);
+
+		return {
+			...polygon,
+			color
+		};
+	});
+
+	return polygons;
 }
 
 function renderLayer(
@@ -145,7 +294,7 @@ export function renderPolygon(
 	context.beginPath();
 
 	context.lineWidth = 1;
-	context.fillStyle = '#ccc';
+	context.fillStyle = `rgb(${ polygon.color.r }, ${ polygon.color.g }, ${ polygon.color.b })`;
 	context.strokeStyle = '#333';
 	const polygonPoints = polygon.pointIndices.map(pointIndex => {
 		return getAbsoluteDocumentPoint(points[pointIndex], documentDimensions);
