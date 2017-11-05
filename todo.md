@@ -5,6 +5,9 @@
 ### Move Tool
 - Update polygon colours
 
+### Select Tool
+- Select point above/left of/right of/below selected point (Alt+Up/Left/Right/Down)
+
 ## Menus
 - Selection
 	- Select All (CmdOrCtrl+A when canvas focused)
