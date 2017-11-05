@@ -2,6 +2,8 @@ import { percent } from 'csx';
 import { style } from 'typestyle';
 
 export const fullScreenContainer = style({
+	$debugName: 'fullScreenContainer',
+
 	display: 'flex',
 	alignItems: 'center',
 	justifyContent: 'center',

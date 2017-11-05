@@ -330,7 +330,9 @@ export function renderProjectFile(
 		for (let layerIndex = 0; layerIndex < editor.document.layers.length; layerIndex++) {
 			const layer = editor.document.layers[layerIndex];
 			const isSelectedLayer = layerIndex === editor.selectedLayerIndex;
-			renderLayer(context, editor.document.dimensions, layer, editor.selectedPointIndices, isSelectedLayer, imageCache);
+			if (layer.isVisible) {
+				renderLayer(context, editor.document.dimensions, layer, editor.selectedPointIndices, isSelectedLayer, imageCache);
+			}
 		}
 	});
 }
@@ -416,7 +418,7 @@ export function renderProjectFileBackground(context: CanvasRenderingContext2D, e
 
 		context.lineWidth = 1;
 		context.strokeStyle = '#333';
-		context.fillStyle = 'rgba(255, 255, 255, .5)';
+		context.fillStyle = 'rgba(255, 255, 255, .6)';
 
 		const halfWidth = editor.document.dimensions.width / 2;
 		const halfHeight = editor.document.dimensions.height / 2;

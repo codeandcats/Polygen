@@ -1,8 +1,23 @@
-import { important, px } from 'csx';
+import { important, percent, px, viewHeight, viewWidth } from 'csx';
 import { cssRule, style } from 'typestyle';
 
-cssRule('body', {
-	paddingTop: px(15)
+export const backgroundColor = '#444';
+export const textColor = '#eee';
+
+cssRule('html, body', {
+	height: percent(100)
+});
+
+cssRule('#content', {
+	height: viewHeight(100),
+	width: viewWidth(100)
+});
+
+export const mainWindow = style({
+	$debugName: 'mainWindow',
+
+	height: percent(100),
+	width: percent(100)
 });
 
 cssRule('.panel-body', {
@@ -10,10 +25,14 @@ cssRule('.panel-body', {
 });
 
 export const spaceRight = style({
+	$debugName: 'spaceRight',
+
 	marginRight: px(10)
 });
 
 export const spaceBelow = style({
+	$debugName: 'spaceBelow',
+
 	marginBottom: px(10)
 });
 
@@ -22,6 +41,8 @@ cssRule('.btn', {
 });
 
 export const iconButton = style({
+	$debugName: 'iconButton',
+
 	$nest: {
 		'i.fa': {
 			transition: 'transform .2s'
@@ -33,10 +54,14 @@ export const iconButton = style({
 });
 
 export const buttonSpaceLeft = style({
+	$debugName: 'buttonSpaceLeft',
+
 	marginLeft: px(5)
 });
 
 export const buttonSpaceRight = style({
+	$debugName: 'buttonSpaceRight',
+
 	marginRight: px(5)
 });
 

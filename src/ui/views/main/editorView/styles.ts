@@ -1,32 +1,61 @@
 import { percent, px } from 'csx';
 import { style } from 'typestyle';
+import * as mainStyles from '../styles';
 
-export const editorView = style({
-	display: 'table',
-	width: percent(100),
+export const LAYER_LIST_WIDTH = 300;
+
+export const editorContainer = style({
+	$debugName: 'editorContainer',
+
 	height: percent(100),
-	position: 'absolute'
+	display: 'flex',
+	flexDirection: 'column'
 });
 
-export const bodyRow = style({
-	display: 'table-row'
+export const editorBody = style({
+	$debugName: 'editorBody',
+
+	display: 'flex',
+	flex: '1 1 auto',
+	position: 'relative',
+	overflowY: 'scroll',
+	flexDirection: 'row'
 });
 
-export const bodyCell = style({
-	display: 'table-cell'
+export const editorFooter = style({
+	$debugName: 'editorFooter',
+
+	flex: '0 1 auto',
+	textAlign: 'left',
+	padding: px(10)
 });
 
-export const footerRow = style({
-	display: 'table-row'
+export const editorBodyMain = style({
+	$debugName: 'editorBodyMain',
+
+	display: 'flex',
+	flexDirection: 'column',
+	flex: '1 1 auto'
 });
 
-export const footerCell = style({
-	display: 'table-cell',
-	height: px(70),
+export const editorBodyMainHeader = style({
+	$debugName: 'editorBodyMainHeader',
 
-	$nest: {
-		'.panel': {
-			marginBottom: 0
-		}
-	}
+	flex: '0 1 auto',
+	padding: px(10)
+});
+
+export const editorBodyMainCanvasContainer = style({
+	$debugName: 'editorBodyMainCanvasContainer',
+
+	flex: '1 1 auto',
+	overflow: 'hidden'
+});
+
+export const editorBodyRight = style({
+	$debugName: 'editorBodyRight',
+
+	flexBasis: px(LAYER_LIST_WIDTH),
+	overflowY: 'scroll',
+	padding: px(10)
 });

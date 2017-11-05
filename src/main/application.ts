@@ -17,7 +17,9 @@ export class Application {
 	private createMainWindow() {
 		this.mainWindow = new BrowserWindow({
 			width: 1000,
-			height: 900
+			height: 900,
+			minWidth: 800,
+			minHeight: 500,
 		});
 
 		this.mainWindow.loadURL(url.format({

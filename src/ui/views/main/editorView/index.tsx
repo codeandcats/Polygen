@@ -6,6 +6,7 @@ import {
 	Grid, ListGroup, ListGroupItem, Panel, Row
 } from 'react-bootstrap';
 import { ApplicationState } from '../../../../shared/models/applicationState';
+import { Nullable } from '../../../../shared/models/nullable';
 import { Size } from '../../../../shared/models/size';
 import { addPoint } from '../../../actions/editor/document/layer/points/addPoint';
 import { moveSelectedPoints } from '../../../actions/editor/document/layer/points/moveSelectedPoints';
@@ -18,6 +19,7 @@ import { setPan } from '../../../actions/editor/setPan';
 import { ImageCache } from '../../../models/imageCache';
 import { Store } from '../../../reduxWithLessSux/store';
 import { getCurrentBreakpointType } from '../../../utils/bootstrap';
+import * as mainStyles from '../styles';
 import { Canvas } from './canvas/index';
 import { EditorToolbar } from './editorToolbar';
 import { LayerList } from './layerList';
@@ -34,21 +36,21 @@ export interface EditorViewState {
 export class EditorView extends React.Component<EditorViewProps, EditorViewState> {
 	private static EDITOR_BODY_ROW_ID = 'editorBodyRow';
 	private static EDITOR_CONTAINER_COLUMN_ID = 'editorContainerColumn';
+	private static readonly DEFAULT_CANVAS_SIZE = Object.freeze({
+		width: 100,
+		height: 100
+	});
 
+	private canvasContainer: Nullable<HTMLDivElement>;
 	private updateCanvasSizeCount = 0;
-	private windowResized = () => {
-		this.updateCanvasSize();
-	}
+	private windowResized = () => this.updateCanvasSize();
 
 	private imageCache = new ImageCache();
 
 	constructor(props: EditorViewProps, context: any) {
 		super(props, context);
 		this.state = {
-			canvasSize: {
-				width: 100,
-				height: 100
-			}
+			canvasSize: EditorView.DEFAULT_CANVAS_SIZE
 		};
 	}
 
@@ -60,54 +62,22 @@ export class EditorView extends React.Component<EditorViewProps, EditorViewState
 		$(window).off('resize', this.windowResized);
 	}
 
-	private getCanvasSize() {
-		let canvasLength: number | undefined;
-
-		const editorContainerColumn = $('#' + EditorView.EDITOR_CONTAINER_COLUMN_ID);
-		if (editorContainerColumn.length) {
-			canvasLength = editorContainerColumn.width();
-		}
-
-		if (!canvasLength) {
-			const breakpointType = getCurrentBreakpointType();
-			switch (breakpointType) {
-				case 'xs':
-					canvasLength = 400;
-					break;
-
-				case 'sm':
-					canvasLength = 532;
-					break;
-
-				case 'md':
-				case 'lg':
-					canvasLength = 720;
-					break;
-
-				// case 'lg':
-				// 	canvasLength = 870;
-				// 	break;
-
-				default:
-					return assertNever(breakpointType);
-			}
-		}
-
-		canvasLength = Math.ceil(canvasLength);
-
-		return {
-			width: canvasLength,
-			height: canvasLength
-		};
-	}
-
 	private updateCanvasSize() {
-		const canvasSize = this.getCanvasSize();
+		if (!this.canvasContainer) {
+			return;
+		}
 
-		if (
+		const canvasSize = {
+			width: window.innerWidth - styles.LAYER_LIST_WIDTH,
+			height: this.canvasContainer.offsetHeight
+		};
+
+		const hasSizedChanged = (
 			this.state.canvasSize.width !== canvasSize.width ||
 			this.state.canvasSize.height !== canvasSize.height
-		) {
+		);
+
+		if (hasSizedChanged) {
 			this.setState({
 				canvasSize
 			});
@@ -120,61 +90,53 @@ export class EditorView extends React.Component<EditorViewProps, EditorViewState
 		const layer = editor.document.layers[editor.selectedLayerIndex];
 
 		return (
-			<div className={ styles.editorView }>
-				<div className={ styles.bodyRow }>
-					<div
-						className={ styles.bodyCell }
-						id={ EditorView.EDITOR_BODY_ROW_ID }
-						ref={ () => this.updateCanvasSize() }
-					>
-						<Grid fluid>
-							<Row>
-								<Col xs={8} sm={9}>
-									<Row>
-										<Col xs={12}>
-											<EditorToolbar
-												selectedToolName={ editor.selectedToolName }
-												onSelectTool={ toolName => selectTool(this.props.store, { toolName }) }
-											/>
-										</Col>
-									</Row>
-									<Row>
-										<Col xs={12} id={ EditorView.EDITOR_CONTAINER_COLUMN_ID } ref={ () => this.updateCanvasSize() }>
-											<Canvas
-												editor={ editor }
-												width={ this.state.canvasSize.width }
-												height={ this.state.canvasSize.height }
-												imageCache={ this.imageCache }
-												onAddPoint={ point => addPoint(this.props.store, { point, imageCache: this.imageCache }) }
-												onDeleteSelection={ () => removeSelection(this.props.store, { imageCache: this.imageCache }) }
-												onMoveSelection={ moveBy => moveSelectedPoints(this.props.store, { moveBy, imageCache: this.imageCache }) }
-												onSelectAll={ () => selectAllPoints(this.props.store) }
-												onSelectPoints={ pointIndices => selectPoints(this.props.store, { pointIndices }) }
-												onSetPan={ point => setPan(this.props.store, { pan: point }) }
-											/>
-										</Col>
-									</Row>
-								</Col>
-								<Col xs={4} sm={3}>
-									<LayerList store={this.props.store} />
-								</Col>
-							</Row>
-						</Grid>
+			<div className={ styles.editorContainer }>
+				<div className={ styles.editorBody }>
+					<div className={ styles.editorBodyMain }>
+						<div className={ styles.editorBodyMainHeader }>
+						<EditorToolbar
+							selectedToolName={ editor.selectedToolName }
+							onSelectTool={ toolName => selectTool(this.props.store, { toolName }) }
+						/>
+						</div>
+						<div
+							className={ styles.editorBodyMainCanvasContainer }
+							ref={ element => this.setCanvasContainer(element) }
+						>
+							<Canvas
+								editor={ editor }
+								width={ this.state.canvasSize.width }
+								height={ this.state.canvasSize.height }
+								imageCache={ this.imageCache }
+								onAddPoint={ point => addPoint(this.props.store, { point, imageCache: this.imageCache }) }
+								onDeleteSelection={ () => removeSelection(this.props.store, { imageCache: this.imageCache }) }
+								onMoveSelection={ moveBy => {
+									moveSelectedPoints(this.props.store, { moveBy, imageCache: this.imageCache });
+								} }
+								onSelectAll={ () => selectAllPoints(this.props.store) }
+								onSelectPoints={ pointIndices => selectPoints(this.props.store, { pointIndices }) }
+								onSetPan={ point => setPan(this.props.store, { pan: point }) }
+							/>
+						</div>
+					</div>
+					<div className={ styles.editorBodyRight }>
+						<LayerList store={this.props.store} />
 					</div>
 				</div>
-				<div className={ styles.footerRow }>
-					<div className={ styles.footerCell }>
-						<Grid fluid>
-							<Panel>
-								<span>Points: <Badge>{ layer.points.length }</Badge></span>
-								&nbsp;
-								<span>Polygons: <Badge>{ layer.polygons.length }</Badge></span>
-							</Panel>
-						</Grid>
-					</div>
+				<div className={ styles.editorFooter }>
+					<span className={ mainStyles.spaceRight }>Points: <Badge>{ layer.points.length }</Badge></span>
+					<span>Polygons: <Badge>{ layer.polygons.length }</Badge></span>
 				</div>
 			</div>
 		);
+	}
+
+	private setCanvasContainer(element: Nullable<HTMLDivElement>) {
+		this.canvasContainer = element;
+
+		if (this.canvasContainer) {
+			this.updateCanvasSize();
+		}
 	}
 
 	public updatePolygonColors() {

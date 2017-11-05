@@ -9,7 +9,7 @@ import { Store } from '../../reduxWithLessSux/store';
 import { BootstrapLabel } from './breakpointLabel/index';
 import { EditorView } from './editorView';
 import { NewProjectFileDialog } from './newProjectFileDialog/index';
-import './styles';
+import * as styles from './styles';
 import { WelcomeView } from './welcomeView';
 
 interface MainWindowProps {
@@ -37,7 +37,7 @@ export class MainWindow extends React.Component<MainWindowProps, MainWindowState
 		const state = this.props.store.getState();
 
 		return (
-			<div>
+			<div className={ styles.mainWindow }>
 				<NewProjectFileDialog
 					isVisible={ state.dialogs.newProjectFile.isVisible }
 					defaultDimensions={ state.dialogs.newProjectFile.dimensions }

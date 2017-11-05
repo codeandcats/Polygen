@@ -1,6 +1,8 @@
 import { style } from 'typestyle';
 
 export const layerBackgroundImageForm = style({
+	$debugName: 'layerBackgroundImageForm',
+
 	$nest: {
 		'form-group:last-of-type': {
 			marginBottom: 0

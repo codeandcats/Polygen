@@ -2,6 +2,8 @@ import { percent, px } from 'csx';
 import { cssRule, style } from 'typestyle';
 
 export const layerList = style({
+	$debugName: 'layerList',
+
 	$nest: {
 		'>ul': {
 			padding: 0,
@@ -11,15 +13,17 @@ export const layerList = style({
 });
 
 export const layerListHeader = style({
-	marginBottom: px(10),
-	$nest: {
-		'.control-label': {
-			margin: 0
-		}
-	}
+	$debugName: 'layerListHeader',
+
+	marginBottom: px(10)
+});
+
+export const addLayerButton = style({
 });
 
 export const layerListItem = style({
+	$debugName: 'layerListItem',
+
 	listStyle: 'none',
 
 	$nest: {
@@ -46,7 +50,9 @@ export const layerListItem = style({
 			$nest: {
 				'.btn:first-of-type': {
 					flexGrow: 1,
-					textAlign: 'left'
+					overflow: 'hidden',
+					textAlign: 'left',
+					textOverflow: 'ellipsis'
 				}
 			}
 		}
@@ -54,6 +60,8 @@ export const layerListItem = style({
 });
 
 export const layerListItemInvisible = style({
+	$debugName: 'layerListItemInvisible',
+
 	$nest: {
 		'&>.btn-group .btn': {
 			opacity: .75

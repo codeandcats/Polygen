@@ -52,7 +52,7 @@ export class RenameLayerDialog extends React.Component<RenameLayerDialogProps, R
 					<h2>Rename layer</h2>
 				</Modal.Header>
 				<Modal.Body>
-					<Form horizontal onSubmit={ event => this.accept(event) }>
+					<Form onSubmit={ event => this.accept(event) }>
 						<ControlLabel>Layer name</ControlLabel>
 						<FormControl
 							id={ RenameLayerDialog.LAYER_NAME_INPUT_ID }

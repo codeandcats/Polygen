@@ -9,6 +9,7 @@ import { Editor } from '../../../../../shared/models/editor';
 import { Layer } from '../../../../../shared/models/layer';
 import * as mainStyles from '../../styles';
 import * as styles from './styles';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 interface LayerListItemProps {
 	isSelected: boolean;
@@ -46,16 +47,21 @@ export class LayerListItem extends React.Component<LayerListItemProps, LayerList
 					<Button
 						bsStyle={ buttonStyle }
 						onClick={ () => this.props.onSelectLayer(layer) }
+						onDoubleClick={ () => this.props.onShowRenameLayerDialog(this.props.layerIndex) }
 					>{ layer.name }</Button>
 
-					<Button
-						bsStyle={ buttonStyle }
-						className={ mainStyles.iconButton }
-						onClick={ () => this.props.onSetLayerVisibility(layer, !layer.isVisible) }
-						title={ layer.isVisible ? 'Hide layer' : 'Show layer' }
+					<OverlayTrigger
+						overlay={ <Tooltip id='toggleLayerVisibilityTooltip'>{ layer.isVisible ? 'Hide layer' : 'Show layer' }</Tooltip> }
+						placement='top'
 					>
-						<i className={ 'fa ' + (layer.isVisible ? 'fa-eye' : 'fa-eye-slash') } />
-					</Button>
+						<Button
+							bsStyle={ buttonStyle }
+							className={ mainStyles.iconButton }
+							onClick={ () => this.props.onSetLayerVisibility(layer, !layer.isVisible) }
+						>
+							<i className={ 'fa ' + (layer.isVisible ? 'fa-eye' : 'fa-eye-slash') } />
+						</Button>
+					</OverlayTrigger>
 
 					<DropdownButton
 						bsStyle={ buttonStyle }

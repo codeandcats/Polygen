@@ -15,16 +15,11 @@ interface EditorToolbarState {
 
 export class EditorToolbar extends React.Component<EditorToolbarProps, EditorToolbarState> {
 	private static TOOL_NAMES_ORDERED: ToolName[] = ['pan', 'point', 'selection'];
-	private toolbarElement: HTMLDivElement | null;
-
-	public getHeight() {
-		return (this.toolbarElement && this.toolbarElement.offsetHeight) || 0;
-	}
 
 	public render() {
 		return (
-			<div className={ mainStyles.spaceBelow } ref={ toolbar => this.toolbarElement = toolbar }>
-				<ControlLabel className={ classNames('control-label', mainStyles.spaceRight) }>Tools</ControlLabel>
+			<div>
+				<ControlLabel className={ mainStyles.spaceRight }>Tools</ControlLabel>
 				<ButtonGroup>
 					{
 						EditorToolbar.TOOL_NAMES_ORDERED.map(toolName => {
@@ -38,7 +33,7 @@ export class EditorToolbar extends React.Component<EditorToolbarProps, EditorToo
 								>
 									<Button
 										bsSize='sm'
-										bsStyle={ isSelected ? 'primary' : 'default' }
+										bsStyle='default'
 										className={ classNames(mainStyles.iconButton, { active: isSelected }) }
 										onClick={ () => {
 											if (isSelected) {

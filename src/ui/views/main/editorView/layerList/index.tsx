@@ -76,18 +76,17 @@ export class LayerList extends React.Component<LayerListProps, LayerListState> {
 		const layerHavingBackgroundUpdated = editor.document.layers[this.state.indexOfLayerHavingBackgroundUpdated];
 
 		return (
-			<div className={styles.layerList}>
-				<div className={ mainStyles.spaceBelow }>
+			<div className={ styles.layerList }>
+				<div className={ styles.layerListHeader }>
 					<label className={ classNames('control-label', mainStyles.spaceRight) }>Layers</label>
 					<OverlayTrigger
-							overlay={ <Tooltip id='addLayerTooltip'>Add layer</Tooltip> }
-							placement='bottom'
-						>
+						overlay={ <Tooltip id='addLayerTooltip'>Add layer</Tooltip> }
+						placement='bottom'
+					>
 						<Button
 							bsSize='sm'
-							className={ mainStyles.iconButton }
+							className={ classNames(styles.addLayerButton, mainStyles.iconButton) }
 							onClick={ () => addLayer(this.props.store) }
-							title='Add layer'
 						>
 							<i className='fa fa-plus' />
 						</Button>
