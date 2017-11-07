@@ -11,6 +11,7 @@ import { CanvasMouseButtonsState, CanvasMouseState, Tool, ToolHelper } from '../
 import { PointTool } from '../../../../models/tools/pointTool';
 import { Fps } from '../../../../utils/fps';
 import { renderProjectFile, renderTool, renderTransparencyTiles, runInTransaction } from '../../../../utils/graphics';
+import { MouseMonitor } from '../../mouseMonitor';
 import * as styles from './styles';
 
 interface CanvasProps {
@@ -219,46 +220,28 @@ export class Canvas extends React.Component<CanvasProps, CanvasState> {
 			return amount;
 		};
 
-		switch (event.keyCode) {
-			case KeyCode.DELETE:
-			case KeyCode.BACKSPACE:
-				if (this.props.editor.selectedPointIndices.length) {
-					this.props.onDeleteSelection();
+		if (!event.altKey) {
+			switch (event.keyCode) {
+				case KeyCode.LEFT:
+					this.props.onMoveSelection(getMoveAmount({ x: -1, y: 0 }));
 					event.preventDefault();
-				}
-				break;
+					break;
 
-			case KeyCode.A:
-				if (event.metaKey || event.ctrlKey) {
-					this.props.onSelectAll();
+				case KeyCode.RIGHT:
+					this.props.onMoveSelection(getMoveAmount({ x: 1, y: 0 }));
 					event.preventDefault();
-				}
-				break;
+					break;
 
-			case KeyCode.LEFT:
-				this.props.onMoveSelection(getMoveAmount({ x: -1, y: 0 }));
-				event.preventDefault();
-				break;
+				case KeyCode.UP:
+					this.props.onMoveSelection(getMoveAmount({ x: 0, y: -1 }));
+					event.preventDefault();
+					break;
 
-			case KeyCode.RIGHT:
-				this.props.onMoveSelection(getMoveAmount({ x: 1, y: 0 }));
-				event.preventDefault();
-				break;
-
-			case KeyCode.UP:
-				this.props.onMoveSelection(getMoveAmount({ x: 0, y: -1 }));
-				event.preventDefault();
-				break;
-
-			case KeyCode.DOWN:
-				this.props.onMoveSelection(getMoveAmount({ x: 0, y: 1 }));
-				event.preventDefault();
-				break;
-
-			default:
-				// tslint:disable-next-line:max-line-length
-				(console.debug || console.log)(`Canvas Key Down: key = "${ event.key }", code = ${ event.keyCode }, meta = ${ event.metaKey }, ctrl = ${ event.ctrlKey }, alt = ${ event.altKey }, shift = ${ event.shiftKey }`);
-				break;
+				case KeyCode.DOWN:
+					this.props.onMoveSelection(getMoveAmount({ x: 0, y: 1 }));
+					event.preventDefault();
+					break;
+			}
 		}
 	}
 
@@ -374,6 +357,7 @@ export class Canvas extends React.Component<CanvasProps, CanvasState> {
 
 	public render() {
 		return (
+			/*<MouseMonitor>*/
 			<canvas
 				className={styles.canvas}
 				width={ this.props.width }
@@ -386,6 +370,7 @@ export class Canvas extends React.Component<CanvasProps, CanvasState> {
 				tabIndex={-1}
 			>
 			</canvas>
+			/*</MouseMonitor>*/
 		);
 	}
 }

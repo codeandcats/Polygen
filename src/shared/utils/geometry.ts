@@ -44,6 +44,13 @@ export function getCenter(size: Size): Point {
 	};
 }
 
+export function getDistanceBetweenPointsSquared(pointA: Point, pointB: Point): number {
+	const xDiff = pointB.x - pointA.x;
+	const yDiff = pointB.y - pointA.y;
+	const result = (xDiff * xDiff) + (yDiff * yDiff);
+	return result;
+}
+
 export function getIndicesOfPointsInRectangle(points: Point[], rectangle: Rectangle): number[] {
 	const indices: number[] = [];
 	for (let index = 0; index < points.length; index++) {

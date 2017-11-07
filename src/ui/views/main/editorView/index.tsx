@@ -84,6 +84,10 @@ export class EditorView extends React.Component<EditorViewProps, EditorViewState
 		}
 	}
 
+	public removeSelection() {
+		removeSelection(this.props.store, { imageCache: this.imageCache });
+	}
+
 	public render() {
 		const { activeEditorIndex, editors } = this.props.store.getState();
 		const editor = editors[activeEditorIndex];

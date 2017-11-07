@@ -3,16 +3,17 @@
 ## Tools
 
 ### Move Tool
-- Update polygon colours
+- ~~Update polygon colours~~
 
 ### Select Tool
-- Select point above/left of/right of/below selected point (Alt+Up/Left/Right/Down)
+- ~~Select point above/left of/right of/below selected point (Alt+Up/Left/Right/Down)~~
+- Animate selected point jumping
 
 ## Menus
-- Selection
-	- Select All (CmdOrCtrl+A when canvas focused)
-	- Deselect All (CmdOrCtrl+D when canvas focused)
-	- Remove Selection (Delete when canvas focused)
+- ~~Selection~~
+	- ~~Select All (CmdOrCtrl+A when canvas focused)~~
+	- ~~Deselect All (CmdOrCtrl+D when canvas focused)~~
+	- ~~Remove Selection (Delete when canvas focused)~~
 
 - Undo/Redo
 

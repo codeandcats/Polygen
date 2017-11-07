@@ -4,20 +4,28 @@ import * as jQuery from 'jquery';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { FluxMenuItemDefinition, FluxMenuRenderer } from '../../../shared/fluxMenu';
-import { ApplicationState } from '../../../shared/models/applicationState';
+import { ApplicationState, areDialogsVisible, isEditorVisible } from '../../../shared/models/applicationState';
 import { Editor } from '../../../shared/models/editor';
 import { Nullable } from '../../../shared/models/nullable';
 import { PolygenDocument } from '../../../shared/models/polygenDocument';
 import settingsFile from '../../../shared/models/settings';
 import { closeActiveProjectFile } from '../../actions/editor/closeActiveProjectFile';
+import { deselectAllPoints } from '../../actions/editor/document/layer/points/deselectAllPoints';
+import { removeSelection } from '../../actions/editor/document/layer/points/removeSelection';
+import { selectAllPoints } from '../../actions/editor/document/layer/points/selectAllPoints';
+import { selectNearestPoint } from '../../actions/editor/document/layer/points/selectNearestPoint';
 import { updatePolygonColors } from '../../actions/editor/document/layer/polygons/updatePolygonColors';
 import { openExistingProjectFile } from '../../actions/editor/openExistingProjectFile';
 import { openNewProjectFile } from '../../actions/editor/openNewProjectFile';
 import { saveActiveProjectFile } from '../../actions/editor/saveActiveProjectFile';
+import { focusedElementChanged, isElementAnInput, isElementATextInput } from '../../actions/focusedElementChanged';
 import { loadSettings } from '../../actions/loadSettings';
+import { nativeDialogDidHide } from '../../actions/nativeDialogDidHide';
+import { nativeDialogWillShow } from '../../actions/nativeDialogWillShow';
 import { showNewProjectFileDialog } from '../../actions/showNewProjectFileDialog';
 import { switchToEditor } from '../../actions/switchToEditor';
 import { Store } from '../../reduxWithLessSux/store';
+import { canElementDelete, canElementSelectAll } from '../../utils/forms';
 import { MainWindow } from './index';
 
 export class Application {
@@ -36,7 +44,8 @@ export class Application {
 				{
 					accelerator: 'CmdOrCtrl+N',
 					label: 'New',
-					click: () => this.openNewProjectFile()
+					click: () => this.openNewProjectFile(),
+					enabled: state => !areDialogsVisible(state)
 				},
 				{
 					type: 'separator'
@@ -44,7 +53,8 @@ export class Application {
 				{
 					accelerator: 'CmdOrCtrl+O',
 					label: 'Open...',
-					click: () => this.openProjectFile()
+					click: () => this.openProjectFile(),
+					enabled: state => !areDialogsVisible(state)
 				},
 				{
 					type: 'separator'
@@ -52,12 +62,14 @@ export class Application {
 				{
 					accelerator: 'CmdOrCtrl+S',
 					label: 'Save',
-					click: () => this.saveProjectFile()
+					click: () => this.saveProjectFile(),
+					enabled: state => isEditorVisible(state) && !areDialogsVisible(state)
 				},
 				{
 					accelerator: 'CmdOrCtrl+Shift+S',
 					label: 'Save As...',
-					click: () => this.saveProjectFileAs()
+					click: () => this.saveProjectFileAs(),
+					enabled: state => isEditorVisible(state) && !areDialogsVisible(state)
 				},
 				{
 					type: 'separator'
@@ -65,7 +77,8 @@ export class Application {
 				{
 					accelerator: 'CmdOrCtrl+W',
 					label: 'Close',
-					click: () => this.closeProjectFile()
+					click: () => this.closeProjectFile(),
+					enabled: state => isEditorVisible(state) && !areDialogsVisible(state)
 				}
 			]
 		},
@@ -93,7 +106,77 @@ export class Application {
 							editorView.updatePolygonColors();
 						}
 					},
-					enabled: state => state.activeEditorIndex !== -1
+					enabled: state => isEditorVisible(state) && !areDialogsVisible(state)
+				}
+			]
+		},
+		{
+			label: 'Selection',
+			submenu: [
+				{
+					accelerator: 'CmdOrCtrl+A',
+					label: 'Select All',
+					click: () => {
+						if (document.activeElement && canElementSelectAll(document.activeElement)) {
+							(document.activeElement as HTMLInputElement).select();
+						} else {
+							selectAllPoints(this.store);
+						}
+					},
+					enabled: state => !areDialogsVisible(state) && !state.focusedElement.isTextInput
+				},
+				{
+					accelerator: 'CmdOrCtrl+D',
+					label: 'Deselect',
+					click: () => deselectAllPoints(this.store),
+					enabled: state => !areDialogsVisible(state)
+				},
+				{
+					type: 'separator'
+				},
+				{
+					accelerator: 'Backspace',
+					label: 'Delete',
+					click: () => {
+						if (document.activeElement && canElementDelete(document.activeElement)) {
+							$(document.activeElement).val('');
+						} else {
+							const editorView = this.mainWindow && this.mainWindow.getEditorView();
+							if (editorView) {
+								editorView.removeSelection();
+							}
+						}
+					},
+					enabled: state => !areDialogsVisible(state) && !state.focusedElement.isTextInput
+				},
+				{
+					label: 'Select',
+					submenu: [
+						{
+							accelerator: 'Alt+Up',
+							label: 'Point above',
+							click: () => selectNearestPoint(this.store, { direction: 'up' }),
+							enabled: state => !areDialogsVisible(state) && !state.focusedElement.isInput
+						},
+						{
+							accelerator: 'Alt+Down',
+							label: 'Point below',
+							click: () => selectNearestPoint(this.store, { direction: 'down' }),
+							enabled: state => !areDialogsVisible(state) && !state.focusedElement.isInput
+						},
+						{
+							accelerator: 'Alt+Left',
+							label: 'Point to the left',
+							click: () => selectNearestPoint(this.store, { direction: 'left' }),
+							enabled: state => !areDialogsVisible(state) && !state.focusedElement.isInput
+						},
+						{
+							accelerator: 'Alt+Right',
+							label: 'Point to the right',
+							click: () => selectNearestPoint(this.store, { direction: 'right' }),
+							enabled: state => !areDialogsVisible(state) && !state.focusedElement.isInput
+						}
+					]
 				}
 			]
 		}
@@ -104,6 +187,14 @@ export class Application {
 	private menu = new FluxMenuRenderer<ApplicationState>({
 		definitions: this.MENU_DEFINITIONS
 	});
+
+	private nativeDialogDidHide = () => {
+		nativeDialogDidHide(this.store);
+	}
+
+	private nativeDialogWillShow = () => {
+		nativeDialogWillShow(this.store);
+	}
 
 	constructor(globals: any, private store: Store<ApplicationState>) {
 		this.initialise(globals);
@@ -117,6 +208,8 @@ export class Application {
 		loadSettings(this.store, {
 			settings
 		});
+
+		window.addEventListener('focus', this.focusedElementChanged, true);
 
 		const container = document.getElementById('content') as HTMLElement;
 
@@ -155,6 +248,17 @@ export class Application {
 		closeActiveProjectFile(this.store);
 	}
 
+	private focusedElementChanged = () => {
+		const state = this.store.getState();
+
+		const isInput = isElementAnInput(document.activeElement);
+		const isTextInput = isElementATextInput(document.activeElement);
+
+		if (state.focusedElement.isInput !== isInput || state.focusedElement.isTextInput !== isTextInput) {
+			focusedElementChanged(this.store, { isInput, isTextInput });
+		}
+	}
+
 	private getEditorIndexOfProjectFile(fileName: string): number {
 		const state = this.store.getState();
 		return state.editors.findIndex(editor => editor.fileName === fileName);
@@ -171,6 +275,7 @@ export class Application {
 					}
 				]
 			};
+			this.nativeDialogWillShow();
 			remote.dialog.showOpenDialog(
 				window,
 				options,
@@ -178,10 +283,11 @@ export class Application {
 			);
 		})
 		.then(fileName => {
+			this.nativeDialogDidHide();
 			if (fileName) {
 				return this.openExactProjectFile(fileName);
 			}
-		});
+		}, this.nativeDialogDidHide);
 	}
 
 	private async openExactProjectFile(fileName: string): Promise<void> {
@@ -223,16 +329,18 @@ export class Application {
 					}
 				]
 			};
+			this.nativeDialogWillShow();
 			remote.dialog.showSaveDialog(
 				window,
 				options,
 				fileName => resolve(fileName)
 			);
 		}).then(fileName => {
+			this.nativeDialogDidHide();
 			if (fileName) {
 				return this.saveExactProjectFile(editor, fileName);
 			}
-		});
+		}, this.nativeDialogDidHide);
 	}
 
 	public async saveProjectFile(): Promise<void> {
