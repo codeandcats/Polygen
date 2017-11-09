@@ -6,7 +6,7 @@ import { Point } from '../../shared/models/point';
 import { PolygenDocument } from '../../shared/models/polygenDocument';
 import { Polygon } from '../../shared/models/polygon';
 import { Rectangle } from '../../shared/models/rectangle';
-import { Rgb } from '../../shared/models/rgb';
+import { Rgba } from '../../shared/models/rgba';
 import { Size } from '../../shared/models/size';
 import { forEachPointWithinPolygon, getCenter, isPointInRectangle } from '../../shared/utils/geometry';
 import { clamp } from '../../shared/utils/math';
@@ -108,10 +108,11 @@ export function getLayerPixelData(
 	};
 }
 
-export function getPolygonAverageColor(pixelData: LayerPixelData, polygon: [Point, Point, Point]): Rgb {
+export function getPolygonAverageColor(pixelData: LayerPixelData, polygon: [Point, Point, Point]): Rgba {
 	let totalR = 0;
 	let totalG = 0;
 	let totalB = 0;
+	let totalA = 0;
 	let pixelCount = 0;
 
 	const layerBounds = {
@@ -134,10 +135,12 @@ export function getPolygonAverageColor(pixelData: LayerPixelData, polygon: [Poin
 		const currentR = clamp(0, 255, pixelData.data[pixelIndex]);
 		const currentG = clamp(0, 255, pixelData.data[pixelIndex + 1]);
 		const currentB = clamp(0, 255, pixelData.data[pixelIndex + 2]);
+		const currentA = clamp(0, 255, pixelData.data[pixelIndex + 3]);
 
 		totalR += currentR;
 		totalG += currentG;
 		totalB += currentB;
+		totalA += currentA;
 
 		pixelCount++;
 	});
@@ -145,11 +148,13 @@ export function getPolygonAverageColor(pixelData: LayerPixelData, polygon: [Poin
 	const r = pixelCount === 0 ? 0 : clamp(0, 255, Math.round(totalR / pixelCount));
 	const g = pixelCount === 0 ? 0 : clamp(0, 255, Math.round(totalG / pixelCount));
 	const b = pixelCount === 0 ? 0 : clamp(0, 255, Math.round(totalB / pixelCount));
+	const a = pixelCount === 0 ? 0 : clamp(0, 255, Math.round(totalA / pixelCount));
 
 	return {
 		r,
 		g,
-		b
+		b,
+		a
 	};
 }
 
@@ -173,7 +178,8 @@ export function recalculatePolygonColours(options: RecalculatePolygonColoursOpti
 				color: {
 					r: 0,
 					g: 0,
-					b: 0
+					b: 0,
+					a: 0
 				}
 			};
 		});

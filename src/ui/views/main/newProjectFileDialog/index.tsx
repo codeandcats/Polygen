@@ -1,24 +1,23 @@
 import * as React from 'react';
 import { Button, ButtonGroup, Col, ControlLabel, Form, FormControl, FormGroup, Modal } from 'react-bootstrap';
+import titleCase = require('titlecase');
+import { ApplicationState } from '../../../../shared/models/applicationState';
 import { Size } from '../../../../shared/models/size';
+import { hideWebDialog } from '../../../actions/dialogs/hideWebDialog';
+import { updateWebDialogFields } from '../../../actions/dialogs/updateWebDialogFields';
+import { openNewProjectFile } from '../../../actions/editor/openNewProjectFile';
+import { Store } from '../../../reduxWithLessSux/store';
 
 export interface NewProjectFileDialogProps {
-	defaultDimensions: Size;
-	isVisible: boolean;
-	onAccept: (dimensions: Size) => void;
-	onCancel: () => void;
+	store: Store<ApplicationState>;
 }
 
 export interface NewProjectFileDialogState {
-	fields: { [k in keyof Size]: string | number | undefined | null };
 }
 
 export class NewProjectFileDialog extends React.Component<NewProjectFileDialogProps, NewProjectFileDialogState> {
 	constructor(props: NewProjectFileDialogProps, context?: any) {
 		super(props, context);
-		this.state = {
-			fields: { ...props.defaultDimensions }
-		};
 	}
 
 	private accept(event: React.FormEvent<Form> | React.MouseEvent<Button>) {
@@ -28,16 +27,24 @@ export class NewProjectFileDialog extends React.Component<NewProjectFileDialogPr
 		const height = this.getDimensionValueIfValid('height');
 
 		if (width && height) {
-			this.props.onAccept({ width, height });
+			const dimensions = { width, height };
+			openNewProjectFile(this.props.store, { dimensions });
+			hideWebDialog(this.props.store);
 		}
 	}
 
 	private cancel() {
-		this.props.onCancel();
+		hideWebDialog(this.props.store);
 	}
 
 	private getDimensionValueIfValid(dimension: keyof Size): number | undefined {
-		const value = this.state.fields[dimension];
+		const state = this.props.store.getState();
+		const dialog = state.dialogs.web;
+		if (!dialog || dialog.dialogType !== 'newProjectFile') {
+			return undefined;
+		}
+
+		const value = dialog.dimensions[dimension];
 
 		if (value === '' || value == null) {
 			return undefined;
@@ -52,24 +59,37 @@ export class NewProjectFileDialog extends React.Component<NewProjectFileDialogPr
 	}
 
 	private setDimension(dimension: keyof Size, event: React.FormEvent<FormControl>) {
+		const state = this.props.store.getState();
+		const dialog = state.dialogs.web;
+		if (!dialog || dialog.dialogType !== 'newProjectFile') {
+			return;
+		}
+
 		const { value } = (event.target as HTMLInputElement);
-		this.setState(previousState => ({
-			fields: {
-				...previousState.fields,
+		updateWebDialogFields(this.props.store, {
+			dimensions: {
+				...dialog.dimensions,
 				[dimension]: value
 			}
-		}));
+		});
 	}
 
 	private getDimensionControl(dimension: keyof Size) {
+		const state = this.props.store.getState();
+		const dialog = state.dialogs.web;
+
+		if (!dialog || dialog.dialogType !== 'newProjectFile') {
+			return undefined;
+		}
+
 		return (
 			<FormGroup>
-				<Col sm={2} componentClass={ControlLabel}>{ dimension[0].toUpperCase() + dimension.substr(1) }</Col>
-				<Col sm={10}>
+				<Col sm={ 2 } componentClass={ ControlLabel }>{ titleCase(dimension) }</Col>
+				<Col sm={ 10 }>
 					<FormControl
 						type='number'
 						className='text-right'
-						value={ this.state.fields[dimension] || 0 }
+						value={ dialog.dimensions[dimension] || 0 }
 						onChange={ event => this.setDimension(dimension, event) }
 						min='1'
 						style={ { maxWidth: 150 } }
@@ -80,12 +100,14 @@ export class NewProjectFileDialog extends React.Component<NewProjectFileDialogPr
 	}
 
 	public render() {
+		const state = this.props.store.getState();
+		const isVisible = !!state.dialogs.web && state.dialogs.web.dialogType === 'newProjectFile';
 		const isWidthValid = !!this.getDimensionValueIfValid('width');
 		const isHeightValid = !!this.getDimensionValueIfValid('height');
 		const isSubmitEnabled = isWidthValid && isHeightValid;
 
 		return (
-			<Modal show={ this.props.isVisible } onHide={ () => this.props.onCancel() } >
+			<Modal show={ isVisible } onHide={ () => this.cancel() } >
 				<Modal.Header>
 					<h2>Create new file</h2>
 				</Modal.Header>

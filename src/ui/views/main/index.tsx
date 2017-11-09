@@ -4,7 +4,6 @@ import { ApplicationState } from '../../../shared/models/applicationState';
 import { Nullable } from '../../../shared/models/nullable';
 import { PolygenDocument } from '../../../shared/models/polygenDocument';
 import { openNewProjectFile } from '../../actions/editor/openNewProjectFile';
-import { hideNewProjectFileDialog } from '../../actions/hideNewProjectFileDialog';
 import { Store } from '../../reduxWithLessSux/store';
 import { BootstrapLabel } from './breakpointLabel/index';
 import { EditorView } from './editorView';
@@ -38,13 +37,7 @@ export class MainWindow extends React.Component<MainWindowProps, MainWindowState
 
 		return (
 			<div className={ styles.mainWindow }>
-				<NewProjectFileDialog
-					isVisible={ state.dialogs.newProjectFile.isVisible }
-					defaultDimensions={ state.dialogs.newProjectFile.dimensions }
-					onAccept={ dimensions => openNewProjectFile(this.props.store, { dimensions }) }
-					onCancel={ () => hideNewProjectFileDialog(this.props.store) }
-				/>
-
+				<NewProjectFileDialog store={ this.props.store } />
 				{
 					state.editors.length === 0 ?
 					<WelcomeView

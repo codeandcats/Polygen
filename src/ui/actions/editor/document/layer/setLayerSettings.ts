@@ -1,15 +1,15 @@
 import { ApplicationState } from '../../../../../shared/models/applicationState';
-import { ImageSource } from '../../../../../shared/models/imageSource';
 import { Nullable } from '../../../../../shared/models/nullable';
 import { defineAction } from '../../../../reduxWithLessSux/action';
 
-interface SetLayerImagePayload {
+interface SetLayerSettingsPayload {
 	layerIndex: number;
-	imageSource: Nullable<ImageSource>;
+	opacityThreshold: Nullable<number>;
+	transparencyThreshold: Nullable<number>;
 }
 
-export const setLayerImage = defineAction(
-	'setLayerImage', (state: ApplicationState, payload: SetLayerImagePayload) => {
+export const setLayerSettings = defineAction(
+	'setLayerSettings', (state: ApplicationState, payload: SetLayerSettingsPayload) => {
 		const editors = state.editors.map((editor, editorIndex) => {
 			if (editorIndex === state.activeEditorIndex) {
 				return {
@@ -20,10 +20,8 @@ export const setLayerImage = defineAction(
 							if (layerIndex === payload.layerIndex) {
 								layer = {
 									...layer,
-									image: {
-										...layer.image,
-										source: payload.imageSource
-									}
+									opacityThreshold: payload.opacityThreshold,
+									transparencyThreshold: payload.transparencyThreshold
 								};
 							}
 							return layer;

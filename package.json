@@ -39,6 +39,7 @@
     "classnames": "2.2.5",
     "clone": "2.1.1",
     "csx": "8.5.0",
+    "deep-equal": "1.0.1",
     "eases": "1.0.8",
     "font-awesome": "4.7.0",
     "fs-extra": "4.0.2",
@@ -50,6 +51,7 @@
     "react-dom": "16.0.0",
     "react-redux": "5.0.6",
     "source-map-support": "0.5.0",
+    "titlecase": "1.1.2",
     "typestyle": "1.4.3",
     "uuid": "3.1.0"
   },
@@ -57,6 +59,7 @@
     "@types/app-root-path": "1.2.4",
     "@types/chai": "4.0.4",
     "@types/classnames": "2.2.3",
+    "@types/deep-equal": "1.0.1",
     "@types/electron": "1.6.10",
     "@types/fs-extra": "4.0.3",
     "@types/jquery": "3.2.15",

@@ -8,6 +8,11 @@ cssRule('html, body', {
 	height: percent(100)
 });
 
+cssRule('span, p, label', {
+	userSelect: 'none',
+	cursor: 'default'
+});
+
 cssRule('#content', {
 	height: viewHeight(100),
 	width: viewWidth(100)

@@ -124,7 +124,7 @@ export class EditorView extends React.Component<EditorViewProps, EditorViewState
 						</div>
 					</div>
 					<div className={ styles.editorBodyRight }>
-						<LayerList store={this.props.store} />
+						<LayerList imageCache={ this.imageCache } store={ this.props.store } />
 					</div>
 				</div>
 				<div className={ styles.editorFooter }>

@@ -1,53 +1,75 @@
 import * as React from 'react';
 import { Button, ControlLabel, Form, FormControl, Modal } from 'react-bootstrap';
+import { ApplicationState } from '../../../../../../shared/models/applicationState';
+import { Nullable } from '../../../../../../shared/models/nullable';
+import { hideWebDialog } from '../../../../../actions/dialogs/hideWebDialog';
+import { updateWebDialogFields } from '../../../../../actions/dialogs/updateWebDialogFields';
+import { renameLayer } from '../../../../../actions/editor/document/layer/renameLayer';
+import { Store } from '../../../../../reduxWithLessSux/store';
 
 interface RenameLayerDialogProps {
-	layerName: string;
-	isVisible: boolean;
-	onAccept: (layerName: string) => void;
-	onCancel: () => void;
+	store: Store<ApplicationState>;
 }
 
-interface RenameLayerDialogState {
-	layerName: string;
-}
-
-export class RenameLayerDialog extends React.Component<RenameLayerDialogProps, RenameLayerDialogState> {
+export class RenameLayerDialog extends React.Component<RenameLayerDialogProps, {}> {
 	private static LAYER_NAME_INPUT_ID = 'renameLayerDialog_LayerName';
-
-	public componentWillReceiveProps(props: RenameLayerDialogProps) {
-		this.setState({
-			layerName: props.layerName || ''
-		});
-	}
-
-	private setFocusToInput() {
-		const input = document.getElementById(RenameLayerDialog.LAYER_NAME_INPUT_ID);
-		if (input) {
-			input.focus();
-		}
-	}
 
 	private accept(event: React.FormEvent<Form> | React.MouseEvent<Button>) {
 		event.preventDefault();
 
-		if (!this.state.layerName) {
+		const state = this.props.store.getState();
+		const web = state.dialogs.web;
+
+		if (!web || web.dialogType !== 'renameLayer') {
 			return;
 		}
 
-		this.props.onAccept(this.state.layerName);
+		const { layerIndex, layerName } = web;
+
+		renameLayer(this.props.store, {
+			layerIndex,
+			layerName
+		});
+		hideWebDialog(this.props.store);
 	}
 
 	private cancel() {
-		this.props.onCancel();
+		hideWebDialog(this.props.store);
+	}
+
+	private focusLayerName() {
+		const element = document.getElementById(RenameLayerDialog.LAYER_NAME_INPUT_ID);
+		if (element) {
+			element.focus();
+		}
 	}
 
 	public render() {
-		const layerName = (this.state && this.state.layerName || '') + '';
+		const state = this.props.store.getState();
+		const dialog = state.dialogs.web;
+
+		let isVisible: boolean;
+		let layerName: string;
+		let layerIndex: number;
+
+		if (dialog && dialog.dialogType === 'renameLayer') {
+			isVisible = true;
+			layerIndex = dialog.layerIndex;
+			layerName = dialog.layerName;
+		} else {
+			isVisible = false;
+			layerIndex = -1;
+			layerName = '';
+		}
+
 		const isValid = !!layerName.trim();
 
 		return (
-			<Modal show={ this.props.isVisible } onHide={ () => this.props.onCancel() } >
+			<Modal
+				onHide={ () => this.cancel() }
+				onShow={ () => this.focusLayerName() }
+				show={ isVisible }
+			>
 				<Modal.Header>
 					<h2>Rename layer</h2>
 				</Modal.Header>
@@ -56,9 +78,8 @@ export class RenameLayerDialog extends React.Component<RenameLayerDialogProps, R
 						<ControlLabel>Layer name</ControlLabel>
 						<FormControl
 							id={ RenameLayerDialog.LAYER_NAME_INPUT_ID }
-							ref={ () => this.setFocusToInput() }
+							onChange={ event => this.updateLayerName(event) }
 							value={ layerName }
-							onChange={ event => this.setState({ layerName: (event.target as HTMLInputElement).value }) }
 						/>
 					</Form>
 				</Modal.Body>
@@ -68,5 +89,13 @@ export class RenameLayerDialog extends React.Component<RenameLayerDialogProps, R
 				</Modal.Footer>
 			</Modal>
 		);
+	}
+
+	private updateLayerName(event: React.FormEvent<FormControl>) {
+		event.preventDefault();
+		const layerName = (event.target as HTMLInputElement).value;
+		updateWebDialogFields(this.props.store, {
+			layerName
+		});
 	}
 }

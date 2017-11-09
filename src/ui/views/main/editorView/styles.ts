@@ -1,6 +1,7 @@
 import { percent, px } from 'csx';
 import { style } from 'typestyle';
 import * as mainStyles from '../styles';
+import './theme';
 
 export const LAYER_LIST_WIDTH = 300;
 

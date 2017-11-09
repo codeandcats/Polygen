@@ -9,6 +9,9 @@ import { Editor } from '../../../shared/models/editor';
 import { Nullable } from '../../../shared/models/nullable';
 import { PolygenDocument } from '../../../shared/models/polygenDocument';
 import settingsFile from '../../../shared/models/settings';
+import { hideNativeDialog } from '../../actions/dialogs/nativeDialogDidHide';
+import { showNativeDialog } from '../../actions/dialogs/showNativeDialog';
+import { showWebDialog } from '../../actions/dialogs/showWebDialog';
 import { closeActiveProjectFile } from '../../actions/editor/closeActiveProjectFile';
 import { deselectAllPoints } from '../../actions/editor/document/layer/points/deselectAllPoints';
 import { removeSelection } from '../../actions/editor/document/layer/points/removeSelection';
@@ -20,9 +23,6 @@ import { openNewProjectFile } from '../../actions/editor/openNewProjectFile';
 import { saveActiveProjectFile } from '../../actions/editor/saveActiveProjectFile';
 import { focusedElementChanged, isElementAnInput, isElementATextInput } from '../../actions/focusedElementChanged';
 import { loadSettings } from '../../actions/loadSettings';
-import { nativeDialogDidHide } from '../../actions/nativeDialogDidHide';
-import { nativeDialogWillShow } from '../../actions/nativeDialogWillShow';
-import { showNewProjectFileDialog } from '../../actions/showNewProjectFileDialog';
 import { switchToEditor } from '../../actions/switchToEditor';
 import { Store } from '../../reduxWithLessSux/store';
 import { canElementDelete, canElementSelectAll } from '../../utils/forms';
@@ -188,14 +188,6 @@ export class Application {
 		definitions: this.MENU_DEFINITIONS
 	});
 
-	private nativeDialogDidHide = () => {
-		nativeDialogDidHide(this.store);
-	}
-
-	private nativeDialogWillShow = () => {
-		nativeDialogWillShow(this.store);
-	}
-
 	constructor(globals: any, private store: Store<ApplicationState>) {
 		this.initialise(globals);
 	}
@@ -275,7 +267,7 @@ export class Application {
 					}
 				]
 			};
-			this.nativeDialogWillShow();
+			showNativeDialog(this.store, { type: 'open' });
 			remote.dialog.showOpenDialog(
 				window,
 				options,
@@ -283,11 +275,11 @@ export class Application {
 			);
 		})
 		.then(fileName => {
-			this.nativeDialogDidHide();
+			hideNativeDialog(this.store);
 			if (fileName) {
 				return this.openExactProjectFile(fileName);
 			}
-		}, this.nativeDialogDidHide);
+		}, () => hideNativeDialog(this.store));
 	}
 
 	private async openExactProjectFile(fileName: string): Promise<void> {
@@ -309,7 +301,15 @@ export class Application {
 	}
 
 	public openNewProjectFile(): void {
-		showNewProjectFileDialog(this.store);
+		showWebDialog(this.store, {
+			dialog: {
+				dialogType: 'newProjectFile',
+				dimensions: {
+					width: 600,
+					height: 800
+				}
+			}
+		});
 	}
 
 	public async saveProjectFileAs(): Promise<void> {
@@ -329,18 +329,18 @@ export class Application {
 					}
 				]
 			};
-			this.nativeDialogWillShow();
+			showNativeDialog(this.store, { type: 'save' });
 			remote.dialog.showSaveDialog(
 				window,
 				options,
 				fileName => resolve(fileName)
 			);
 		}).then(fileName => {
-			this.nativeDialogDidHide();
+			hideNativeDialog(this.store);
 			if (fileName) {
 				return this.saveExactProjectFile(editor, fileName);
 			}
-		}, this.nativeDialogDidHide);
+		}, () => hideNativeDialog(this.store));
 	}
 
 	public async saveProjectFile(): Promise<void> {

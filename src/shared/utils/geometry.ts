@@ -115,7 +115,7 @@ export function recalculatePolygons(points: Point[]): Polygon[] {
 
 	for (let polygonIndex = 0; polygonIndex < polygonPointIndices.length; polygonIndex++) {
 		polygons[polygonIndex] = {
-			color: { r: 0, g: 0, b: 0 },
+			color: { r: 0, g: 0, b: 0, a: 0 },
 			pointIndices: polygonPointIndices[polygonIndex]
 		};
 	}

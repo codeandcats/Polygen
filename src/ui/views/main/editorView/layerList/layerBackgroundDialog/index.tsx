@@ -5,41 +5,48 @@ import {
 	Form, FormControl, FormGroup, Modal, Thumbnail
 } from 'react-bootstrap';
 import * as uuid from 'uuid/v4';
+import { ApplicationState } from '../../../../../../shared/models/applicationState';
+import { getWebDialogState } from '../../../../../../shared/models/dialogs';
 import { ImageSource } from '../../../../../../shared/models/imageSource';
+import { LayerImageSourceDialogState } from '../../../../../../shared/models/layerImageSourceDialogState';
 import { Nullable } from '../../../../../../shared/models/nullable';
+import { hideWebDialog } from '../../../../../actions/dialogs/hideWebDialog';
+import { updateWebDialogFields } from '../../../../../actions/dialogs/updateWebDialogFields';
+import { setLayerImage } from '../../../../../actions/editor/document/layer/setLayerImage';
 import { ImageCache } from '../../../../../models/imageCache';
+import { Store } from '../../../../../reduxWithLessSux/store';
 import * as mainStyles from '../../../styles';
 import * as styles from './styles';
 
 export interface LayerBackgroundDialogProps {
-	imageSource: Nullable<ImageSource>;
-	isVisible: boolean;
-	onAccept: (imageSource: Nullable<ImageSource>) => void;
-	onCancel: () => void;
+	store: Store<ApplicationState>;
 }
 
-export interface LayerBackgroundDialogState {
-	imageSource: Nullable<ImageSource>;
-}
-
-export class LayerBackgroundDialog extends React.Component<LayerBackgroundDialogProps, LayerBackgroundDialogState> {
+export class LayerBackgroundDialog extends React.Component<LayerBackgroundDialogProps, {}> {
 	private imageCache: Nullable<ImageCache>;
 	private fileInput: Nullable<HTMLInputElement>;
 
-	constructor(props: LayerBackgroundDialogProps, context?: any) {
-		super(props, context);
-		this.state = {
-			imageSource: props.imageSource
-		};
-	}
-
 	private accept(event: React.FormEvent<Form> | React.MouseEvent<Button>) {
 		event.preventDefault();
-		this.props.onAccept(this.state.imageSource);
+		const state = this.props.store.getState();
+		const dialog = state.dialogs.web;
+
+		if (!dialog || dialog.dialogType !== 'layerImageSource') {
+			return;
+		}
+
+		const { imageSource, layerIndex } = dialog;
+
+		setLayerImage(this.props.store, {
+			imageSource,
+			layerIndex
+		});
+
+		hideWebDialog(this.props.store);
 	}
 
 	private cancel() {
-		this.props.onCancel();
+		hideWebDialog(this.props.store);
 	}
 
 	public componentWillMount() {
@@ -53,38 +60,41 @@ export class LayerBackgroundDialog extends React.Component<LayerBackgroundDialog
 		}
 	}
 
-	public componentWillReceiveProps(nextProps: LayerBackgroundDialogProps) {
-		const { imageSource } = nextProps;
-		this.setState({
-			imageSource
-		});
-	}
-
 	private removeImage() {
-		this.setState({
+		updateWebDialogFields(this.props.store, {
 			imageSource: undefined
 		});
 	}
 
 	public render() {
+		const dialog = getWebDialogState(this.props.store.getState(), 'layerImageSource');
+
+		let imageSource: Nullable<ImageSource> = null;
+		let isVisible: boolean = false;
+
+		if (dialog) {
+			imageSource = dialog.imageSource;
+			isVisible = true;
+		}
+
 		const cachedImage = (
 			this.imageCache &&
-			this.state.imageSource &&
-			this.imageCache.getImage(this.state.imageSource)
+			imageSource &&
+			this.imageCache.getImage(imageSource)
 		);
 
 		const removeImageButton = (
-			this.state.imageSource ?
+			imageSource ?
 			<Button
 				bsStyle='danger'
 				className={ mainStyles.buttonSpaceLeft }
 				onClick={ () => this.removeImage() }
 			>Remove Image</Button> :
-			null
+			undefined
 		);
 
 		return (
-			<Modal show={ this.props.isVisible } onHide={ () => this.props.onCancel() } >
+			<Modal show={ isVisible } onHide={ () => this.cancel() } >
 				<Modal.Header>
 					<h2>Layer background image</h2>
 				</Modal.Header>
@@ -115,7 +125,7 @@ export class LayerBackgroundDialog extends React.Component<LayerBackgroundDialog
 									src={ cachedImage.objectUrl }
 								/>
 							</FormGroup> :
-							null
+							undefined
 						}
 					</Form>
 				</Modal.Body>
@@ -144,7 +154,7 @@ export class LayerBackgroundDialog extends React.Component<LayerBackgroundDialog
 				data: buffer.toString('base64')
 			};
 
-			this.setState({
+			updateWebDialogFields(this.props.store, {
 				imageSource
 			});
 

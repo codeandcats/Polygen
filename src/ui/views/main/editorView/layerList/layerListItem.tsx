@@ -4,12 +4,12 @@ import {
 	Button, ButtonGroup, ControlLabel, DropdownButton,
 	ListGroup, ListGroupItem, MenuItem, Panel
 } from 'react-bootstrap';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { ApplicationState } from '../../../../../shared/models/applicationState';
 import { Editor } from '../../../../../shared/models/editor';
 import { Layer } from '../../../../../shared/models/layer';
 import * as mainStyles from '../../styles';
 import * as styles from './styles';
-import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 interface LayerListItemProps {
 	isSelected: boolean;
@@ -21,6 +21,7 @@ interface LayerListItemProps {
 	onSetLayerVisibility: (layer: Layer, isVisible: boolean) => void;
 	onShowRenameLayerDialog: (layerIndex: number) => void;
 	onShowLayerBackgroundDialog: (layerIndex: number) => void;
+	onShowLayerSettingsDialog: (layerIndex: number) => void;
 }
 
 interface LayerListItemState {
@@ -105,9 +106,17 @@ export class LayerListItem extends React.Component<LayerListItemProps, LayerList
 							Set background image
 						</MenuItem>
 
+						<MenuItem
+							eventKey='4'
+							onClick={ () => this.props.onShowLayerSettingsDialog(this.props.layerIndex) }
+						>
+							<i className='fa fa-cog icon-space-right' />
+							Settings
+						</MenuItem>
+
 						<MenuItem divider />
 
-						<MenuItem eventKey='4' disabled={ !canRemoveLayer } onClick={ () => this.props.onRemoveLayer(layer) }>
+						<MenuItem eventKey='5' disabled={ !canRemoveLayer } onClick={ () => this.props.onRemoveLayer(layer) }>
 							<i className='fa fa-times icon-space-right' />
 							Remove
 						</MenuItem>

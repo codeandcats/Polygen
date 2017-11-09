@@ -6,7 +6,6 @@ import { ApplicationState } from '../../../../shared/models/applicationState';
 import { PolygenDocument } from '../../../../shared/models/polygenDocument';
 import { Size } from '../../../../shared/models/size';
 import { openNewProjectFile } from '../../../actions/editor/openNewProjectFile';
-import { showNewProjectFileDialog } from '../../../actions/showNewProjectFileDialog';
 import { Store } from '../../../reduxWithLessSux/store';
 import { NewProjectFileDialog } from '../newProjectFileDialog';
 import * as styles from './styles';
