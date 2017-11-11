@@ -1,6 +1,7 @@
 import * as KeyCode from 'key-code';
 import * as React from 'react';
 import { Editor } from '../../../../../shared/models/editor';
+import { Nullable } from '../../../../../shared/models/nullable';
 import { Point } from '../../../../../shared/models/point';
 import { Rectangle } from '../../../../../shared/models/rectangle';
 import { Size } from '../../../../../shared/models/size';
@@ -11,7 +12,7 @@ import { CanvasMouseButtonsState, CanvasMouseState, Tool, ToolHelper } from '../
 import { PointTool } from '../../../../models/tools/pointTool';
 import { Fps } from '../../../../utils/fps';
 import { renderProjectFile, renderTool, renderTransparencyTiles, runInTransaction } from '../../../../utils/graphics';
-import { MouseMonitor } from '../../mouseMonitor';
+import { MouseTrap } from '../../../../utils/mouseTrap';
 import * as styles from './styles';
 
 interface CanvasProps {
@@ -34,8 +35,9 @@ interface CanvasState {
 }
 
 export class Canvas extends React.Component<CanvasProps, CanvasState> {
-	private canvas: HTMLCanvasElement | null;
-	private animationFrameTimer: number | undefined;
+	private canvas: Nullable<HTMLCanvasElement>;
+	private canvasMouseTrap: Nullable<MouseTrap>;
+	private animationFrameTimer: Nullable<number>;
 	private fps = new Fps();
 	private helper: ToolHelper = {
 		actions: {
@@ -155,44 +157,28 @@ export class Canvas extends React.Component<CanvasProps, CanvasState> {
 		}
 	}
 
-	private getMouseState(
-		event: React.MouseEvent<HTMLCanvasElement>,
-		shouldCaptureButtons: boolean
-	): CanvasMouseState | undefined {
+	private getMouseState(event: MouseEvent): CanvasMouseState | undefined {
 		if (this.canvas) {
-			const $canvas = $(this.canvas);
-			const offset = $canvas.offset();
-			if (offset) {
-				const WIERD_LEFT_OFFSET = 1;
+			const viewPortPoint = {
+				x: event.offsetX,
+				y: event.offsetY
+			};
 
-				const viewPortPoint = {
-					x: event.clientX - offset.left - WIERD_LEFT_OFFSET,
-					y: event.clientY - offset.top
-				};
+			const documentPoint = this.helper.translation.viewPortToDocument(viewPortPoint);
 
-				const documentPoint = this.helper.translation
-					.viewPortToDocument(viewPortPoint);
+			const buttons = {
+				left: event.button === MouseButton.left,
+				middle: event.button === MouseButton.middle,
+				right: event.button === MouseButton.right
+			};
 
-				const existingStateButtons: CanvasMouseButtonsState | undefined = (
-					(this.state.mouse || {} as Partial<CanvasMouseState>).buttons
-				);
+			const result = {
+				buttons,
+				viewPortPoint,
+				documentPoint
+			};
 
-				const buttons = shouldCaptureButtons ? {
-					left: event.button === MouseButton.left,
-					middle: event.button === MouseButton.middle,
-					right: event.button === MouseButton.right
-				} : existingStateButtons || {
-					left: false,
-					middle: false,
-					right: false
-				};
-
-				return {
-					buttons,
-					viewPortPoint,
-					documentPoint
-				};
-			}
+			return result;
 		}
 
 		return undefined;
@@ -245,8 +231,8 @@ export class Canvas extends React.Component<CanvasProps, CanvasState> {
 		}
 	}
 
-	private mouseDown(event: React.MouseEvent<HTMLCanvasElement>): void {
-		const mouse = this.getMouseState(event, true);
+	private mouseDown = (event: MouseEvent): void => {
+		const mouse = this.getMouseState(event);
 		if (!mouse) {
 			return;
 		}
@@ -259,8 +245,8 @@ export class Canvas extends React.Component<CanvasProps, CanvasState> {
 		}
 	}
 
-	private mouseMove(event: React.MouseEvent<HTMLCanvasElement>): void {
-		const mouse = this.getMouseState(event, false);
+	private mouseMove = (event: MouseEvent): void => {
+		const mouse = this.getMouseState(event);
 		if (!mouse) {
 			return;
 		}
@@ -273,8 +259,8 @@ export class Canvas extends React.Component<CanvasProps, CanvasState> {
 		}
 	}
 
-	private mouseUp(event: React.MouseEvent<HTMLCanvasElement>): void {
-		const mouse = this.getMouseState(event, true);
+	private mouseUp = (event: MouseEvent): void => {
+		const mouse = this.getMouseState(event);
 		if (!mouse) {
 			return;
 		}
@@ -352,25 +338,36 @@ export class Canvas extends React.Component<CanvasProps, CanvasState> {
 	}
 
 	private setCanvasElement(canvas: HTMLCanvasElement | null) {
+		if (canvas === this.canvas) {
+			return;
+		}
+
+		if (this.canvasMouseTrap) {
+			this.canvasMouseTrap.release();
+			this.canvasMouseTrap = null;
+		}
+
 		this.canvas = canvas;
+
+		if (this.canvas) {
+			this.canvasMouseTrap = new MouseTrap(this.canvas);
+			this.canvasMouseTrap.on('mousedown', this.mouseDown);
+			this.canvasMouseTrap.on('mousemove', this.mouseMove);
+			this.canvasMouseTrap.on('mouseup', this.mouseUp);
+		}
 	}
 
 	public render() {
 		return (
-			/*<MouseMonitor>*/
 			<canvas
 				className={styles.canvas}
 				width={ this.props.width }
 				height={ this.props.height }
 				onKeyDown={ event => this.keyDown(event) }
-				onMouseDown={ event => this.mouseDown(event) }
-				onMouseMove={ event => this.mouseMove(event) }
-				onMouseUp={ event => this.mouseUp(event) }
 				ref={ el => this.setCanvasElement(el) }
 				tabIndex={-1}
 			>
 			</canvas>
-			/*</MouseMonitor>*/
 		);
 	}
 }
