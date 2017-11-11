@@ -15,7 +15,9 @@
 		"Crosshair",
 		"Polygen",
 		"Unmount",
-		"submenu"
+		"initialise",
+		"submenu",
+		"toggledevtools"
 	],
 	"mocha.enabled": false
 }
