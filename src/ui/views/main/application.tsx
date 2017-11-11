@@ -1,4 +1,7 @@
-import { Menu, MenuItem, MenuItemConstructorOptions, OpenDialogOptions, remote, SaveDialogOptions } from 'electron';
+import {
+	Menu, MenuItem, MenuItemConstructorOptions, OpenDialogOptions,
+	remote, SaveDialogOptions, webFrame
+} from 'electron';
 import * as fs from 'fs-extra';
 import * as jQuery from 'jquery';
 import * as React from 'react';
@@ -190,6 +193,8 @@ export class Application {
 
 	constructor(globals: any, private store: Store<ApplicationState>) {
 		this.initialise(globals);
+		webFrame.setVisualZoomLevelLimits(1, 1);
+		webFrame.setLayoutZoomLevelLimits(0, 0);
 	}
 
 	private async initialise(globals: any): Promise<void> {
