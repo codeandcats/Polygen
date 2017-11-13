@@ -1,3 +1,4 @@
+import * as classNames from 'classnames';
 import deepEqual = require('deep-equal');
 import * as React from 'react';
 import {
@@ -195,7 +196,7 @@ export class LayerSettingsDialog extends React.Component<LayerSettingsDialogProp
 		return (
 			<FormGroup className={ mainStyles.spaceBelow }>
 				<Checkbox
-					className='icon-space-right col-xs-4 col-xs-offset-1'
+					className={ classNames('col-xs-4 col-xs-offset-1', mainStyles.spaceRight) }
 					checked={ isEnabled }
 					inline
 					onChange={ event => this.updateThresholdFieldEnabled(fieldName, event) }

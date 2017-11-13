@@ -4,6 +4,14 @@ import { cssRule, style } from 'typestyle';
 export const backgroundColor = '#444';
 export const textColor = '#eee';
 
+cssRule('h1, h2, h3, h4, h5, h6, p, label', {
+	userSelect: 'none'
+});
+
+cssRule('.modal-header > h1, h2, h3, h4, h5, h6', {
+	marginTop: px(10)
+});
+
 cssRule('html, body', {
 	height: percent(100)
 });

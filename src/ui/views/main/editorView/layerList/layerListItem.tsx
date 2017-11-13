@@ -75,7 +75,7 @@ export class LayerListItem extends React.Component<LayerListItemProps, LayerList
 							disabled={ !canMoveLayerUp }
 							onClick={ () => this.props.onMoveLayer(layer, layerIndex + 1) }
 						>
-							<i className='fa fa-arrow-up icon-space-right' />
+							<i className={ classNames('fa fa-arrow-up', mainStyles.spaceRight) } />
 							Move up
 						</MenuItem>
 
@@ -84,7 +84,7 @@ export class LayerListItem extends React.Component<LayerListItemProps, LayerList
 							disabled={ !canMoveLayerDown }
 							onClick={ () => this.props.onMoveLayer(layer, layerIndex - 1) }
 						>
-							<i className='fa fa-arrow-down icon-space-right' />
+							<i className={ classNames('fa fa-arrow-down', mainStyles.spaceRight) } />
 							Move down
 						</MenuItem>
 
@@ -94,7 +94,7 @@ export class LayerListItem extends React.Component<LayerListItemProps, LayerList
 							eventKey='3'
 							onClick={ () => this.props.onShowRenameLayerDialog(this.props.layerIndex) }
 						>
-							<i className='fa fa-tag icon-space-right' />
+							<i className={ classNames('fa fa-tag', mainStyles.spaceRight) } />
 							Rename
 						</MenuItem>
 
@@ -102,7 +102,7 @@ export class LayerListItem extends React.Component<LayerListItemProps, LayerList
 							eventKey='3'
 							onClick={ () => this.props.onShowLayerBackgroundDialog(this.props.layerIndex) }
 						>
-							<i className='fa fa-picture-o icon-space-right' />
+							<i className={ classNames('fa fa-picture-o', mainStyles.spaceRight) } />
 							Set background image
 						</MenuItem>
 
@@ -110,14 +110,14 @@ export class LayerListItem extends React.Component<LayerListItemProps, LayerList
 							eventKey='4'
 							onClick={ () => this.props.onShowLayerSettingsDialog(this.props.layerIndex) }
 						>
-							<i className='fa fa-cog icon-space-right' />
+							<i className={ classNames('fa fa-cog', mainStyles.spaceRight) } />
 							Settings
 						</MenuItem>
 
 						<MenuItem divider />
 
 						<MenuItem eventKey='5' disabled={ !canRemoveLayer } onClick={ () => this.props.onRemoveLayer(layer) }>
-							<i className='fa fa-times icon-space-right' />
+							<i className={ classNames('fa fa-times', mainStyles.spaceRight) } />
 							Remove
 						</MenuItem>
 					</DropdownButton>
