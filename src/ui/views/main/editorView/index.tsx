@@ -91,6 +91,10 @@ export class EditorView extends React.Component<EditorViewProps, EditorViewState
 	public render() {
 		const { activeEditorIndex, editors } = this.props.store.getState();
 		const editor = editors[activeEditorIndex];
+		if (!editor) {
+			return null;
+		}
+
 		const layer = editor.document.layers[editor.selectedLayerIndex];
 
 		return (
