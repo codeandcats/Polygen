@@ -6,7 +6,7 @@ import { Point } from '../../../../../shared/models/point';
 import { Rectangle } from '../../../../../shared/models/rectangle';
 import { Size } from '../../../../../shared/models/size';
 import { ImageCache } from '../../../../models/imageCache';
-import { MouseButton } from '../../../../models/mouseButton';
+import { MouseButtons } from '../../../../models/mouseButton';
 import { TOOL_BY_NAME } from '../../../../models/tools';
 import { CanvasMouseButtonsState, CanvasMouseState, Tool, ToolHelper } from '../../../../models/tools/common';
 import { PointTool } from '../../../../models/tools/pointTool';
@@ -167,9 +167,9 @@ export class Canvas extends React.Component<CanvasProps, CanvasState> {
 			const documentPoint = this.helper.translation.viewPortToDocument(viewPortPoint);
 
 			const buttons = {
-				left: event.button === MouseButton.left,
-				middle: event.button === MouseButton.middle,
-				right: event.button === MouseButton.right
+				left: event.buttons === MouseButtons.left,
+				middle: event.buttons === MouseButtons.middle,
+				right: event.buttons === MouseButtons.right
 			};
 
 			const result = {
