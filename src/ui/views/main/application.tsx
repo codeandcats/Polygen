@@ -30,6 +30,9 @@ import { switchToEditor } from '../../actions/switchToEditor';
 import { Store } from '../../reduxWithLessSux/store';
 import { canElementDelete, canElementSelectAll } from '../../utils/forms';
 import { MainWindow } from './index';
+import { zoomIn } from '../../actions/editor/viewPort/zoomIn';
+import { zoomOut } from '../../actions/editor/viewPort/zoomOut';
+import { resetZoom } from '../../actions/editor/viewPort/resetZoom';
 
 export class Application {
 	private readonly MENU_DEFINITIONS: Array<FluxMenuItemDefinition<ApplicationState>> = [
@@ -110,6 +113,36 @@ export class Application {
 						}
 					},
 					enabled: state => isEditorVisible(state) && !areDialogsVisible(state)
+				}
+			]
+		},
+		{
+			label: 'View',
+			submenu: [
+				{
+					accelerator: 'CmdOrCtrl+Plus',
+					label: 'Zoom in',
+					click: () => zoomIn(this.store),
+					enabled: state => isEditorVisible(state) && !areDialogsVisible(state)
+				},
+				{
+					accelerator: 'CmdOrCtrl+-',
+					label: 'Zoom out',
+					click: () => zoomOut(this.store),
+					enabled: state => isEditorVisible(state) && !areDialogsVisible(state)
+				},
+				{
+					accelerator: 'CmdOrCtrl+0',
+					label: 'Reset zoom',
+					click: () => resetZoom(this.store),
+					enabled: state => {
+						if (!isEditorVisible(state) || areDialogsVisible(state)) {
+							return false;
+						}
+
+						const editor = state.editors[state.activeEditorIndex];
+						return editor && editor.viewPort.zoom !== 0;
+					}
 				}
 			]
 		},

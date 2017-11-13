@@ -1,7 +1,7 @@
-import { ApplicationState } from '../../../shared/models/applicationState';
-import { Editor } from '../../../shared/models/editor';
-import { Point } from '../../../shared/models/point';
-import { defineAction } from '../../reduxWithLessSux/action';
+import { ApplicationState } from '../../../../shared/models/applicationState';
+import { Editor } from '../../../../shared/models/editor';
+import { Point } from '../../../../shared/models/point';
+import { defineAction } from '../../../reduxWithLessSux/action';
 
 interface SetPanPayload {
 	pan: Point;

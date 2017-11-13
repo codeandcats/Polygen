@@ -15,7 +15,7 @@ import { selectAllPoints } from '../../../actions/editor/document/layer/points/s
 import { selectPoints } from '../../../actions/editor/document/layer/points/selectPoints';
 import { updatePolygonColors } from '../../../actions/editor/document/layer/polygons/updatePolygonColors';
 import { selectTool } from '../../../actions/editor/selectTool';
-import { setPan } from '../../../actions/editor/setPan';
+import { setPan } from '../../../actions/editor/viewPort/setPan';
 import { ImageCache } from '../../../models/imageCache';
 import { Store } from '../../../reduxWithLessSux/store';
 import { getCurrentBreakpointType } from '../../../utils/bootstrap';

@@ -22,6 +22,9 @@ export function applyViewportTransform(
 		(bounds.width / 2) + editor.viewPort.pan.x,
 		(bounds.height / 2) + editor.viewPort.pan.y
 	);
+
+	const zoom = editor.viewPort.zoom;
+	context.scale(zoom, zoom);
 }
 
 interface GradientColorStep {
