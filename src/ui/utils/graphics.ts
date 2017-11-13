@@ -312,6 +312,7 @@ export function renderPolygon(
 	polygon: Polygon,
 	documentDimensions: Size
 ) {
+	runInTransaction(context, () => {
 		context.beginPath();
 
 		context.lineWidth = 1;
@@ -321,12 +322,17 @@ export function renderPolygon(
 			return getAbsoluteDocumentPoint(points[pointIndex], documentDimensions);
 		});
 
+		const oldGlobalAlpha = context.globalAlpha;
+		context.globalAlpha = (context.globalAlpha || 0) * polygon.color.a;
+
 		context.moveTo(polygonPoints[0].x, polygonPoints[0].y);
 		context.lineTo(polygonPoints[1].x, polygonPoints[1].y);
 		context.lineTo(polygonPoints[2].x, polygonPoints[2].y);
 		context.closePath();
-	context.fill();
+
+		context.globalAlpha = oldGlobalAlpha;
 		context.stroke();
+	});
 }
 
 export function renderProjectFile(
