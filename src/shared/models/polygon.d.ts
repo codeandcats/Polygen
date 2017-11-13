@@ -1,7 +1,8 @@
 import { Point } from './point';
 import { Rgba } from './rgba';
+import { TrianglePointIndices } from './trianglePointIndices';
 
 export interface Polygon {
-	pointIndices: [number, number, number];
+	pointIndices: TrianglePointIndices;
 	color: Rgba;
 }
