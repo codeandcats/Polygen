@@ -16,12 +16,15 @@ import { Tool, ToolHelper } from '../models/tools/common';
 export function applyViewportTransform(
 	context: CanvasRenderingContext2D,
 	bounds: Rectangle,
-	editor: Editor
+	editor: Editor,
+	pixelRatio: number
 ) {
 	context.translate(
-		(bounds.width / 2) + editor.viewPort.pan.x,
-		(bounds.height / 2) + editor.viewPort.pan.y
+		(bounds.width / 2) + editor.viewPort.pan.x * pixelRatio,
+		(bounds.height / 2) + editor.viewPort.pan.y * pixelRatio
 	);
+
+	context.scale(pixelRatio, pixelRatio);
 
 	const zoom = editor.viewPort.zoom;
 	context.scale(zoom, zoom);
@@ -316,9 +319,9 @@ export function renderPolygon(
 		context.beginPath();
 
 		context.lineWidth = 1;
-	context.fillStyle = `rgb(${ polygon.color.r }, ${ polygon.color.g }, ${ polygon.color.b })`;
-	context.strokeStyle = '#333';
-	const polygonPoints = polygon.pointIndices.map(pointIndex => {
+		context.fillStyle = `rgb(${ polygon.color.r }, ${ polygon.color.g }, ${ polygon.color.b })`;
+		context.strokeStyle = '#333';
+		const polygonPoints = polygon.pointIndices.map(pointIndex => {
 			return getAbsoluteDocumentPoint(points[pointIndex], documentDimensions);
 		});
 
@@ -335,16 +338,17 @@ export function renderPolygon(
 	});
 }
 
-export function renderProjectFile(
+export function renderDocument(
 	context: CanvasRenderingContext2D,
 	bounds: Rectangle,
 	editor: Editor,
-	imageCache: ImageCache
+	imageCache: ImageCache,
+	pixelRatio: number
 ) {
 	runInTransaction(context, () => {
 		bounds = bounds;
 
-		applyViewportTransform(context, bounds, editor);
+		applyViewportTransform(context, bounds, editor, pixelRatio);
 
 		renderProjectFileBackground(context, editor);
 
@@ -406,13 +410,20 @@ export function renderTool(
 	runInTransaction(context, () => {
 		context.beginPath();
 		const editor = helper.getEditor();
-		applyViewportTransform(context, bounds, editor);
+		const pixelRatio = helper.getPixelRatio();
+		applyViewportTransform(context, bounds, editor, pixelRatio);
 		tool.render(helper, context, bounds);
 	});
 }
 
-export function renderTransparencyTiles(context: CanvasRenderingContext2D, bounds: Rectangle, tileSize: number = 20) {
+export function renderTransparencyTiles(
+	context: CanvasRenderingContext2D,
+	bounds: Rectangle,
+	tileSize: number = 20,
+	pixelRatio: number
+) {
 	runInTransaction(context, () => {
+		context.scale(pixelRatio, pixelRatio);
 		const squareColour = ['#FFF', '#DDD'];
 		for (let y = 0; y * tileSize < bounds.height; y++) {
 			for (let x = 0; x * tileSize < bounds.width; x++) {
@@ -467,7 +478,7 @@ export function renderProjectFileBackground(context: CanvasRenderingContext2D, e
 			halfWidth + 1, 0, halfWidth + 1 + SHADOW_OFFSET, 0,
 			SHADOW_COLOR_STOPS
 		);
-		context.rect(halfWidth + 1, -halfHeight + SHADOW_OFFSET, SHADOW_OFFSET, editor.document.dimensions.height);
+		context.rect(halfWidth, -halfHeight + SHADOW_OFFSET, SHADOW_OFFSET, editor.document.dimensions.height);
 		context.fill();
 
 		context.beginPath();
@@ -476,7 +487,7 @@ export function renderProjectFileBackground(context: CanvasRenderingContext2D, e
 			0, halfHeight + 1, 0, halfHeight + 1 + SHADOW_OFFSET,
 			SHADOW_COLOR_STOPS
 		);
-		context.rect(-halfWidth + SHADOW_OFFSET, halfHeight + 1, editor.document.dimensions.width, SHADOW_OFFSET);
+		context.rect(-halfWidth + SHADOW_OFFSET, halfHeight, editor.document.dimensions.width, SHADOW_OFFSET);
 		context.fill();
 	});
 }

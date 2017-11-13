@@ -11,7 +11,7 @@ import { TOOL_BY_NAME } from '../../../../models/tools';
 import { CanvasMouseButtonsState, CanvasMouseState, Tool, ToolHelper } from '../../../../models/tools/common';
 import { PointTool } from '../../../../models/tools/pointTool';
 import { Fps } from '../../../../utils/fps';
-import { renderProjectFile, renderTool, renderTransparencyTiles, runInTransaction } from '../../../../utils/graphics';
+import { renderDocument, renderTool, renderTransparencyTiles, runInTransaction } from '../../../../utils/graphics';
 import { MouseTrap } from '../../../../utils/mouseTrap';
 import * as styles from './styles';
 
@@ -46,12 +46,14 @@ export class Canvas extends React.Component<CanvasProps, CanvasState> {
 			setPan: point => this.props.onSetPan(point)
 		},
 		getEditor: () => this.props.editor,
+		getImageCache: () => this.props.imageCache,
 		getMouseCursor: () => (this.canvas && this.canvas.style.cursor) || '',
 		setMouseCursor: cursor => {
 			if (this.canvas && this.canvas.style.cursor !== cursor) {
 				this.canvas.style.cursor = cursor;
 			}
 		},
+		getPixelRatio: () => window.devicePixelRatio,
 		getToolState: () => this.state && this.state.toolState,
 		setToolState: (stateOrCallback: any | ((state: any) => any)) => {
 			if (typeof stateOrCallback === 'function') {
@@ -282,20 +284,24 @@ export class Canvas extends React.Component<CanvasProps, CanvasState> {
 		}
 	}
 
-	private renderFps(context: CanvasRenderingContext2D) {
-		const text = `${ Math.round(this.fps.getAverage()) } FPS`;
+	private renderFps(context: CanvasRenderingContext2D, pixelRatio: number) {
+		runInTransaction(context, () => {
+			context.scale(pixelRatio, pixelRatio);
 
-		const fontSize = 10;
-		context.font = `sans serif ${fontSize}px`;
-		const height = fontSize + 6;
-		const width = context.measureText(text).width + 6;
+			const text = `${ Math.round(this.fps.getAverage()) } FPS`;
 
-		context.fillStyle = 'rgba(0, 0, 0, .5)';
-		context.fillRect(3, 3, width, height);
+			const fontSize = 10;
+			context.font = `sans serif ${fontSize}px`;
+			const height = fontSize + 6;
+			const width = context.measureText(text).width + 6;
 
-		context.fillStyle = '#fff';
-		context.textBaseline = 'top';
-		context.fillText(text, 6, 6, width);
+			context.fillStyle = 'rgba(0, 0, 0, .5)';
+			context.fillRect(3, 3, width, height);
+
+			context.fillStyle = '#fff';
+			context.textBaseline = 'top';
+			context.fillText(text, 6, 6, width);
+		});
 	}
 
 	private renderFrame() {
@@ -322,16 +328,18 @@ export class Canvas extends React.Component<CanvasProps, CanvasState> {
 		}
 
 		runInTransaction(context, () => {
-			renderTransparencyTiles(context, canvasBounds, 10);
+			const pixelRatio = window.devicePixelRatio;
 
-			renderProjectFile(context, canvasBounds, editor, this.props.imageCache);
+			renderTransparencyTiles(context, canvasBounds, 20, pixelRatio);
+
+			renderDocument(context, canvasBounds, editor, this.props.imageCache, pixelRatio);
 
 			const tool = this.getSelectedTool();
 			if (tool) {
 				renderTool(context, canvasBounds, this.helper, tool);
 			}
 
-			this.renderFps(context);
+			this.renderFps(context, pixelRatio);
 		});
 
 		this.animationFrameTimer = requestAnimationFrame(() => this.renderFrame());
@@ -358,11 +366,20 @@ export class Canvas extends React.Component<CanvasProps, CanvasState> {
 	}
 
 	public render() {
+		const width = this.props.width * window.devicePixelRatio;
+		const height = this.props.height * window.devicePixelRatio;
+		const style = (
+			window.devicePixelRatio === 1 ?
+			undefined :
+			{ width: this.props.width, height: this.props.height }
+		);
+
 		return (
 			<canvas
-				className={styles.canvas}
-				width={ this.props.width }
-				height={ this.props.height }
+				className={ styles.canvas }
+				width={ width }
+				height={ height }
+				style={ style }
 				onKeyDown={ event => this.keyDown(event) }
 				ref={ el => this.setCanvasElement(el) }
 				tabIndex={-1}

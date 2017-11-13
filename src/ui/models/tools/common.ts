@@ -4,6 +4,7 @@ import { Point } from '../../../shared/models/point';
 import { Rectangle } from '../../../shared/models/rectangle';
 import { tuple } from '../../../shared/utils/tuple';
 import { Store } from '../../reduxWithLessSux/store';
+import { ImageCache } from '../imageCache';
 
 export const ALL_TOOL_NAMES = tuple('imageBounds', 'pan', 'point', 'selection');
 
@@ -25,7 +26,9 @@ export interface ToolHelperTranslation {
 export interface ToolHelper {
 	actions: ToolHelperActions;
 	getEditor(): Editor;
+	getImageCache(): ImageCache;
 	getMouseCursor(): Cursor | string;
+	getPixelRatio(): number;
 	getToolState(): any | undefined;
 	setMouseCursor(cursor: Cursor | string): void;
 	setToolState(stateOrCallback: any | ((state: any) => any)): void;
