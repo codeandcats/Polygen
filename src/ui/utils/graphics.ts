@@ -209,6 +209,12 @@ export function recalculatePolygonColours(options: RecalculatePolygonColoursOpti
 
 		const color = getPolygonAverageColor(layerPixelData, polygonPoints);
 
+		if (layer.transparencyThreshold != null && color.a < layer.transparencyThreshold) {
+			color.a = 0;
+		} else if (layer.opacityThreshold != null && color.a >= layer.opacityThreshold) {
+			color.a = 1;
+		}
+
 		return {
 			...polygon,
 			color
@@ -306,21 +312,21 @@ export function renderPolygon(
 	polygon: Polygon,
 	documentDimensions: Size
 ) {
-	context.beginPath();
+		context.beginPath();
 
-	context.lineWidth = 1;
+		context.lineWidth = 1;
 	context.fillStyle = `rgb(${ polygon.color.r }, ${ polygon.color.g }, ${ polygon.color.b })`;
 	context.strokeStyle = '#333';
 	const polygonPoints = polygon.pointIndices.map(pointIndex => {
-		return getAbsoluteDocumentPoint(points[pointIndex], documentDimensions);
-	});
+			return getAbsoluteDocumentPoint(points[pointIndex], documentDimensions);
+		});
 
-	context.moveTo(polygonPoints[0].x, polygonPoints[0].y);
-	context.lineTo(polygonPoints[1].x, polygonPoints[1].y);
-	context.lineTo(polygonPoints[2].x, polygonPoints[2].y);
-	context.closePath();
+		context.moveTo(polygonPoints[0].x, polygonPoints[0].y);
+		context.lineTo(polygonPoints[1].x, polygonPoints[1].y);
+		context.lineTo(polygonPoints[2].x, polygonPoints[2].y);
+		context.closePath();
 	context.fill();
-	context.stroke();
+		context.stroke();
 }
 
 export function renderProjectFile(
