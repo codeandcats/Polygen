@@ -1,3 +1,5 @@
+import { FloatPercent } from '../../shared/models/floatPercent';
+
 /**
  * Returns the percentage of time past as a number clamped between 0 and 1
  */
@@ -17,7 +19,7 @@ export function getAnimationProgress(startTime: number, duration: number, curren
 	return progress;
 }
 
-export function tween(from: number, to: number, progress: number) {
+export function tween(from: number, to: number, progress: FloatPercent) {
 	const distance = to - from;
 	const result = from + (distance * progress);
 	return result;
