@@ -465,29 +465,30 @@ export function renderProjectFileBackground(context: CanvasRenderingContext2D, e
 		context.stroke();
 		context.fill();
 
+		// Draw box shadow around document
 		const SHADOW_OFFSET = 5;
-
-		context.beginPath();
 		const SHADOW_COLOR_STOPS: GradientColorStep[] = [
 			{ stop: 0, fillStyle: 'rgba(0, 0, 0, .3)' },
 			{ stop: 1, fillStyle: 'rgba(0, 0, 0, .0)' }
 		];
 
-		context.fillStyle = createGradient(
-			context,
-			halfWidth + 1, 0, halfWidth + 1 + SHADOW_OFFSET, 0,
-			SHADOW_COLOR_STOPS
-		);
-		context.rect(halfWidth, -halfHeight + SHADOW_OFFSET, SHADOW_OFFSET, editor.document.dimensions.height);
+		// Right shadow
+		context.beginPath();
+		context.moveTo(halfWidth, -halfHeight + SHADOW_OFFSET);
+		context.lineTo(halfWidth, halfHeight);
+		context.lineTo(halfWidth + SHADOW_OFFSET, halfHeight + SHADOW_OFFSET);
+		context.lineTo(halfWidth + SHADOW_OFFSET, -halfHeight + SHADOW_OFFSET);
+		context.closePath();
+		context.fillStyle = createGradient(context, halfWidth + 1, 0, halfWidth + 1 + SHADOW_OFFSET, 0, SHADOW_COLOR_STOPS);
 		context.fill();
 
+		// Bottom shadow
 		context.beginPath();
-		context.fillStyle = createGradient(
-			context,
-			0, halfHeight + 1, 0, halfHeight + 1 + SHADOW_OFFSET,
-			SHADOW_COLOR_STOPS
-		);
-		context.rect(-halfWidth + SHADOW_OFFSET, halfHeight, editor.document.dimensions.width, SHADOW_OFFSET);
+		context.moveTo(-halfWidth + SHADOW_OFFSET, halfHeight);
+		context.lineTo(-halfWidth + SHADOW_OFFSET, halfHeight + SHADOW_OFFSET);
+		context.lineTo(halfWidth + SHADOW_OFFSET, halfHeight + SHADOW_OFFSET);
+		context.lineTo(halfWidth, halfHeight);
+		context.fillStyle = createGradient(context, 0, halfHeight + 1, 0, halfHeight + 1 + SHADOW_OFFSET, SHADOW_COLOR_STOPS);
 		context.fill();
 	});
 }
