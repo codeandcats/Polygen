@@ -154,7 +154,9 @@ export function getPolygonAverageColor(pixelData: LayerPixelData, polygon: [Poin
 	const r = pixelCount === 0 ? 0 : clamp(0, 255, Math.round(totalR / pixelCount));
 	const g = pixelCount === 0 ? 0 : clamp(0, 255, Math.round(totalG / pixelCount));
 	const b = pixelCount === 0 ? 0 : clamp(0, 255, Math.round(totalB / pixelCount));
-	const a = pixelCount === 0 ? 0 : clamp(0, 255, Math.round(totalA / pixelCount));
+	let a = pixelCount === 0 ? 0 : clamp(0, 255, Math.round(totalA / pixelCount));
+
+	a = +clamp(0, 1, (a / 255)).toFixed(2);
 
 	return {
 		r,
@@ -326,12 +328,14 @@ export function renderPolygon(
 		});
 
 		const oldGlobalAlpha = context.globalAlpha;
-		context.globalAlpha = (context.globalAlpha || 0) * polygon.color.a;
+		context.globalAlpha = context.globalAlpha * polygon.color.a;
 
 		context.moveTo(polygonPoints[0].x, polygonPoints[0].y);
 		context.lineTo(polygonPoints[1].x, polygonPoints[1].y);
 		context.lineTo(polygonPoints[2].x, polygonPoints[2].y);
 		context.closePath();
+
+		context.fill();
 
 		context.globalAlpha = oldGlobalAlpha;
 		context.stroke();
