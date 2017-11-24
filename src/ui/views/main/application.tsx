@@ -7,7 +7,9 @@ import * as jQuery from 'jquery';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { FluxMenuItemDefinition, FluxMenuRenderer } from '../../../shared/fluxMenu';
-import { ApplicationState, areDialogsVisible, isEditorVisible, isToolSelected } from '../../../shared/models/applicationState';
+import {
+	ApplicationState, areDialogsVisible, isEditorVisible, isToolSelected
+} from '../../../shared/models/applicationState';
 import { Editor } from '../../../shared/models/editor';
 import { Nullable } from '../../../shared/models/nullable';
 import { PolygenDocument } from '../../../shared/models/polygenDocument';
@@ -24,6 +26,7 @@ import { updatePolygonColors } from '../../actions/editor/document/layer/polygon
 import { openExistingProjectFile } from '../../actions/editor/openExistingProjectFile';
 import { openNewProjectFile } from '../../actions/editor/openNewProjectFile';
 import { saveActiveProjectFile } from '../../actions/editor/saveActiveProjectFile';
+import { selectTool } from '../../actions/editor/selectTool';
 import { resetZoom } from '../../actions/editor/viewPort/resetZoom';
 import { zoomIn } from '../../actions/editor/viewPort/zoomIn';
 import { zoomOut } from '../../actions/editor/viewPort/zoomOut';
@@ -33,7 +36,6 @@ import { switchToEditor } from '../../actions/switchToEditor';
 import { Store } from '../../reduxWithLessSux/store';
 import { canElementDelete, canElementSelectAll } from '../../utils/forms';
 import { MainWindow } from './index';
-import { selectTool } from '../../actions/editor/selectTool';
 
 export class Application {
 	private readonly MENU_DEFINITIONS: Array<FluxMenuItemDefinition<ApplicationState>> = [
