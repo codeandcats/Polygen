@@ -1,6 +1,7 @@
 # TODO
 
 ## Tools
+- Custom Cursors
 
 ### Move Tool
 - ~~Update polygon colours~~
@@ -15,7 +16,22 @@
 	- ~~Deselect All (CmdOrCtrl+D when canvas focused)~~
 	- ~~Remove Selection (Delete when canvas focused)~~
 
+- File
+	- Close/Quit should prompt to save changes
+
 - Undo/Redo
+	- Properties
+		- Type
+		- Timestamp
+		- Enough information to undo then redo changes
+	- Interaction
+		- Add Point
+		- Select
+		- Deselect
+		- Remove Points
+		- Move Points
+		- Set Layer Image
+		- Clear Layer Image
 
 - Tools
 	- Pan (1 when canvas focused)
@@ -30,11 +46,19 @@
 	- Show/hide points
 	- Zoom
 
+- Debug
+	- Show/hide FPS
+
 ## Layer settings
 - Transparency/Opacity threshold
 
-## Bugs
-- Fix scrolling offset bug
-- Fix mouse up outside canvas bug
-- Fix canvas sizing
+## Preview
+- A way to see a preview of the image
+	- Maybe it just toggles between edit mode and preview mode?
 
+## Bugs
+- ~~Fix scrolling offset bug~~
+- ~~Fix mouse up outside canvas bug~~
+- ~~Fix canvas sizing~~
+- Should not render the same lines twice when edge shared between 2 polygons
+- ~~Document shadow is doubled in corner~~
