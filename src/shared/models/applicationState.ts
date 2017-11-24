@@ -4,6 +4,7 @@ import { FocusedElementInfo } from './focusedElementInfo';
 import { Nullable } from './nullable';
 import { PolygenDocument } from './polygenDocument';
 import { ViewPort } from './viewPort';
+import { ToolName } from '../../ui/models/tools/common';
 
 export interface ApplicationState {
 	activeEditorIndex: number;
@@ -43,4 +44,9 @@ export function areDialogsVisible(state: ApplicationState): boolean {
 
 export function isEditorVisible(state: ApplicationState): boolean {
 	return state.activeEditorIndex > -1;
+}
+
+export function isToolSelected(state: ApplicationState, toolName: ToolName): boolean {
+	const editor = state.editors[state.activeEditorIndex];
+	return editor && editor.selectedToolName === toolName;
 }

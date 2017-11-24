@@ -7,7 +7,7 @@ import * as jQuery from 'jquery';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { FluxMenuItemDefinition, FluxMenuRenderer } from '../../../shared/fluxMenu';
-import { ApplicationState, areDialogsVisible, isEditorVisible } from '../../../shared/models/applicationState';
+import { ApplicationState, areDialogsVisible, isEditorVisible, isToolSelected } from '../../../shared/models/applicationState';
 import { Editor } from '../../../shared/models/editor';
 import { Nullable } from '../../../shared/models/nullable';
 import { PolygenDocument } from '../../../shared/models/polygenDocument';
@@ -33,15 +33,14 @@ import { switchToEditor } from '../../actions/switchToEditor';
 import { Store } from '../../reduxWithLessSux/store';
 import { canElementDelete, canElementSelectAll } from '../../utils/forms';
 import { MainWindow } from './index';
+import { selectTool } from '../../actions/editor/selectTool';
 
 export class Application {
 	private readonly MENU_DEFINITIONS: Array<FluxMenuItemDefinition<ApplicationState>> = [
 		{
 			label: 'Polygen',
 			submenu: [
-				{
-					role: 'quit'
-				}
+				{ role: 'quit' }
 			]
 		},
 		{
@@ -53,18 +52,14 @@ export class Application {
 					click: () => this.openNewProjectFile(),
 					enabled: state => !areDialogsVisible(state)
 				},
-				{
-					type: 'separator'
-				},
+				{ type: 'separator' },
 				{
 					accelerator: 'CmdOrCtrl+O',
 					label: 'Open...',
 					click: () => this.openProjectFile(),
 					enabled: state => !areDialogsVisible(state)
 				},
-				{
-					type: 'separator'
-				},
+				{ type: 'separator' },
 				{
 					accelerator: 'CmdOrCtrl+S',
 					label: 'Save',
@@ -77,9 +72,7 @@ export class Application {
 					click: () => this.saveProjectFileAs(),
 					enabled: state => isEditorVisible(state) && !areDialogsVisible(state)
 				},
-				{
-					type: 'separator'
-				},
+				{ type: 'separator' },
 				{
 					accelerator: 'CmdOrCtrl+W',
 					label: 'Close',
@@ -91,18 +84,10 @@ export class Application {
 		{
 			label: 'Debug',
 			submenu: [
-				{
-					role: 'copy'
-				},
-				{
-					role: 'paste'
-				},
-				{
-					role: 'reload'
-				},
-				{
-					role: 'toggledevtools'
-				},
+				{ role: 'copy' },
+				{ role: 'paste' },
+				{ role: 'reload' },
+				{ role: 'toggledevtools' },
 				{
 					accelerator: 'CmdOrCtrl+U',
 					label: 'Update Polygon Colors',
@@ -147,6 +132,32 @@ export class Application {
 			]
 		},
 		{
+			label: 'Tools',
+			submenu: [
+				{
+					accelerator: 'CmdOrCtrl+1',
+					label: 'Pan',
+					click: () => selectTool(this.store, { toolName: 'pan' }),
+					enabled: state => isEditorVisible(state),
+					checked: state => isToolSelected(state, 'pan')
+				},
+				{
+					accelerator: 'CmdOrCtrl+2',
+					label: 'Point',
+					click: () => selectTool(this.store, { toolName: 'point' }),
+					enabled: state => isEditorVisible(state),
+					checked: state => isToolSelected(state, 'point')
+				},
+				{
+					accelerator: 'CmdOrCtrl+3',
+					label: 'Select',
+					click: () => selectTool(this.store, { toolName: 'selection' }),
+					enabled: state => isEditorVisible(state),
+					checked: state => isToolSelected(state, 'selection')
+				}
+			]
+		},
+		{
 			label: 'Selection',
 			submenu: [
 				{
@@ -167,9 +178,7 @@ export class Application {
 					click: () => deselectAllPoints(this.store),
 					enabled: state => !areDialogsVisible(state)
 				},
-				{
-					type: 'separator'
-				},
+				{ type: 'separator' },
 				{
 					accelerator: 'Backspace',
 					label: 'Delete',
