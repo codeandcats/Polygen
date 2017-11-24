@@ -14,6 +14,7 @@ import { Fps } from '../../../../utils/fps';
 import { renderDocument, renderTool, renderTransparencyTiles, runInTransaction } from '../../../../utils/graphics';
 import { MouseTrap } from '../../../../utils/mouseTrap';
 import * as styles from './styles';
+import { WheelEvent } from 'react';
 
 interface CanvasProps {
 	width: number;
@@ -381,10 +382,18 @@ export class Canvas extends React.Component<CanvasProps, CanvasState> {
 				height={ height }
 				style={ style }
 				onKeyDown={ event => this.keyDown(event) }
+				onWheel={ event => this.wheel(event) }
 				ref={ el => this.setCanvasElement(el) }
 				tabIndex={-1}
 			>
 			</canvas>
 		);
+	}
+
+	private wheel(event: WheelEvent<HTMLCanvasElement>) {
+		const pan = this.props.editor.viewPort.pan;
+		pan.x -= event.deltaX;
+		pan.y -= event.deltaY;
+		this.props.onSetPan(pan);
 	}
 }
