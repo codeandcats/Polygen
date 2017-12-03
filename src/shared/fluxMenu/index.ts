@@ -102,10 +102,13 @@ function getDefinitionValue<TState, TKey extends keyof FluxMenuItemDefinition<TS
 	key: TKey
 ): any {
 	const provider = definition[key];
-	if (typeof provider === 'function') {
-		return (provider as MenuItemValueProvider<TState, any>)(state);
+	if (provider != null) {
+		if (typeof provider === 'function') {
+			return (provider as MenuItemValueProvider<TState, any>)(state);
+		}
+		return provider;
 	}
-	return provider;
+	return undefined;
 }
 
 function getMenuState<TState>(
