@@ -1,10 +1,10 @@
+import { ToolName } from '../../ui/models/tools/common';
 import { Dialogs } from './dialogs';
 import { Editor } from './editor';
 import { FocusedElementInfo } from './focusedElementInfo';
 import { Nullable } from './nullable';
 import { PolygenDocument } from './polygenDocument';
 import { ViewPort } from './viewPort';
-import { ToolName } from '../../ui/models/tools/common';
 
 export interface ApplicationState {
 	activeEditorIndex: number;
@@ -12,7 +12,6 @@ export interface ApplicationState {
 	editors: Editor[];
 	focusedElement: FocusedElementInfo;
 	recentFileNames: string[];
-	viewPort: ViewPort;
 }
 
 export const DEFAULT_APPLICATION_STATE: ApplicationState = {
@@ -26,14 +25,7 @@ export const DEFAULT_APPLICATION_STATE: ApplicationState = {
 		isInput: false,
 		isTextInput: false
 	},
-	recentFileNames: [],
-	viewPort: {
-		zoom: 1,
-		pan: {
-			x: 0,
-			y: 0
-		}
-	}
+	recentFileNames: []
 };
 
 export const MAX_RECENT_FILE_NAME_COUNT = 10;

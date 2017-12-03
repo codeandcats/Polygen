@@ -41,11 +41,12 @@ export const openExistingProjectFile = defineAction(
 				selectedPointIndices: [],
 				selectedToolName: undefined,
 				viewPort: {
-					zoom: 1,
+					isFramesPerSecondVisible: false,
 					pan: {
 						x: 0,
 						y: 0
-					}
+					},
+					zoom: 1
 				}
 			};
 			editors = [...state.editors].concat(editor);

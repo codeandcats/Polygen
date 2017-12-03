@@ -1,4 +1,5 @@
 import * as KeyCode from 'key-code';
+import { WheelEvent } from 'react';
 import * as React from 'react';
 import { Editor } from '../../../../../shared/models/editor';
 import { Nullable } from '../../../../../shared/models/nullable';
@@ -14,7 +15,6 @@ import { Fps } from '../../../../utils/fps';
 import { renderDocument, renderTool, renderTransparencyTiles, runInTransaction } from '../../../../utils/graphics';
 import { MouseTrap } from '../../../../utils/mouseTrap';
 import * as styles from './styles';
-import { WheelEvent } from 'react';
 
 interface CanvasProps {
 	width: number;
@@ -340,7 +340,9 @@ export class Canvas extends React.Component<CanvasProps, CanvasState> {
 				renderTool(context, canvasBounds, this.helper, tool);
 			}
 
-			this.renderFps(context, pixelRatio);
+			if (this.props.editor.viewPort.isFramesPerSecondVisible) {
+				this.renderFps(context, pixelRatio);
+			}
 		});
 
 		this.animationFrameTimer = requestAnimationFrame(() => this.renderFrame());

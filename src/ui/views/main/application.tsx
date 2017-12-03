@@ -14,6 +14,7 @@ import { Editor } from '../../../shared/models/editor';
 import { Nullable } from '../../../shared/models/nullable';
 import { PolygenDocument } from '../../../shared/models/polygenDocument';
 import settingsFile from '../../../shared/models/settings';
+import { isDebuggingEnabled } from '../../../shared/utils/environment';
 import { hideNativeDialog } from '../../actions/dialogs/nativeDialogDidHide';
 import { showNativeDialog } from '../../actions/dialogs/showNativeDialog';
 import { showWebDialog } from '../../actions/dialogs/showWebDialog';
@@ -28,6 +29,7 @@ import { openNewProjectFile } from '../../actions/editor/openNewProjectFile';
 import { saveActiveProjectFile } from '../../actions/editor/saveActiveProjectFile';
 import { selectTool } from '../../actions/editor/selectTool';
 import { resetZoom } from '../../actions/editor/viewPort/resetZoom';
+import { toggleFramesPerSecond } from '../../actions/editor/viewPort/toggleFramesPerSecond';
 import { zoomIn } from '../../actions/editor/viewPort/zoomIn';
 import { zoomOut } from '../../actions/editor/viewPort/zoomOut';
 import { focusedElementChanged, isElementAnInput, isElementATextInput } from '../../actions/focusedElementChanged';
@@ -101,7 +103,8 @@ export class Application {
 					},
 					enabled: state => isEditorVisible(state) && !areDialogsVisible(state)
 				}
-			]
+			],
+			visible: () => isDebuggingEnabled()
 		},
 		{
 			label: 'View',
@@ -126,10 +129,24 @@ export class Application {
 						if (!isEditorVisible(state) || areDialogsVisible(state)) {
 							return false;
 						}
-
 						const editor = state.editors[state.activeEditorIndex];
 						return editor && editor.viewPort.zoom !== 0;
 					}
+				},
+				{ type: 'separator' },
+				{
+					label: 'Show frames per second',
+					checked: state => {
+						if (!isEditorVisible(state)) {
+							return false;
+						}
+						const editor = state.editors[state.activeEditorIndex];
+						return editor && editor.viewPort.isFramesPerSecondVisible;
+					},
+					click: () => toggleFramesPerSecond(this.store, undefined),
+					enabled: state => isEditorVisible(state) && !areDialogsVisible(state),
+					type: 'checkbox',
+					visible: () => isDebuggingEnabled()
 				}
 			]
 		},
@@ -140,22 +157,25 @@ export class Application {
 					accelerator: 'CmdOrCtrl+1',
 					label: 'Pan',
 					click: () => selectTool(this.store, { toolName: 'pan' }),
+					checked: state => isToolSelected(state, 'pan'),
 					enabled: state => isEditorVisible(state),
-					checked: state => isToolSelected(state, 'pan')
+					type: 'checkbox'
 				},
 				{
 					accelerator: 'CmdOrCtrl+2',
 					label: 'Point',
 					click: () => selectTool(this.store, { toolName: 'point' }),
+					checked: state => isToolSelected(state, 'point'),
 					enabled: state => isEditorVisible(state),
-					checked: state => isToolSelected(state, 'point')
+					type: 'checkbox'
 				},
 				{
 					accelerator: 'CmdOrCtrl+3',
 					label: 'Select',
 					click: () => selectTool(this.store, { toolName: 'selection' }),
+					checked: state => isToolSelected(state, 'selection'),
 					enabled: state => isEditorVisible(state),
-					checked: state => isToolSelected(state, 'selection')
+					type: 'checkbox'
 				}
 			]
 		},

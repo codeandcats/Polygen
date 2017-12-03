@@ -1,6 +1,7 @@
 import { Point } from './point';
 
 export interface ViewPort {
-	zoom: number;
+	isFramesPerSecondVisible: boolean;
 	pan: Point;
+	zoom: number;
 }
