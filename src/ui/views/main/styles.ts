@@ -37,10 +37,28 @@ cssRule('.panel-body', {
 	padding: px(10)
 });
 
+export const spaceLeft = style({
+	$debugName: 'spaceLeft',
+
+	marginLeft: px(10)
+});
+
+export const spaceLeft2x = style({
+	$debugName: 'spaceLeft2x',
+
+	marginLeft: px(20)
+});
+
 export const spaceRight = style({
 	$debugName: 'spaceRight',
 
 	marginRight: px(10)
+});
+
+export const spaceRight2x = style({
+	$debugName: 'spaceRight2x',
+
+	marginRight: px(20)
 });
 
 export const spaceBelow = style({

@@ -57,6 +57,5 @@ export const editorBodyRight = style({
 	$debugName: 'editorBodyRight',
 
 	flexBasis: px(LAYER_LIST_WIDTH),
-	overflowY: 'scroll',
-	padding: px(10)
+	overflowY: 'scroll'
 });

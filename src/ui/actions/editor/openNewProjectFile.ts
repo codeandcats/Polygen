@@ -28,9 +28,10 @@ export const openNewProjectFile = defineAction(
 			dimensions: payload.dimensions
 		};
 		const editor: Editor = {
+			document,
 			fileName: undefined,
 			hasUnsavedChanges: true,
-			document,
+			mode: 'edit',
 			selectedLayerIndex: 0,
 			selectedPointIndices: [],
 			selectedToolName: undefined,

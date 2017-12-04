@@ -6,7 +6,8 @@ export const layerList = style({
 
 	$nest: {
 		'>ul': {
-			padding: 0,
+			padding: px(10),
+			paddingTop: 0,
 			width: percent(100)
 		}
 	}
@@ -15,7 +16,7 @@ export const layerList = style({
 export const layerListHeader = style({
 	$debugName: 'layerListHeader',
 
-	marginBottom: px(10)
+	padding: px(10)
 });
 
 export const addLayerButton = style({

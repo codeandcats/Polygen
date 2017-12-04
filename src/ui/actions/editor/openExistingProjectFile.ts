@@ -34,9 +34,10 @@ export const openExistingProjectFile = defineAction(
 			editors = state.editors;
 		} else {
 			const editor: Editor = {
+				document: payload.document,
 				fileName: payload.fileName,
 				hasUnsavedChanges: false,
-				document: payload.document,
+				mode: 'edit',
 				selectedLayerIndex: 0,
 				selectedPointIndices: [],
 				selectedToolName: undefined,

@@ -15,6 +15,7 @@ import { selectAllPoints } from '../../../actions/editor/document/layer/points/s
 import { selectPoints } from '../../../actions/editor/document/layer/points/selectPoints';
 import { updatePolygonColors } from '../../../actions/editor/document/layer/polygons/updatePolygonColors';
 import { selectTool } from '../../../actions/editor/selectTool';
+import { setEditorMode } from '../../../actions/editor/setEditorMode';
 import { setPan } from '../../../actions/editor/viewPort/setPan';
 import { ImageCache } from '../../../models/imageCache';
 import { Store } from '../../../reduxWithLessSux/store';
@@ -103,6 +104,8 @@ export class EditorView extends React.Component<EditorViewProps, EditorViewState
 					<div className={ styles.editorBodyMain }>
 						<div className={ styles.editorBodyMainHeader }>
 						<EditorToolbar
+							mode={ editor.mode }
+							onSetMode={ mode => setEditorMode(this.props.store, { mode }) }
 							selectedToolName={ editor.selectedToolName }
 							onSelectTool={ toolName => selectTool(this.props.store, { toolName }) }
 						/>
