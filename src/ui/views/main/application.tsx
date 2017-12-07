@@ -35,6 +35,7 @@ import { zoomOut } from '../../actions/editor/viewPort/zoomOut';
 import { focusedElementChanged, isElementAnInput, isElementATextInput } from '../../actions/focusedElementChanged';
 import { loadSettings } from '../../actions/loadSettings';
 import { switchToEditor } from '../../actions/switchToEditor';
+import { toggleResponsiveBreakpointLabelVisible } from '../../actions/toggleResponsiveBreakpointLabelVisible';
 import { Store } from '../../reduxWithLessSux/store';
 import { canElementDelete, canElementSelectAll } from '../../utils/forms';
 import { MainWindow } from './index';
@@ -133,7 +134,10 @@ export class Application {
 						return editor && editor.viewPort.zoom !== 0;
 					}
 				},
-				{ type: 'separator' },
+				{
+					type: 'separator',
+					visible: () => isDebuggingEnabled()
+				},
 				{
 					label: 'Show frames per second',
 					checked: state => {
@@ -145,6 +149,13 @@ export class Application {
 					},
 					click: () => toggleFramesPerSecond(this.store, undefined),
 					enabled: state => isEditorVisible(state) && !areDialogsVisible(state),
+					type: 'checkbox',
+					visible: () => isDebuggingEnabled()
+				},
+				{
+					label: 'Show Responsive Breakpoint',
+					checked: state => state.isResponsiveBreakpointLabelVisible,
+					click: () => toggleResponsiveBreakpointLabelVisible(this.store),
 					type: 'checkbox',
 					visible: () => isDebuggingEnabled()
 				}

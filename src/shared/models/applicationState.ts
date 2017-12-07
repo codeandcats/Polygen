@@ -1,4 +1,5 @@
 import { ToolName } from '../../ui/models/tools/common';
+import { isDebuggingEnabled } from '../utils/environment';
 import { Dialogs } from './dialogs';
 import { Editor } from './editor';
 import { FocusedElementInfo } from './focusedElementInfo';
@@ -11,6 +12,7 @@ export interface ApplicationState {
 	dialogs: Dialogs;
 	editors: Editor[];
 	focusedElement: FocusedElementInfo;
+	isResponsiveBreakpointLabelVisible: boolean;
 	recentFileNames: string[];
 }
 
@@ -25,6 +27,7 @@ export const DEFAULT_APPLICATION_STATE: ApplicationState = {
 		isInput: false,
 		isTextInput: false
 	},
+	isResponsiveBreakpointLabelVisible: isDebuggingEnabled(),
 	recentFileNames: []
 };
 

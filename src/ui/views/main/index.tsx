@@ -51,7 +51,7 @@ export class MainWindow extends React.Component<MainWindowProps, MainWindowState
 						store={this.props.store}
 					/>
 				}
-				<BootstrapLabel />
+				{ state.isResponsiveBreakpointLabelVisible ? <BootstrapLabel /> : null }
 			</div>
 		);
 	}
