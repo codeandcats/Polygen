@@ -316,7 +316,7 @@ export class Canvas extends React.Component<CanvasProps, CanvasState> {
 
 		this.fps.tick();
 
-		const canvasBounds = {
+		const bounds = {
 			x: 0,
 			y: 0,
 			width: this.canvas.width,
@@ -331,13 +331,29 @@ export class Canvas extends React.Component<CanvasProps, CanvasState> {
 		runInTransaction(context, () => {
 			const pixelRatio = window.devicePixelRatio;
 
-			renderTransparencyTiles(context, canvasBounds, 20, pixelRatio);
+			renderTransparencyTiles(context, bounds, 20, pixelRatio);
 
-			renderDocument(context, canvasBounds, editor, this.props.imageCache, pixelRatio);
+			const { imageCache } = this.props;
+			const { document, mode, selectedLayerIndex, selectedPointIndices, viewPort } = this.props.editor;
+			const isInEditMode = editor.mode === 'edit';
+
+			renderDocument({
+				bounds,
+				context,
+				document,
+				imageCache,
+				mode,
+				pixelRatio,
+				selectedLayerIndex: isInEditMode ? selectedLayerIndex : -1,
+				selectedPointIndices: isInEditMode ? selectedPointIndices : [],
+				shouldRenderEdges: isInEditMode,
+				shouldRenderPoints: isInEditMode,
+				viewPort
+			});
 
 			const tool = this.getSelectedTool();
 			if (tool) {
-				renderTool(context, canvasBounds, this.helper, tool);
+				renderTool(context, bounds, this.helper, tool);
 			}
 
 			if (this.props.editor.viewPort.isFramesPerSecondVisible) {

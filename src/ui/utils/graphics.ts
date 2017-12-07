@@ -8,25 +8,27 @@ import { Polygon } from '../../shared/models/polygon';
 import { Rectangle } from '../../shared/models/rectangle';
 import { Rgba } from '../../shared/models/rgba';
 import { Size } from '../../shared/models/size';
+import { ViewPort } from '../../shared/models/viewPort';
 import { forEachPointWithinPolygon, getCenter, isPointInRectangle } from '../../shared/utils/geometry';
 import { clamp } from '../../shared/utils/math';
 import { ImageCache } from '../models/imageCache';
 import { Tool, ToolHelper } from '../models/tools/common';
+import { EditorMode } from '../../shared/models/editorMode';
 
 export function applyViewportTransform(
 	context: CanvasRenderingContext2D,
 	bounds: Rectangle,
-	editor: Editor,
+	viewPort: ViewPort,
 	pixelRatio: number
 ) {
 	context.translate(
-		(bounds.width / 2) + editor.viewPort.pan.x * pixelRatio,
-		(bounds.height / 2) + editor.viewPort.pan.y * pixelRatio
+		(bounds.width / 2) + viewPort.pan.x * pixelRatio,
+		(bounds.height / 2) + viewPort.pan.y * pixelRatio
 	);
 
 	context.scale(pixelRatio, pixelRatio);
 
-	const zoom = editor.viewPort.zoom;
+	const zoom = viewPort.zoom;
 	context.scale(zoom, zoom);
 }
 
@@ -229,30 +231,84 @@ export function recalculatePolygonColours(options: RecalculatePolygonColoursOpti
 	return polygons;
 }
 
-function renderLayer(
-	context: CanvasRenderingContext2D,
-	documentDimensions: Size,
-	layer: Layer,
-	selectedPointIndices: number[],
-	isSelectedLayer: boolean,
-	imageCache: ImageCache
-) {
+export interface RenderDocumentOptions {
+	bounds: Rectangle;
+	context: CanvasRenderingContext2D;
+	document: PolygenDocument;
+	imageCache: ImageCache;
+	mode: EditorMode;
+	pixelRatio: number;
+	selectedLayerIndex: number;
+	selectedPointIndices: number[];
+	shouldRenderPoints: boolean;
+	shouldRenderEdges: boolean;
+	viewPort: ViewPort;
+}
+
+export function renderDocument(options: RenderDocumentOptions) {
+	const { bounds, context, document, imageCache, mode, pixelRatio, selectedPointIndices, viewPort } = options;
+	const documentDimensions = document.dimensions;
+
+	runInTransaction(options.context, () => {
+		applyViewportTransform(
+			context,
+			bounds,
+			viewPort,
+			pixelRatio
+		);
+
+		renderProjectFileBackground(options.context, options.document);
+
+		for (let layerIndex = 0; layerIndex < options.document.layers.length; layerIndex++) {
+			const layer = options.document.layers[layerIndex];
+			const isSelectedLayer = layerIndex === options.selectedLayerIndex;
+			if (layer.isVisible) {
+				renderLayer({
+					...options,
+					mode,
+					isSelectedLayer,
+					layer
+				});
+			}
+		}
+	});
+}
+
+export interface RenderLayerOptions extends RenderDocumentOptions {
+	mode: EditorMode;
+	isSelectedLayer: boolean;
+	layer: Layer;
+}
+
+function renderLayer(options: RenderLayerOptions) {
+	const {
+		context, document, imageCache,
+		isSelectedLayer, layer, mode,
+		selectedPointIndices, shouldRenderEdges
+	} = options;
+	const documentDimensions = document.dimensions;
+
 	runInTransaction(context, () => {
-		if (isSelectedLayer) {
-			if (layer.image.source) {
-				const image = imageCache.getImage(layer.image.source);
-				if (image.hasElementLoaded) {
-					const bounds = getImageBounds(documentDimensions, layer);
-					context.drawImage(image.element, bounds.x, bounds.y, bounds.width, bounds.height);
-				}
+		if (mode === 'edit' && isSelectedLayer && layer.image.source) {
+			const image = imageCache.getImage(layer.image.source);
+			if (image.hasElementLoaded) {
+				const bounds = getImageBounds(documentDimensions, layer);
+				context.drawImage(image.element, bounds.x, bounds.y, bounds.width, bounds.height);
 			}
 		}
 
 		runInTransaction(context, () => {
-			context.globalAlpha = .5;
+			context.globalAlpha = mode === 'preview' ? 1 : .5;
+			const { points } = layer;
 
 			for (const polygon of layer.polygons) {
-				renderPolygon(context, layer.points, polygon, documentDimensions);
+				renderPolygon({
+					context,
+					documentDimensions,
+					points,
+					polygon,
+					shouldRenderEdges
+				});
 			}
 		});
 
@@ -311,18 +367,20 @@ export function renderPoint(
 	});
 }
 
-export function renderPolygon(
-	context: CanvasRenderingContext2D,
-	points: Point[],
-	polygon: Polygon,
-	documentDimensions: Size
-) {
+export interface RenderPolygonOptions {
+	context: CanvasRenderingContext2D;
+	documentDimensions: Size;
+	points: Point[];
+	polygon: Polygon;
+	shouldRenderEdges: boolean;
+}
+
+export function renderPolygon(options: RenderPolygonOptions) {
+	const { context, documentDimensions, points, polygon } = options;
 	runInTransaction(context, () => {
 		context.beginPath();
 
-		context.lineWidth = 1;
 		context.fillStyle = `rgb(${ polygon.color.r }, ${ polygon.color.g }, ${ polygon.color.b })`;
-		context.strokeStyle = '#333';
 		const polygonPoints = polygon.pointIndices.map(pointIndex => {
 			return getAbsoluteDocumentPoint(points[pointIndex], documentDimensions);
 		});
@@ -338,30 +396,11 @@ export function renderPolygon(
 		context.fill();
 
 		context.globalAlpha = oldGlobalAlpha;
-		context.stroke();
-	});
-}
 
-export function renderDocument(
-	context: CanvasRenderingContext2D,
-	bounds: Rectangle,
-	editor: Editor,
-	imageCache: ImageCache,
-	pixelRatio: number
-) {
-	runInTransaction(context, () => {
-		bounds = bounds;
-
-		applyViewportTransform(context, bounds, editor, pixelRatio);
-
-		renderProjectFileBackground(context, editor);
-
-		for (let layerIndex = 0; layerIndex < editor.document.layers.length; layerIndex++) {
-			const layer = editor.document.layers[layerIndex];
-			const isSelectedLayer = layerIndex === editor.selectedLayerIndex;
-			if (layer.isVisible) {
-				renderLayer(context, editor.document.dimensions, layer, editor.selectedPointIndices, isSelectedLayer, imageCache);
-			}
+		if (options.shouldRenderEdges) {
+			context.lineWidth = 1;
+			context.strokeStyle = '#333';
+			context.stroke();
 		}
 	});
 }
@@ -415,7 +454,12 @@ export function renderTool(
 		context.beginPath();
 		const editor = helper.getEditor();
 		const pixelRatio = helper.getPixelRatio();
-		applyViewportTransform(context, bounds, editor, pixelRatio);
+		applyViewportTransform(
+			context,
+			bounds,
+			editor.viewPort,
+			pixelRatio
+		);
 		tool.render(helper, context, bounds);
 	});
 }
@@ -448,7 +492,7 @@ export function runInTransaction(context: CanvasRenderingContext2D, callback: ()
 	}
 }
 
-export function renderProjectFileBackground(context: CanvasRenderingContext2D, editor: Editor) {
+export function renderProjectFileBackground(context: CanvasRenderingContext2D, document: PolygenDocument) {
 	runInTransaction(context, () => {
 		context.beginPath();
 
@@ -456,14 +500,14 @@ export function renderProjectFileBackground(context: CanvasRenderingContext2D, e
 		context.strokeStyle = '#333';
 		context.fillStyle = 'rgba(255, 255, 255, .6)';
 
-		const halfWidth = editor.document.dimensions.width / 2;
-		const halfHeight = editor.document.dimensions.height / 2;
+		const halfWidth = document.dimensions.width / 2;
+		const halfHeight = document.dimensions.height / 2;
 
 		context.rect(
 			-halfWidth,
 			-halfHeight,
-			editor.document.dimensions.width,
-			editor.document.dimensions.height
+			document.dimensions.width,
+			document.dimensions.height
 		);
 
 		context.stroke();
@@ -494,61 +538,5 @@ export function renderProjectFileBackground(context: CanvasRenderingContext2D, e
 		context.lineTo(halfWidth, halfHeight);
 		context.fillStyle = createGradient(context, 0, halfHeight + 1, 0, halfHeight + 1 + SHADOW_OFFSET, SHADOW_COLOR_STOPS);
 		context.fill();
-	});
-}
-
-export function renderDebugCrosshair(context: CanvasRenderingContext2D, point: Point, strokeStyle: string = '#f00') {
-	const CROSS_HAIR_RADIUS = 15;
-
-	runInTransaction(context, () => {
-		context.beginPath();
-
-		context.lineWidth = .5;
-		context.strokeStyle = strokeStyle;
-
-		context.rect(
-			point.x - CROSS_HAIR_RADIUS,
-			point.y - CROSS_HAIR_RADIUS,
-			CROSS_HAIR_RADIUS * 2,
-			CROSS_HAIR_RADIUS * 2
-		);
-
-		context.moveTo(
-			point.x - CROSS_HAIR_RADIUS,
-			point.y - CROSS_HAIR_RADIUS
-		);
-		context.lineTo(
-			point.x + CROSS_HAIR_RADIUS,
-			point.y + CROSS_HAIR_RADIUS
-		);
-
-		context.moveTo(
-			point.x + CROSS_HAIR_RADIUS,
-			point.y - CROSS_HAIR_RADIUS
-		);
-		context.lineTo(
-			point.x - CROSS_HAIR_RADIUS,
-			point.y + CROSS_HAIR_RADIUS
-		);
-
-		context.moveTo(
-			point.x - CROSS_HAIR_RADIUS,
-			point.y
-		);
-		context.lineTo(
-			point.x + CROSS_HAIR_RADIUS,
-			point.y
-		);
-
-		context.moveTo(
-			point.x,
-			point.y - CROSS_HAIR_RADIUS
-		);
-		context.lineTo(
-			point.x,
-			point.y + CROSS_HAIR_RADIUS
-		);
-
-		context.stroke();
 	});
 }
