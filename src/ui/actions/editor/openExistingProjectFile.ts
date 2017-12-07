@@ -38,7 +38,7 @@ export const openExistingProjectFile = defineAction(
 				fileName: payload.fileName,
 				hasUnsavedChanges: false,
 				mode: 'edit',
-				selectedLayerIndex: 0,
+				selectedLayerIndex: payload.document.layers.length - 1,
 				selectedPointIndices: [],
 				selectedToolName: undefined,
 				viewPort: {
