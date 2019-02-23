@@ -1,4 +1,7 @@
 # Polygen
+
+[![Greenkeeper badge](https://badges.greenkeeper.io/codeandcats/polygen.svg)](https://greenkeeper.io/)
+
 An editor that lets you easily create amazing polygon art from existing images.
 
 # Install
