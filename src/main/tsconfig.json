@@ -1,12 +1,13 @@
 {
-	"compilerOptions": {
-		"module": "commonjs",
-		"noImplicitAny": true,
-		"strictNullChecks": true,
-		"sourceMap": true,
-		"target": "es6"
-	},
-	"files": [
-		"index.ts"
-	]
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "lib": [
+      "dom",
+      "es6"
+    ]
+  },
+  "files": [
+    "index.ts"
+  ]
 }

@@ -1,4 +1,4 @@
 export interface FocusedElementInfo {
-	isInput: boolean;
-	isTextInput: boolean;
+  isInput: boolean;
+  isTextInput: boolean;
 }

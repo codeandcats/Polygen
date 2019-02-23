@@ -6,54 +6,54 @@ import { fileExists, mkdir } from '../utils/fileSystem';
 import { PRODUCT_NAME } from './productName';
 
 export interface Settings {
-	recentFileNames: string[];
+  recentFileNames: string[];
 }
 
 export class SettingsFile {
-	private static readonly DEFAULTS: Settings = {
-		recentFileNames: []
-	};
+  private static readonly DEFAULTS: Settings = {
+    recentFileNames: []
+  };
 
-	private settingsFileName?: string = undefined;
+  private settingsFileName?: string = undefined;
 
-	public getSettingsFileName(): string {
-		if (!this.settingsFileName) {
-			const application = app || remote.app;
-			const appDataPath = application.getPath('appData');
-			this.settingsFileName = path.join(appDataPath, PRODUCT_NAME, 'config.json');
-		}
-		return this.settingsFileName;
-	}
+  public getSettingsFileName(): string {
+    if (!this.settingsFileName) {
+      const application = app || remote.app;
+      const appDataPath = application.getPath('appData');
+      this.settingsFileName = path.join(appDataPath, PRODUCT_NAME, 'config.json');
+    }
+    return this.settingsFileName;
+  }
 
-	public async load(): Promise<Settings> {
-		const fileName = this.getSettingsFileName();
+  public async load(): Promise<Settings> {
+    const fileName = this.getSettingsFileName();
 
-		const doesFileExist = await fileExists(fileName);
+    const doesFileExist = await fileExists(fileName);
 
-		if (!doesFileExist) {
-			return clone(SettingsFile.DEFAULTS);
-		}
+    if (!doesFileExist) {
+      return clone(SettingsFile.DEFAULTS);
+    }
 
-		const json = await fs.readFile(fileName, 'utf8');
+    const json = await fs.readFile(fileName, 'utf8');
 
-		const result = JSON.parse(json);
+    const result = JSON.parse(json);
 
-		return result;
-	}
+    return result;
+  }
 
-	public async save(settings: Settings): Promise<Settings> {
-		const fileName = await this.getSettingsFileName();
+  public async save(settings: Settings): Promise<Settings> {
+    const fileName = await this.getSettingsFileName();
 
-		settings = { ...settings };
+    settings = { ...settings };
 
-		const json = JSON.stringify(settings, null, '\t');
+    const json = JSON.stringify(settings, null, '\t');
 
-		await mkdir(path.dirname(fileName));
+    await mkdir(path.dirname(fileName));
 
-		await fs.writeFile(fileName, json, { encoding: 'utf8' });
+    await fs.writeFile(fileName, json, { encoding: 'utf8' });
 
-		return settings;
-	}
+    return settings;
+  }
 }
 
 export default new SettingsFile();

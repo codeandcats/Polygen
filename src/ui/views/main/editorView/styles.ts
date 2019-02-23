@@ -6,56 +6,56 @@ import './theme';
 export const LAYER_LIST_WIDTH = 300;
 
 export const editorContainer = style({
-	$debugName: 'editorContainer',
+  $debugName: 'editorContainer',
 
-	height: percent(100),
-	display: 'flex',
-	flexDirection: 'column'
+  height: percent(100),
+  display: 'flex',
+  flexDirection: 'column'
 });
 
 export const editorBody = style({
-	$debugName: 'editorBody',
+  $debugName: 'editorBody',
 
-	display: 'flex',
-	flex: '1 1 auto',
-	position: 'relative',
-	overflowY: 'scroll',
-	flexDirection: 'row'
+  display: 'flex',
+  flex: '1 1 auto',
+  position: 'relative',
+  overflowY: 'scroll',
+  flexDirection: 'row'
 });
 
 export const editorFooter = style({
-	$debugName: 'editorFooter',
+  $debugName: 'editorFooter',
 
-	flex: '0 1 auto',
-	textAlign: 'left',
-	padding: px(10)
+  flex: '0 1 auto',
+  textAlign: 'left',
+  padding: px(10)
 });
 
 export const editorBodyMain = style({
-	$debugName: 'editorBodyMain',
+  $debugName: 'editorBodyMain',
 
-	display: 'flex',
-	flexDirection: 'column',
-	flex: '1 1 auto'
+  display: 'flex',
+  flexDirection: 'column',
+  flex: '1 1 auto'
 });
 
 export const editorBodyMainHeader = style({
-	$debugName: 'editorBodyMainHeader',
+  $debugName: 'editorBodyMainHeader',
 
-	flex: '0 1 auto',
-	padding: px(10)
+  flex: '0 1 auto',
+  padding: px(10)
 });
 
 export const editorBodyMainCanvasContainer = style({
-	$debugName: 'editorBodyMainCanvasContainer',
+  $debugName: 'editorBodyMainCanvasContainer',
 
-	flex: '1 1 auto',
-	overflow: 'hidden'
+  flex: '1 1 auto',
+  overflow: 'hidden'
 });
 
 export const editorBodyRight = style({
-	$debugName: 'editorBodyRight',
+  $debugName: 'editorBodyRight',
 
-	flexBasis: px(LAYER_LIST_WIDTH),
-	overflowY: 'scroll'
+  flexBasis: px(LAYER_LIST_WIDTH),
+  overflowY: 'scroll'
 });

@@ -4,9 +4,9 @@ import { PanTool } from './panTool';
 import { PointTool } from './pointTool';
 import { SelectionTool } from './selectionTool';
 
-export const TOOL_BY_NAME: { [toolName: string]: Tool<any> } = {
-	imageBounds: new ImageBoundsTool(),
-	pan: new PanTool(),
-	point: new PointTool(),
-	selection: new SelectionTool()
+export const TOOL_BY_NAME: { [toolName: string]: Tool } = {
+  imageBounds: new ImageBoundsTool(),
+  pan: new PanTool(),
+  point: new PointTool(),
+  selection: new SelectionTool()
 };

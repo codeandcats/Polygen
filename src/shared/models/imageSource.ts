@@ -1,4 +1,4 @@
 export interface ImageSource {
-	id: string;
-	data: string;
+  id: string;
+  data: string;
 }

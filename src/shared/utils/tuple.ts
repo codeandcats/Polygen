@@ -46,5 +46,5 @@ export function tuple<P1 extends BaseValueType>(p1: P1): [P1];
 // tslint:enable:max-line-length
 
 export function tuple(...args: any[]): any[] {
-	return args;
+  return args;
 }

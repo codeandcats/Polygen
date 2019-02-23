@@ -1,67 +1,59 @@
-import { OpenDialogOptions, remote } from 'electron';
 import * as path from 'path';
-import * as React from 'react';
-import { Button, ButtonToolbar, Col, Grid, Jumbotron, Modal, Row } from 'react-bootstrap';
-import { ApplicationState } from '../../../../shared/models/applicationState';
-import { PolygenDocument } from '../../../../shared/models/polygenDocument';
-import { Size } from '../../../../shared/models/size';
-import { openNewProjectFile } from '../../../actions/editor/openNewProjectFile';
-import { Store } from '../../../reduxWithLessSux/store';
-import { NewProjectFileDialog } from '../newProjectFileDialog';
+import React = require('react');
+import { Button, ButtonToolbar, Jumbotron, ListGroup, Row } from 'react-bootstrap';
 import * as styles from './styles';
 
 export interface WelcomeViewProps {
-	recentFileNames: string[];
-	onShowNewProjectFileDialog: () => void;
-	onShowOpenProjectFileDialog: () => void;
-	onOpenProjectFile: (fileName: string) => void;
+  recentFileNames: string[];
+  onShowNewProjectFileDialog: () => void;
+  onShowOpenProjectFileDialog: () => void;
+  onOpenProjectFile: (fileName: string) => void;
 }
 
 export interface WelcomeViewState {
 }
 
-export class WelcomeView extends React.Component<WelcomeViewProps, WelcomeViewState> {
-	constructor(props: WelcomeViewProps, context?: any) {
-		super(props, context);
-	}
+export const WelcomeView: React.StatelessComponent<WelcomeViewProps> = (props: WelcomeViewProps) => {
+  const renderFileList = () => (
+    <ListGroup className={styles.fileList} variant='flush' activeKey=''>
+      {
+        props.recentFileNames.map((recentFileName: string) => (
+          <ListGroup.Item
+            action
+            href='#'
+            active={false}
+            key={recentFileName}
+            onClick={() => props.onOpenProjectFile(recentFileName)}
+          >
+            {path.basename(recentFileName)}
+          </ListGroup.Item>
+        ))
+      }
+    </ListGroup>
+  );
 
-	public render() {
-		return (
-			<div className={ styles.fullScreenContainer }>
-				<Grid>
-					<Jumbotron>
-						<h1>Welcome</h1>
-						<p>Create or open a file to get started.</p>
-						<ButtonToolbar>
-							<Button onClick={ () => this.props.onShowNewProjectFileDialog() }>New file</Button>
-							<Button onClick={ () => this.props.onShowOpenProjectFileDialog() }>Open existing file</Button>
-						</ButtonToolbar>
+  const shouldShowRecentFiles = props.recentFileNames && props.recentFileNames.length > 0;
 
-						{
-							this.props.recentFileNames && this.props.recentFileNames.length ?
-							<div>
-								<br />
-								<p>Recent Files</p>
-								<div className='list-group'>
-									{
-										this.props.recentFileNames.map(recentFileName => {
-											return (
-												<a
-													className='list-group-item'
-													href='#'
-													key={ recentFileName }
-													onClick={ () => this.props.onOpenProjectFile(recentFileName) }
-												>{ path.basename(recentFileName) }</a>
-											);
-										})
-									}
-								</div>
-							</div> :
-							null
-						}
-					</Jumbotron>
-				</Grid>
-			</div>
-		);
-	}
-}
+  return (
+    <div className={styles.welcomePage}>
+      <Jumbotron>
+        <div>
+          <h1>Welcome</h1>
+          <p>Create or open a file to get started.</p>
+
+          <ButtonToolbar>
+            <Button onClick={() => props.onShowNewProjectFileDialog()} className='mr-2'>New file</Button>
+            <Button onClick={() => props.onShowOpenProjectFileDialog()}>Open existing file</Button>
+          </ButtonToolbar>
+
+          {
+            shouldShowRecentFiles ? <h6>Recent Files</h6> : null
+          }
+        </div>
+        {
+          shouldShowRecentFiles ? this.renderFileList() : null
+        }
+      </Jumbotron>
+    </div>
+  );
+};

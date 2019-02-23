@@ -7,6 +7,7 @@ export interface Editor {
 	document: PolygenDocument;
 	fileName: string | undefined;
 	hasUnsavedChanges: boolean;
+	isFramesPerSecondVisible: boolean;
 	mode: EditorMode;
 	selectedLayerIndex: number;
 	selectedPointIndices: number[];

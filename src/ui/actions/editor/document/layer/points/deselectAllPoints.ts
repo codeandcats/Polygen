@@ -2,20 +2,20 @@ import { ApplicationState } from '../../../../../../shared/models/applicationSta
 import { defineAction } from '../../../../../reduxWithLessSux/action';
 
 export const deselectAllPoints = defineAction(
-	'deselectAllPoints', (state: ApplicationState) => {
-		const editors = state.editors.map((editor, editorIndex) => {
-			if (editorIndex === state.activeEditorIndex) {
-				return {
-					...editor,
-					selectedPointIndices: []
-				};
-			}
-			return editor;
-		});
+  'deselectAllPoints', (state: ApplicationState) => {
+    const editors = state.editors.map((editor, editorIndex) => {
+      if (editorIndex === state.activeEditorIndex) {
+        return {
+          ...editor,
+          selectedPointIndices: []
+        };
+      }
+      return editor;
+    });
 
-		return {
-			...state,
-			editors
-		};
-	}
+    return {
+      ...state,
+      editors
+    };
+  }
 ).getDispatcher();

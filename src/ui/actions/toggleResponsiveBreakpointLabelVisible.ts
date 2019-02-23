@@ -4,12 +4,12 @@ import { Point } from '../../shared/models/point';
 import { defineAction } from '../reduxWithLessSux/action';
 
 export const toggleResponsiveBreakpointLabelVisible = defineAction(
-	'toggleResponsiveBreakpointLabelVisible',
-	(state: ApplicationState) => {
-		const isResponsiveBreakpointLabelVisible = !state.isResponsiveBreakpointLabelVisible;
-		return {
-			...state,
-			isResponsiveBreakpointLabelVisible
-		};
-	}
+  'toggleResponsiveBreakpointLabelVisible',
+  (state: ApplicationState) => {
+    const isResponsiveBreakpointLabelVisible = !state.isResponsiveBreakpointLabelVisible;
+    return {
+      ...state,
+      isResponsiveBreakpointLabelVisible
+    };
+  }
 ).getDispatcher();

@@ -3,14 +3,14 @@ import { Settings } from '../../shared/models/settings';
 import { defineAction } from '../reduxWithLessSux/action';
 
 export interface LoadSettingsPayload {
-	settings: Settings;
+  settings: Settings;
 }
 
 export const loadSettings = defineAction(
-	'loadSettings', (state: ApplicationState, payload: LoadSettingsPayload) => {
-		return {
-			...state,
-			recentFileNames: payload.settings.recentFileNames
-		};
-	}
+  'loadSettings', (state: ApplicationState, payload: LoadSettingsPayload) => {
+    return {
+      ...state,
+      recentFileNames: payload.settings.recentFileNames
+    };
+  }
 ).getDispatcher();

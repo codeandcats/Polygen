@@ -6,31 +6,31 @@ import { makeMostRecent } from '../../../shared/utils/recentItemList';
 import { defineAction } from '../../reduxWithLessSux/action';
 
 interface SaveActiveProjectFilePayload {
-	fileName: string;
+  fileName: string;
 }
 
 export const saveActiveProjectFile = defineAction(
-	'saveProjectFile',
-	(state: ApplicationState, payload: SaveActiveProjectFilePayload) => {
-		const editors = state.editors.map((editor, index) => {
-			if (index === state.activeEditorIndex) {
-				editor = {
-					...editor,
-					fileName: payload.fileName,
-					hasUnsavedChanges: false
-				};
-			}
-			return editor;
-		});
+  'saveProjectFile',
+  (state: ApplicationState, payload: SaveActiveProjectFilePayload) => {
+    const editors = state.editors.map((editor, index) => {
+      if (index === state.activeEditorIndex) {
+        editor = {
+          ...editor,
+          fileName: payload.fileName,
+          hasUnsavedChanges: false
+        };
+      }
+      return editor;
+    });
 
-		const recentFileNames = makeMostRecent(state.recentFileNames || [], payload.fileName, {
-			maxListSize: MAX_RECENT_FILE_NAME_COUNT
-		});
+    const recentFileNames = makeMostRecent(state.recentFileNames || [], payload.fileName, {
+      maxListSize: MAX_RECENT_FILE_NAME_COUNT
+    });
 
-		return {
-			...state,
-			editors,
-			recentFileNames
-		};
-	}
+    return {
+      ...state,
+      editors,
+      recentFileNames
+    };
+  }
 ).getDispatcher();

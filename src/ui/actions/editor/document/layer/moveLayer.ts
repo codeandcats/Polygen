@@ -4,43 +4,43 @@ import { moveElement } from '../../../../../shared/utils/arrays';
 import { defineAction } from '../../../../reduxWithLessSux/action';
 
 interface MoveLayerPayload {
-	layerIndex: number;
-	toIndex: number;
+  layerIndex: number;
+  toIndex: number;
 }
 
 export const moveLayer = defineAction(
-	'moveLayer', (state: ApplicationState, payload: MoveLayerPayload) => {
-		const editors = state.editors.map((editor, editorIndex) => {
-			if (editorIndex === state.activeEditorIndex) {
-				const document = editor.document;
-				let layers = [...document.layers];
+  'moveLayer', (state: ApplicationState, payload: MoveLayerPayload) => {
+    const editors = state.editors.map((editor, editorIndex) => {
+      if (editorIndex === state.activeEditorIndex) {
+        const document = editor.document;
+        let layers = [...document.layers];
 
-				if (payload.toIndex < 0 || payload.toIndex >= layers.length) {
-					return editor;
-				}
+        if (payload.toIndex < 0 || payload.toIndex >= layers.length) {
+          return editor;
+        }
 
-				layers = moveElement(layers, payload.layerIndex, payload.toIndex);
-				const selectedLayerIndex = (
-					editor.selectedLayerIndex === payload.layerIndex ?
-					payload.toIndex :
-					editor.selectedLayerIndex
-				);
+        layers = moveElement(layers, payload.layerIndex, payload.toIndex);
+        const selectedLayerIndex = (
+          editor.selectedLayerIndex === payload.layerIndex ?
+          payload.toIndex :
+          editor.selectedLayerIndex
+        );
 
-				return {
-					...editor,
-					document: {
-						...document,
-						layers
-					},
-					selectedLayerIndex
-				};
-			}
-			return editor;
-		});
+        return {
+          ...editor,
+          document: {
+            ...document,
+            layers
+          },
+          selectedLayerIndex
+        };
+      }
+      return editor;
+    });
 
-		return {
-			...state,
-			editors
-		};
-	}
+    return {
+      ...state,
+      editors
+    };
+  }
 ).getDispatcher();

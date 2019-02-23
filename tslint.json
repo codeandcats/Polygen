@@ -1,20 +1,35 @@
 {
-    "defaultSeverity": "error",
-    "extends": [
-        "tslint:recommended"
+  "defaultSeverity": "error",
+  "extends": [
+    "tslint:recommended"
+  ],
+  "jsRules": {},
+  "linterOptions": {
+    "exclude": [
+      "node_modules/**"
+    ]
+  },
+  "rules": {
+    "indent": [
+      true,
+      "spaces",
+      2
     ],
-    "jsRules": {},
-    "rules": {
-		"indent": [true, "tabs", 4],
-        "arrow-parens": false,
-		"interface-name": [true, "never-prefix"],
-		"max-classes-per-file": false,
-		"member-ordering": false,
-		"no-console": false,
-		"no-empty-interface": false,
-		"object-literal-sort-keys": false,
-        "quotemark": [true, "single"],
-        "trailing-comma": false
-    },
-    "rulesDirectory": []
+    "arrow-parens": false,
+    "interface-name": [
+      true,
+      "never-prefix"
+    ],
+    "max-classes-per-file": false,
+    "member-ordering": false,
+    "no-console": false,
+    "no-empty-interface": false,
+    "object-literal-sort-keys": false,
+    "quotemark": [
+      true,
+      "single"
+    ],
+    "trailing-comma": false
+  },
+  "rulesDirectory": []
 }
