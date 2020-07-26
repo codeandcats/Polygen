@@ -16,6 +16,7 @@ import { removeLayer } from '../../../../actions/editor/document/layer/removeLay
 import { selectLayer } from '../../../../actions/editor/document/layer/selectLayer';
 import { setLayerVisibility } from '../../../../actions/editor/document/layer/setLayerVisibility';
 import { addLayer } from '../../../../actions/editor/document/layers/addLayer';
+import { duplicateLayer } from '../../../../actions/editor/document/layers/duplicateLayer';
 import { ImageCache } from '../../../../models/imageCache';
 import { Store } from '../../../../reduxWithLessSux/store';
 import * as mainStyles from '../../styles';
@@ -93,6 +94,11 @@ export class LayerList extends React.Component<LayerListProps, {}> {
                   layerWithIndex.index,
                   layerWithIndex.layer.name
                 )
+              }
+              onDuplicateLayer={() =>
+                duplicateLayer(this.props.store, {
+                  layerIndex: layerWithIndex.index,
+                })
               }
               onShowLayerBackgroundDialog={() =>
                 this.showLayerImageSourceDialog(

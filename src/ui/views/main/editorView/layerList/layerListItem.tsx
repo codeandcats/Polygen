@@ -17,6 +17,7 @@ interface LayerListItemProps {
   onShowRenameLayerDialog: (layerIndex: number) => void;
   onShowLayerBackgroundDialog: (layerIndex: number) => void;
   onShowLayerSettingsDialog: (layerIndex: number) => void;
+  onDuplicateLayer: (layerIndex: number) => void;
 }
 
 interface LayerListItemState {}
@@ -120,7 +121,17 @@ export class LayerListItem extends React.Component<
             </Dropdown.Item>
 
             <Dropdown.Item
-              eventKey="3"
+              eventKey="4"
+              onClick={() => this.props.onDuplicateLayer(this.props.layerIndex)}
+            >
+              <i
+                className={classNames('fa fa-files-o', mainStyles.spaceRight)}
+              />
+              Duplicate
+            </Dropdown.Item>
+
+            <Dropdown.Item
+              eventKey="5"
               onClick={() =>
                 this.props.onShowLayerBackgroundDialog(this.props.layerIndex)
               }
@@ -132,7 +143,7 @@ export class LayerListItem extends React.Component<
             </Dropdown.Item>
 
             <Dropdown.Item
-              eventKey="4"
+              eventKey="6"
               onClick={() =>
                 this.props.onShowLayerSettingsDialog(this.props.layerIndex)
               }
@@ -144,7 +155,7 @@ export class LayerListItem extends React.Component<
             <Dropdown.Divider />
 
             <Dropdown.Item
-              eventKey="5"
+              eventKey="7"
               disabled={!canRemoveLayer}
               onClick={() => this.props.onRemoveLayer(layer)}
             >
