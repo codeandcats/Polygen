@@ -1,6 +1,6 @@
 import * as path from 'path';
 import React = require('react');
-import { Button, ButtonToolbar, Jumbotron, ListGroup, Row } from 'react-bootstrap';
+import { Button, ButtonToolbar, Jumbotron, ListGroup } from 'react-bootstrap';
 import * as styles from './styles';
 
 export interface WelcomeViewProps {
@@ -51,7 +51,7 @@ export const WelcomeView: React.StatelessComponent<WelcomeViewProps> = (props: W
           }
         </div>
         {
-          shouldShowRecentFiles ? this.renderFileList() : null
+          shouldShowRecentFiles ? renderFileList() : null
         }
       </Jumbotron>
     </div>
