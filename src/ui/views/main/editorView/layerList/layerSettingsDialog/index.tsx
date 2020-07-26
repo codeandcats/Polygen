@@ -269,7 +269,7 @@ export class LayerSettingsDialog extends React.Component<
             disabled={!isEnabled}
             min={0}
             max={100}
-            onChange={(event: React.FormEvent<FormControl>) =>
+            onChange={(event: React.FormEvent<any>) =>
               this.updateThresholdField(fieldName, event)
             }
             type="number"

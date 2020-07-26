@@ -261,7 +261,7 @@ export class ExportDialog extends React.Component<
             type="number"
             className="text-right"
             value={`${dialog.dimensions[dimension] || 0}`}
-            onChange={(event: React.FormEvent<FormControl>) =>
+            onChange={(event: React.FormEvent<any>) =>
               this.setDimension(dimension, event)
             }
             min="1"
@@ -346,7 +346,7 @@ export class ExportDialog extends React.Component<
                   value={`${Math.round(quality * 100)}`}
                   min={0}
                   max={100}
-                  onChange={(event: React.FormEvent<FormControl>) =>
+                  onChange={(event: React.FormEvent<any>) =>
                     this.setQuality(event)
                   }
                 ></FormControl>

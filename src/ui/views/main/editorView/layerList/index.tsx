@@ -34,6 +34,7 @@ export class LayerList extends React.Component<LayerListProps, {}> {
   public render() {
     const { activeEditorIndex, editors } = this.props.store.getState();
     const editor = editors[activeEditorIndex];
+    const images = editor.document.images;
     const layersWithIndices = editor.document.layers
       .map((layer, index) => ({
         layer,
@@ -96,7 +97,9 @@ export class LayerList extends React.Component<LayerListProps, {}> {
               onShowLayerBackgroundDialog={() =>
                 this.showLayerImageSourceDialog(
                   layerWithIndex.index,
-                  layerWithIndex.layer.image.source
+                  images.find(
+                    (image) => image.id === layerWithIndex.layer.image.imageId
+                  )
                 )
               }
               onShowLayerSettingsDialog={() => {

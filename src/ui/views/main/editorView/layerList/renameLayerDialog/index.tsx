@@ -91,7 +91,7 @@ export class RenameLayerDialog extends React.Component<
             <Form.Label>Layer name</Form.Label>
             <FormControl
               id={RenameLayerDialog.LAYER_NAME_INPUT_ID}
-              onChange={(event: React.FormEvent<FormControl>) =>
+              onChange={(event: React.FormEvent<any>) =>
                 this.updateLayerName(event)
               }
               value={layerName}
