@@ -9,7 +9,8 @@ interface MoveLayerPayload {
 }
 
 export const moveLayer = defineAction(
-  'moveLayer', (state: ApplicationState, payload: MoveLayerPayload) => {
+  'moveLayer',
+  (state: ApplicationState, payload: MoveLayerPayload) => {
     const editors = state.editors.map((editor, editorIndex) => {
       if (editorIndex === state.activeEditorIndex) {
         const document = editor.document;
@@ -20,19 +21,18 @@ export const moveLayer = defineAction(
         }
 
         layers = moveElement(layers, payload.layerIndex, payload.toIndex);
-        const selectedLayerIndex = (
-          editor.selectedLayerIndex === payload.layerIndex ?
-          payload.toIndex :
-          editor.selectedLayerIndex
-        );
+        const selectedLayerIndex =
+          editor.selectedLayerIndex === payload.layerIndex
+            ? payload.toIndex
+            : editor.selectedLayerIndex;
 
         return {
           ...editor,
           document: {
             ...document,
-            layers
+            layers,
           },
-          selectedLayerIndex
+          selectedLayerIndex,
         };
       }
       return editor;
@@ -40,7 +40,7 @@ export const moveLayer = defineAction(
 
     return {
       ...state,
-      editors
+      editors,
     };
   }
 ).getDispatcher();

@@ -3,14 +3,15 @@ import { Dialogs, NativeDialogType } from '../../../shared/models/dialogs';
 import { defineAction } from '../../reduxWithLessSux/action';
 
 export const hideNativeDialog = defineAction(
-  'hideNativeDialog', (state: ApplicationState) => {
+  'hideNativeDialog',
+  (state: ApplicationState) => {
     const dialogs: Dialogs = {
       ...state.dialogs,
-      native: undefined
+      native: undefined,
     };
     const result: ApplicationState = {
       ...state,
-      dialogs
+      dialogs,
     };
     return result;
   }

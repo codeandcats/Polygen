@@ -68,28 +68,19 @@ export abstract class Tool {
     event = event;
   }
 
-  public mouseDown(
-    helper: ToolHelper,
-    event: CanvasMouseState
-  ): void {
+  public mouseDown(helper: ToolHelper, event: CanvasMouseState): void {
     // Just to remove compiler warnings about unused variables
     helper = helper;
     event = event;
   }
 
-  public mouseMove(
-    helper: ToolHelper,
-    event: CanvasMouseState
-  ): void {
+  public mouseMove(helper: ToolHelper, event: CanvasMouseState): void {
     // Just to remove compiler warnings about unused variables
     helper = helper;
     event = event;
   }
 
-  public mouseUp(
-    helper: ToolHelper,
-    event: CanvasMouseState
-  ): void {
+  public mouseUp(helper: ToolHelper, event: CanvasMouseState): void {
     // Just to remove compiler warnings about unused variables
     helper = helper;
     event = event;
@@ -109,14 +100,39 @@ export abstract class Tool {
 }
 
 export const ALL_CURSORS = tuple(
-  'default', 'none', 'help', 'pointer', 'progress',
-  'wait', 'cell', 'crosshair', 'text', 'vertical-text',
-  'copy', 'move', 'no-drop', 'not-allowed', 'all-scroll',
-  'col-resize', 'row-resize', 'n-resize', 'e-resize',
-  's-resize', 'w-resize', 'ne-resize', 'nw-resize',
-  'se-resize', 'sw-resize', 'ew-resize', 'ns-resize',
-  'nesw-resize', 'nwse-resize', 'zoom-in', 'zoom-out',
-  'grab', 'grabbing'
+  'default',
+  'none',
+  'help',
+  'pointer',
+  'progress',
+  'wait',
+  'cell',
+  'crosshair',
+  'text',
+  'vertical-text',
+  'copy',
+  'move',
+  'no-drop',
+  'not-allowed',
+  'all-scroll',
+  'col-resize',
+  'row-resize',
+  'n-resize',
+  'e-resize',
+  's-resize',
+  'w-resize',
+  'ne-resize',
+  'nw-resize',
+  'se-resize',
+  'sw-resize',
+  'ew-resize',
+  'ns-resize',
+  'nesw-resize',
+  'nwse-resize',
+  'zoom-in',
+  'zoom-out',
+  'grab',
+  'grabbing'
 );
 
 export type Cursor = typeof ALL_CURSORS[number];

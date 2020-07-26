@@ -17,15 +17,15 @@ export const openNewProjectFile = defineAction(
           image: {
             topLeft: { x: -1, y: -1 },
             bottomRight: { x: 1, y: 1 },
-            source: undefined
+            source: undefined,
           },
           isVisible: true,
           name: 'Layer 1',
           points: [],
-          polygons: []
-        }
+          polygons: [],
+        },
       ],
-      dimensions: payload.dimensions
+      dimensions: payload.dimensions,
     };
     const editor: Editor = {
       document,
@@ -39,10 +39,10 @@ export const openNewProjectFile = defineAction(
       viewPort: {
         pan: {
           x: 0,
-          y: 0
+          y: 0,
         },
-        zoom: 1
-      }
+        zoom: 1,
+      },
     };
     const editors = state.editors.concat(editor);
     const activeEditorIndex = editors.length - 1;
@@ -50,10 +50,10 @@ export const openNewProjectFile = defineAction(
     return {
       ...state,
       dialogs: {
-        ...state.dialogs
+        ...state.dialogs,
       },
       editors,
-      activeEditorIndex
+      activeEditorIndex,
     };
   }
 ).getDispatcher();

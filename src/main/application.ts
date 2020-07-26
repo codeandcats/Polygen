@@ -20,11 +20,13 @@ export class Application {
       minHeight: 500,
     });
 
-    this.mainWindow.loadURL(url.format({
-      pathname: appRootPath.resolve('./src/ui/views/main/index.html'),
-      protocol: 'file:',
-      slashes: true
-    }));
+    this.mainWindow.loadURL(
+      url.format({
+        pathname: appRootPath.resolve('./src/ui/views/main/index.html'),
+        protocol: 'file:',
+        slashes: true,
+      })
+    );
 
     this.mainWindow.on('closed', () => {
       this.mainWindow = undefined;

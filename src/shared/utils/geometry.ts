@@ -41,7 +41,7 @@ export function forEachPointWithinPolygon(
 export function getCenter(size: Size): Point {
   return {
     x: size.width / 2,
-    y: size.height / 2
+    y: size.height / 2,
   };
 }
 
@@ -50,14 +50,20 @@ export function getDistanceBetweenPoints(pointA: Point, pointB: Point): number {
   return Math.sqrt(distanceSquared);
 }
 
-export function getDistanceBetweenPointsSquared(pointA: Point, pointB: Point): number {
+export function getDistanceBetweenPointsSquared(
+  pointA: Point,
+  pointB: Point
+): number {
   const xDiff = pointB.x - pointA.x;
   const yDiff = pointB.y - pointA.y;
-  const result = (xDiff * xDiff) + (yDiff * yDiff);
+  const result = xDiff * xDiff + yDiff * yDiff;
   return result;
 }
 
-export function getIndicesOfPointsInRectangle(points: Point[], rectangle: Rectangle): number[] {
+export function getIndicesOfPointsInRectangle(
+  points: Point[],
+  rectangle: Rectangle
+): number[] {
   const indices: number[] = [];
   for (let index = 0; index < points.length; index++) {
     const point = points[index];
@@ -68,7 +74,11 @@ export function getIndicesOfPointsInRectangle(points: Point[], rectangle: Rectan
   return indices;
 }
 
-export function getPolygonBoundingRectangle([p0, p1, p2]: [Point, Point, Point]): Rectangle {
+export function getPolygonBoundingRectangle([p0, p1, p2]: [
+  Point,
+  Point,
+  Point
+]): Rectangle {
   const left = Math.min(p0.x, p1.x, p2.x);
   const top = Math.min(p0.y, p1.y, p2.y);
   const right = Math.max(p0.x, p1.x, p2.x);
@@ -78,20 +88,38 @@ export function getPolygonBoundingRectangle([p0, p1, p2]: [Point, Point, Point])
     x: left,
     y: top,
     width: right - left,
-    height: bottom - top
+    height: bottom - top,
   };
 }
 
-export function isPointInPolygon(point: Point, triangle: [Point, Point, Point]): boolean {
+export function isPointInPolygon(
+  point: Point,
+  triangle: [Point, Point, Point]
+): boolean {
   const [p0, p1, p2] = triangle;
-  const A = 0.5 * (-p1.y * p2.x + p0.y * (-p1.x + p2.x) + p0.x * (p1.y - p2.y) + p1.x * p2.y);
+  const A =
+    0.5 *
+    (-p1.y * p2.x + p0.y * (-p1.x + p2.x) + p0.x * (p1.y - p2.y) + p1.x * p2.y);
   const sign = A < 0 ? -1 : 1;
-  const s = (p0.y * p2.x - p0.x * p2.y + (p2.y - p0.y) * point.x + (p0.x - p2.x) * point.y) * sign;
-  const t = (p0.x * p1.y - p0.y * p1.x + (p0.y - p1.y) * point.x + (p1.x - p0.x) * point.y) * sign;
-  return s > 0 && t > 0 && (s + t) < 2 * A * sign;
+  const s =
+    (p0.y * p2.x -
+      p0.x * p2.y +
+      (p2.y - p0.y) * point.x +
+      (p0.x - p2.x) * point.y) *
+    sign;
+  const t =
+    (p0.x * p1.y -
+      p0.y * p1.x +
+      (p0.y - p1.y) * point.x +
+      (p1.x - p0.x) * point.y) *
+    sign;
+  return s > 0 && t > 0 && s + t < 2 * A * sign;
 }
 
-export function isPointInRectangle(point: Point, rectangle: Rectangle): boolean {
+export function isPointInRectangle(
+  point: Point,
+  rectangle: Rectangle
+): boolean {
   return (
     point.x >= rectangle.x &&
     point.x <= rectangle.x + rectangle.width &&
@@ -110,19 +138,25 @@ export function pointsToRectangle(point1: Point, point2: Point): Rectangle {
     x: minX,
     y: minY,
     width: maxX - minX,
-    height: maxY - minY
+    height: maxY - minY,
   };
 }
 
 export function recalculatePolygons(points: Point[]): Polygon[] {
-  const pointTuples: cdt2d.Point[] = points.map(point => [point.x, point.y] as cdt2d.Point);
+  const pointTuples: cdt2d.Point[] = points.map(
+    (point) => [point.x, point.y] as cdt2d.Point
+  );
   const polygonPointIndices = cdt2d(pointTuples);
   const polygons: Polygon[] = new Array<Polygon>(polygonPointIndices.length);
 
-  for (let polygonIndex = 0; polygonIndex < polygonPointIndices.length; polygonIndex++) {
+  for (
+    let polygonIndex = 0;
+    polygonIndex < polygonPointIndices.length;
+    polygonIndex++
+  ) {
     polygons[polygonIndex] = {
       color: { r: 0, g: 0, b: 0, a: 0 },
-      pointIndices: polygonPointIndices[polygonIndex]
+      pointIndices: polygonPointIndices[polygonIndex],
     };
   }
 
@@ -132,7 +166,7 @@ export function recalculatePolygons(points: Point[]): Polygon[] {
 export function subtractPoints(point1: Point, point2: Point): Point {
   const result = {
     x: point1.x - point2.x,
-    y: point1.y - point2.y
+    y: point1.y - point2.y,
   };
   return result;
 }
@@ -141,6 +175,12 @@ export function pointToArrayPoint(point: Point): ArrayPoint {
   return [point.x, point.y] as ArrayPoint;
 }
 
-export function trianglePointsToTriangleArrayPoints(points: Point[]): [ArrayPoint, ArrayPoint, ArrayPoint] {
-  return points.map(point => pointToArrayPoint(point)) as [ArrayPoint, ArrayPoint, ArrayPoint];
+export function trianglePointsToTriangleArrayPoints(
+  points: Point[]
+): [ArrayPoint, ArrayPoint, ArrayPoint] {
+  return points.map((point) => pointToArrayPoint(point)) as [
+    ArrayPoint,
+    ArrayPoint,
+    ArrayPoint
+  ];
 }

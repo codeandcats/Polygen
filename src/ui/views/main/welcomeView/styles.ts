@@ -17,13 +17,13 @@ export const welcomePage = style({
       width: percent(90),
       height: percent(90),
       display: 'flex',
-      flexDirection: 'column'
+      flexDirection: 'column',
     },
 
-    'h6': {
-      marginTop: px(20)
-    }
-  }
+    h6: {
+      marginTop: px(20),
+    },
+  },
 });
 
 export const fileList = style({
@@ -33,7 +33,7 @@ export const fileList = style({
 
   $nest: {
     '.list-group-item:first-of-type': {
-      borderTop: 0
-    }
-  }
+      borderTop: 0,
+    },
+  },
 });

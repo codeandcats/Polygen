@@ -5,7 +5,7 @@ export const layerBackgroundImageForm = style({
 
   $nest: {
     'form-group:last-of-type': {
-      marginBottom: 0
+      marginBottom: 0,
     },
     'a.thumbnail': {
       marginBottom: 0,
@@ -13,9 +13,9 @@ export const layerBackgroundImageForm = style({
 
       $nest: {
         '&:hover, &:focus, &:active': {
-          borderColor: '#ddd'
-        }
-      }
-    }
-  }
+          borderColor: '#ddd',
+        },
+      },
+    },
+  },
 });

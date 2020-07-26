@@ -11,26 +11,32 @@ const NearestPointDirections = tuple('up', 'down', 'left', 'right');
 
 type NearestPointDirection = typeof NearestPointDirections[number];
 
-const NearestPointDirectionVectors: { [key in NearestPointDirection]: Point } = {
+const NearestPointDirectionVectors: {
+  [key in NearestPointDirection]: Point;
+} = {
   up: { x: 0, y: -1 },
   down: { x: 0, y: 1 },
   left: { x: -1, y: 0 },
-  right: { x: 1, y: 0 }
+  right: { x: 1, y: 0 },
 };
 
-const NearestPointDirectionAngles: { [key in NearestPointDirection]: number } = NearestPointDirections
-  .reduce((result, direction) => {
-    const vector = NearestPointDirectionVectors[direction];
-    result[direction] = Math.atan2(vector.y, vector.x);
-    return result;
-  }, {} as Partial<{ [key in NearestPointDirection]: number }>) as { [key in NearestPointDirection]: number };
+const NearestPointDirectionAngles: {
+  [key in NearestPointDirection]: number;
+} = NearestPointDirections.reduce((result, direction) => {
+  const vector = NearestPointDirectionVectors[direction];
+  result[direction] = Math.atan2(vector.y, vector.x);
+  return result;
+}, {} as Partial<{ [key in NearestPointDirection]: number }>) as {
+  [key in NearestPointDirection]: number;
+};
 
 interface SelectNearestPointPayload {
   direction: NearestPointDirection;
 }
 
 export const selectNearestPoint = defineAction(
-  'selectNearestPoint', (state: ApplicationState, payload: SelectNearestPointPayload) => {
+  'selectNearestPoint',
+  (state: ApplicationState, payload: SelectNearestPointPayload) => {
     const editors = state.editors.map((editor, editorIndex) => {
       if (editorIndex === state.activeEditorIndex) {
         const selectedLayer = editor.document.layers[editor.selectedLayerIndex];
@@ -47,14 +53,13 @@ export const selectNearestPoint = defineAction(
             selectedLayer.points[furthermostSelectedPointIndex],
             payload.direction
           );
-          const selectedPointIndices: number[] = (
-            indexOfNearestPoint === -1 ?
-            editor.selectedPointIndices :
-            [indexOfNearestPoint]
-          );
+          const selectedPointIndices: number[] =
+            indexOfNearestPoint === -1
+              ? editor.selectedPointIndices
+              : [indexOfNearestPoint];
           return {
             ...editor,
-            selectedPointIndices
+            selectedPointIndices,
           };
         }
       }
@@ -63,23 +68,26 @@ export const selectNearestPoint = defineAction(
 
     return {
       ...state,
-      editors
+      editors,
     };
   }
 ).getDispatcher();
 
-function getDistanceWeighted(point: Point, origin: Point, preferredDirection: NearestPointDirection): number {
+function getDistanceWeighted(
+  point: Point,
+  origin: Point,
+  preferredDirection: NearestPointDirection
+): number {
   const directionAngle = NearestPointDirectionAngles[preferredDirection];
   const distance = Math.abs(getDistanceBetweenPointsSquared(point, origin));
   const angle = getAngleToPoint(point, origin);
 
   // =IF(ABS(C31-G31)>=PI(), PI() - MOD(ABS(C31-G31), PI()), ABS(C31-G31))
   let angleDifference = Math.abs(directionAngle - angle);
-  angleDifference = (
-    (angleDifference >= Math.PI) ?
-    Math.PI - mod(angleDifference, Math.PI) :
-    angleDifference
-  );
+  angleDifference =
+    angleDifference >= Math.PI
+      ? Math.PI - mod(angleDifference, Math.PI)
+      : angleDifference;
 
   const weight = (1 + angleDifference) * (1 + angleDifference);
 
@@ -88,10 +96,16 @@ function getDistanceWeighted(point: Point, origin: Point, preferredDirection: Ne
   return result;
 }
 
-export function getIndexOfNearestPoint(points: Point[], origin: Point, direction: NearestPointDirection): number {
+export function getIndexOfNearestPoint(
+  points: Point[],
+  origin: Point,
+  direction: NearestPointDirection
+): number {
   let nearestDistance = Number.POSITIVE_INFINITY;
 
-  const pointsInDirection = points.filter(point => isPointInDirectionOfOrigin(point, origin, direction));
+  const pointsInDirection = points.filter((point) =>
+    isPointInDirectionOfOrigin(point, origin, direction)
+  );
 
   const nearestPointIndex = points.reduce((result, point, index) => {
     if (isPointInDirectionOfOrigin(point, origin, direction)) {
@@ -111,7 +125,11 @@ export function getAngleToPoint(point: Point, origin: Point): number {
   return Math.atan2(point.y - origin.y, point.x - origin.x);
 }
 
-export function isPointInDirectionOfOrigin(point: Point, origin: Point, direction: NearestPointDirection): boolean {
+export function isPointInDirectionOfOrigin(
+  point: Point,
+  origin: Point,
+  direction: NearestPointDirection
+): boolean {
   const vector: Point = { x: point.x - origin.x, y: point.y - origin.y };
 
   return (
@@ -133,11 +151,16 @@ export function getIndexOfFurthermostPointInDirection(
 
   function getDirectionValue(point: Point) {
     switch (direction) {
-      case 'up': return -point.y;
-      case 'down': return point.y;
-      case 'left': return -point.x;
-      case 'right': return point.x;
-      default: return assertNever(direction);
+      case 'up':
+        return -point.y;
+      case 'down':
+        return point.y;
+      case 'left':
+        return -point.x;
+      case 'right':
+        return point.x;
+      default:
+        return assertNever(direction);
     }
   }
 

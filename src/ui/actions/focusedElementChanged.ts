@@ -9,14 +9,15 @@ interface FocusedElementChangedPayload {
 }
 
 export const focusedElementChanged = defineAction(
-  'focusedElementChanged', (state: ApplicationState, payload: FocusedElementChangedPayload) => {
+  'focusedElementChanged',
+  (state: ApplicationState, payload: FocusedElementChangedPayload) => {
     const { isInput, isTextInput } = payload;
     const result: ApplicationState = {
       ...state,
       focusedElement: {
         isInput,
-        isTextInput
-      }
+        isTextInput,
+      },
     };
     return result;
   }
@@ -30,7 +31,7 @@ export function isElementAnInput(element: Nullable<Element>): boolean {
   const tagName = element.tagName.toLowerCase();
   const INPUT_TYPES = ['input', 'select', 'option', 'button', 'textarea'];
 
-  return (INPUT_TYPES.indexOf(tagName) > -1);
+  return INPUT_TYPES.indexOf(tagName) > -1;
 }
 
 export function isElementATextInput(element: Nullable<Element>): boolean {

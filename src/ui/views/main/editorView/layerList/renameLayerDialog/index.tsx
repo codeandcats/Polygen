@@ -10,10 +10,17 @@ interface RenameLayerDialogProps {
   store: Store<ApplicationState>;
 }
 
-export class RenameLayerDialog extends React.Component<RenameLayerDialogProps, {}> {
+export class RenameLayerDialog extends React.Component<
+  RenameLayerDialogProps,
+  {}
+> {
   private static LAYER_NAME_INPUT_ID = 'renameLayerDialog_LayerName';
 
-  private accept(event: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement>) {
+  private accept(
+    event:
+      | React.FormEvent<HTMLFormElement>
+      | React.MouseEvent<HTMLButtonElement>
+  ) {
     event.preventDefault();
 
     const state = this.props.store.getState();
@@ -27,7 +34,7 @@ export class RenameLayerDialog extends React.Component<RenameLayerDialogProps, {
 
     renameLayer(this.props.store, {
       layerIndex,
-      layerName
+      layerName,
     });
     hideWebDialog(this.props.store);
   }
@@ -37,7 +44,9 @@ export class RenameLayerDialog extends React.Component<RenameLayerDialogProps, {
   }
 
   private focusLayerName() {
-    const element = document.getElementById(RenameLayerDialog.LAYER_NAME_INPUT_ID);
+    const element = document.getElementById(
+      RenameLayerDialog.LAYER_NAME_INPUT_ID
+    );
     if (element) {
       element.focus();
     }
@@ -74,21 +83,31 @@ export class RenameLayerDialog extends React.Component<RenameLayerDialogProps, {
           <h2>Rename layer</h2>
         </Modal.Header>
         <Modal.Body>
-          <Form onSubmit={(event: React.FormEvent<HTMLFormElement>) => this.accept(event)}>
+          <Form
+            onSubmit={(event: React.FormEvent<HTMLFormElement>) =>
+              this.accept(event)
+            }
+          >
             <Form.Label>Layer name</Form.Label>
             <FormControl
               id={RenameLayerDialog.LAYER_NAME_INPUT_ID}
-              onChange={(event: React.FormEvent<FormControl>) => this.updateLayerName(event)}
+              onChange={(event: React.FormEvent<FormControl>) =>
+                this.updateLayerName(event)
+              }
               value={layerName}
             />
           </Form>
         </Modal.Body>
         <Modal.Footer>
           <Button
-            variant='primary'
-            onClick={(event: React.MouseEvent<HTMLButtonElement>) => this.accept(event)}
+            variant="primary"
+            onClick={(event: React.MouseEvent<HTMLButtonElement>) =>
+              this.accept(event)
+            }
             disabled={!isValid}
-          >OK</Button>
+          >
+            OK
+          </Button>
           <Button onClick={() => this.cancel()}>Cancel</Button>
         </Modal.Footer>
       </Modal>
@@ -99,7 +118,7 @@ export class RenameLayerDialog extends React.Component<RenameLayerDialogProps, {
     event.preventDefault();
     const layerName = (event.target as HTMLInputElement).value;
     updateWebDialogFields(this.props.store, {
-      layerName
+      layerName,
     });
   }
 }

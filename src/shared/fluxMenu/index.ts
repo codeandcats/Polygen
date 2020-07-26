@@ -1,13 +1,29 @@
 import { BrowserWindow } from 'electron';
-import { Accelerator, app, ipcMain, ipcRenderer, Menu, MenuItem, MenuItemConstructorOptions, remote } from 'electron';
+import {
+  Accelerator,
+  app,
+  ipcMain,
+  ipcRenderer,
+  Menu,
+  MenuItem,
+  MenuItemConstructorOptions,
+  remote,
+} from 'electron';
 
-type MenuItemValueProvider<TState, TValue> = ((state: TState) => TValue) | TValue;
+type MenuItemValueProvider<TState, TValue> =
+  | ((state: TState) => TValue)
+  | TValue;
 
-export type MenuType = 'normal' | 'separator' | 'submenu' | 'checkbox' | 'radio';
+export type MenuType =
+  | 'normal'
+  | 'separator'
+  | 'submenu'
+  | 'checkbox'
+  | 'radio';
 
 const IPC_EVENT_NAMES = {
   RUN: 'FLUX_MENU.RUN',
-  UPDATE: 'FLUX_MENU.UPDATE'
+  UPDATE: 'FLUX_MENU.UPDATE',
 };
 
 export interface FluxMenuItemDefinition<TState> {
@@ -23,7 +39,8 @@ export interface FluxMenuItemDefinition<TState> {
   visible?: MenuItemValueProvider<TState, boolean>;
 }
 
-export interface FluxMenuItemDefinitionWithId<TState> extends FluxMenuItemDefinition<TState> {
+export interface FluxMenuItemDefinitionWithId<TState>
+  extends FluxMenuItemDefinition<TState> {
   id: string;
   submenu?: Array<FluxMenuItemDefinitionWithId<TState>>;
 }
@@ -56,7 +73,10 @@ interface FluxMenuRunPayload {
   menuItemId: string;
 }
 
-function walkMenuItems<T extends { submenu?: T[] }>(items: T[], callback: (item: T) => boolean | void) {
+function walkMenuItems<T extends { submenu?: T[] }>(
+  items: T[],
+  callback: (item: T) => boolean | void
+) {
   for (const item of items) {
     let shouldContinue = callback(item);
 
@@ -81,13 +101,14 @@ function getDefinitionsWithIds<TState>(
   options?: { fromId: number }
 ): Array<FluxMenuItemDefinitionWithId<TState>> {
   options = options || { fromId: 0 };
-  const result = definitions.map(definition => {
+  const result = definitions.map((definition) => {
     const id = '' + (options as { fromId: number }).fromId++;
-    const submenu = definition.submenu && getDefinitionsWithIds(definition.submenu, options);
+    const submenu =
+      definition.submenu && getDefinitionsWithIds(definition.submenu, options);
     const itemWithId: FluxMenuItemDefinitionWithId<TState> = {
       ...definition,
       id,
-      submenu
+      submenu,
     };
 
     return itemWithId;
@@ -96,11 +117,10 @@ function getDefinitionsWithIds<TState>(
   return result;
 }
 
-function getDefinitionValue<TState, TKey extends keyof FluxMenuItemDefinition<TState>>(
-  definition: FluxMenuItemDefinition<TState>,
-  state: TState,
-  key: TKey
-): any {
+function getDefinitionValue<
+  TState,
+  TKey extends keyof FluxMenuItemDefinition<TState>
+>(definition: FluxMenuItemDefinition<TState>, state: TState, key: TKey): any {
   const provider = definition[key];
   if (provider != null) {
     if (typeof provider === 'function') {
@@ -116,7 +136,7 @@ function getMenuState<TState>(
   state: TState
 ): FluxMenuItemStateWithId {
   const result: FluxMenuItemStateWithId = {
-    id: definition.id
+    id: definition.id,
   };
 
   const keys: Array<keyof FluxMenuItemDefinition<TState>> = [
@@ -128,7 +148,7 @@ function getMenuState<TState>(
     'role',
     'sublabel',
     'type',
-    'visible'
+    'visible',
   ];
 
   for (const key of keys) {
@@ -139,7 +159,9 @@ function getMenuState<TState>(
   }
 
   if (definition.submenu && definition.submenu.length) {
-    result.submenu = definition.submenu.map(childDefinition => getMenuState(childDefinition, state));
+    result.submenu = definition.submenu.map((childDefinition) =>
+      getMenuState(childDefinition, state)
+    );
   }
 
   return result;
@@ -149,30 +171,40 @@ export class FluxMenuRenderer<TState> {
   private browserWindowId: number = remote.getCurrentWindow().id;
   private namespace: string | undefined;
   private definitions: Array<FluxMenuItemDefinitionWithId<TState>> = [];
-  private definitionsById: { [id: string]: FluxMenuItemDefinitionWithId<TState>; } = {};
+  private definitionsById: {
+    [id: string]: FluxMenuItemDefinitionWithId<TState>;
+  } = {};
 
-  constructor(options: { definitions: Array<FluxMenuItemDefinition<TState>>, namespace?: string }) {
+  constructor(options: {
+    definitions: Array<FluxMenuItemDefinition<TState>>;
+    namespace?: string;
+  }) {
     this.namespace = options.namespace || undefined;
     this.definitions = getDefinitionsWithIds(options.definitions);
-    walkMenuItems(this.definitions, definition => {
+    walkMenuItems(this.definitions, (definition) => {
       this.definitionsById[definition.id] = definition;
     });
 
-    ipcRenderer.on(IPC_EVENT_NAMES.RUN, (_: any, payload: FluxMenuRunPayload) => {
-      if (payload.namespace === this.namespace) {
-        const definition = this.definitionsById[payload.menuItemId];
-        if (definition.click) {
-          definition.click();
+    ipcRenderer.on(
+      IPC_EVENT_NAMES.RUN,
+      (_: any, payload: FluxMenuRunPayload) => {
+        if (payload.namespace === this.namespace) {
+          const definition = this.definitionsById[payload.menuItemId];
+          if (definition.click) {
+            definition.click();
+          }
         }
       }
-    });
+    );
   }
 
   public update(state: TState) {
     const payload: FluxMenuUpdatePayload = {
       namespace: this.namespace,
       browserWindowId: this.browserWindowId,
-      menus: this.definitions.map(definition => getMenuState(definition, state))
+      menus: this.definitions.map((definition) =>
+        getMenuState(definition, state)
+      ),
     };
 
     // TODO: Only send differences
@@ -189,11 +221,14 @@ export class FluxMenuMain {
   constructor(options?: { namespace?: string }) {
     this.namespace = (options && options.namespace) || undefined;
 
-    ipcMain.on(IPC_EVENT_NAMES.UPDATE, (_: any, payload: FluxMenuUpdatePayload) => {
-      if (payload.namespace === this.namespace) {
-        this.updateMenus(payload.browserWindowId, payload.menus);
+    ipcMain.on(
+      IPC_EVENT_NAMES.UPDATE,
+      (_: any, payload: FluxMenuUpdatePayload) => {
+        if (payload.namespace === this.namespace) {
+          this.updateMenus(payload.browserWindowId, payload.menus);
+        }
       }
-    });
+    );
 
     app.on('ready', () => {
       this.isAppReady = true;
@@ -203,8 +238,14 @@ export class FluxMenuMain {
     });
   }
 
-  private updateMenus(browserWindowId: number, menuState: FluxMenuItemStateWithId[]) {
-    const updateMenuItem = (menuItem: MenuItem, state: FluxMenuItemStateWithId) => {
+  private updateMenus(
+    browserWindowId: number,
+    menuState: FluxMenuItemStateWithId[]
+  ) {
+    const updateMenuItem = (
+      menuItem: MenuItem,
+      state: FluxMenuItemStateWithId
+    ) => {
       if (state.checked !== undefined) {
         menuItem.checked = state.checked;
       }
@@ -220,7 +261,9 @@ export class FluxMenuMain {
     };
 
     if (!this.menu) {
-      const menuItemStatesToMenu = (menuItemStates: FluxMenuItemStateWithId[]): Menu => {
+      const menuItemStatesToMenu = (
+        menuItemStates: FluxMenuItemStateWithId[]
+      ): Menu => {
         const menu = new Menu();
         for (const menuItemState of menuItemStates) {
           const options = {
@@ -228,11 +271,21 @@ export class FluxMenuMain {
             click: () => this.runMenuItem(browserWindowId, menuItemState.id),
             id: menuItemState.id,
             role: menuItemState.role,
-            submenu: menuItemState.submenu && menuItemStatesToMenu(menuItemState.submenu),
+            submenu:
+              menuItemState.submenu &&
+              menuItemStatesToMenu(menuItemState.submenu),
             sublabel: menuItemState.sublabel,
-            type: menuItemState.type
+            type: menuItemState.type,
           };
-          for (const key of ['accelerator', 'click', 'id', 'role', 'submenu', 'sublabel', 'type']) {
+          for (const key of [
+            'accelerator',
+            'click',
+            'id',
+            'role',
+            'submenu',
+            'sublabel',
+            'type',
+          ]) {
             if ((options as any)[key] === undefined) {
               delete (options as any)[key];
             }
@@ -251,7 +304,7 @@ export class FluxMenuMain {
         Menu.setApplicationMenu(this.menu);
       }
     } else {
-      walkMenuItems(menuState, menuItemState => {
+      walkMenuItems(menuState, (menuItemState) => {
         const menuItem = this.menuItemsById[menuItemState.id];
         updateMenuItem(menuItem, menuItemState);
       });
@@ -261,7 +314,7 @@ export class FluxMenuMain {
   private runMenuItem(browserWindowId: number, menuItemId: string) {
     const payload: FluxMenuRunPayload = {
       namespace: this.namespace,
-      menuItemId
+      menuItemId,
     };
     const browserWindow = BrowserWindow.fromId(browserWindowId);
     browserWindow.webContents.send(IPC_EVENT_NAMES.RUN, payload);

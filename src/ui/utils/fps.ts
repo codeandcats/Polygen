@@ -1,8 +1,7 @@
 export class Fps {
   private samples: number[] = [];
 
-  constructor(private sampleSize: number = 180) {
-  }
+  constructor(private sampleSize: number = 180) {}
 
   public tick() {
     const now = Date.now();

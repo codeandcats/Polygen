@@ -7,7 +7,8 @@ interface SetLayerVisibilityPayload {
 }
 
 export const setLayerVisibility = defineAction(
-  'setLayerVisibility', (state: ApplicationState, payload: SetLayerVisibilityPayload) => {
+  'setLayerVisibility',
+  (state: ApplicationState, payload: SetLayerVisibilityPayload) => {
     const editors = state.editors.map((editor, editorIndex) => {
       if (editorIndex === state.activeEditorIndex) {
         return {
@@ -18,12 +19,12 @@ export const setLayerVisibility = defineAction(
               if (layerIndex === payload.layerIndex) {
                 layer = {
                   ...layer,
-                  isVisible: payload.isVisible
+                  isVisible: payload.isVisible,
                 };
               }
               return layer;
-            })
-          }
+            }),
+          },
         };
       }
       return editor;
@@ -31,7 +32,7 @@ export const setLayerVisibility = defineAction(
 
     return {
       ...state,
-      editors
+      editors,
     };
   }
 ).getDispatcher();

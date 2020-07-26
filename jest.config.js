@@ -24,29 +24,27 @@ module.exports = {
   collectCoverageFrom: [],
 
   // The directory where Jest should output its coverage files
-  coverageDirectory: "coverage",
+  coverageDirectory: 'coverage',
 
   // An array of regexp pattern strings used to skip coverage collection
-  coveragePathIgnorePatterns: [
-    "/node_modules/"
-  ],
+  coveragePathIgnorePatterns: ['/node_modules/'],
 
   // A list of reporter names that Jest uses when writing coverage reports
   coverageReporters: [
     // "json",
-    "text",
+    'text',
     // "lcov",
     // "clover"
   ],
 
   // An object that configures minimum threshold enforcement for coverage results
   coverageThreshold: {
-    "global": {
-      "branches": 0,
-      "functions": 0,
-      "lines": 0,
-      "statements": 0
-    }
+    global: {
+      branches: 0,
+      functions: 0,
+      lines: 0,
+      statements: 0,
+    },
   },
 
   // Make calling deprecated APIs throw helpful error messages
@@ -63,9 +61,9 @@ module.exports = {
 
   // A set of global variables that need to be available in all test environments
   globals: {
-    "ts-jest": {
-      "tsConfig": "./tsconfig.json"
-    }
+    'ts-jest': {
+      tsConfig: './tsconfig.json',
+    },
   },
 
   // An array of directory names to be searched recursively up from the requiring module's location
@@ -74,12 +72,7 @@ module.exports = {
   // ],
 
   // An array of file extensions your modules use
-  "moduleFileExtensions": [
-    "ts",
-    "tsx",
-    "js",
-    "jsx"
-  ],
+  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
 
   // A map from regular expressions to module names that allow to stub out resources with a single module
   // moduleNameMapper: {},
@@ -135,7 +128,7 @@ module.exports = {
   // snapshotSerializers: [],
 
   // The test environment that will be used for testing
-  testEnvironment: "node",
+  testEnvironment: 'node',
 
   // Options that will be passed to the testEnvironment
   // testEnvironmentOptions: {},
@@ -144,9 +137,7 @@ module.exports = {
   // testLocationInResults: false,
 
   // The glob patterns Jest uses to detect test files
-  testMatch: [
-    "**/*.test.ts?(x)"
-  ],
+  testMatch: ['**/*.test.ts?(x)'],
 
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
   // testPathIgnorePatterns: [
@@ -169,8 +160,8 @@ module.exports = {
   // timers: "real",
 
   // A map from regular expressions to paths to transformers
-  "transform": {
-    "^.+\\.tsx?$": "ts-jest"
+  transform: {
+    '^.+\\.tsx?$': 'ts-jest',
   },
 
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation

@@ -3,14 +3,15 @@ import { Dialogs, WebDialog } from '../../../shared/models/dialogs';
 import { defineAction } from '../../reduxWithLessSux/action';
 
 export const hideWebDialog = defineAction(
-  'hideWebDialog', (state: ApplicationState) => {
+  'hideWebDialog',
+  (state: ApplicationState) => {
     const dialogs: Dialogs = {
       ...state.dialogs,
-      web: undefined
+      web: undefined,
     };
     const result: ApplicationState = {
       ...state,
-      dialogs
+      dialogs,
     };
     return result;
   }

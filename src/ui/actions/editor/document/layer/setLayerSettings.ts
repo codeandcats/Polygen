@@ -9,7 +9,8 @@ interface SetLayerSettingsPayload {
 }
 
 export const setLayerSettings = defineAction(
-  'setLayerSettings', (state: ApplicationState, payload: SetLayerSettingsPayload) => {
+  'setLayerSettings',
+  (state: ApplicationState, payload: SetLayerSettingsPayload) => {
     const editors = state.editors.map((editor, editorIndex) => {
       if (editorIndex === state.activeEditorIndex) {
         return {
@@ -21,12 +22,12 @@ export const setLayerSettings = defineAction(
                 layer = {
                   ...layer,
                   opacityThreshold: payload.opacityThreshold,
-                  transparencyThreshold: payload.transparencyThreshold
+                  transparencyThreshold: payload.transparencyThreshold,
                 };
               }
               return layer;
-            })
-          }
+            }),
+          },
         };
       }
       return editor;
@@ -34,7 +35,7 @@ export const setLayerSettings = defineAction(
 
     return {
       ...state,
-      editors
+      editors,
     };
   }
 ).getDispatcher();

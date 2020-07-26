@@ -6,7 +6,7 @@ import { ImageSource } from '../../../../../shared/models/imageSource';
 import { LayerImageSourceDialogState } from '../../../../../shared/models/layerImageSourceDialogState';
 import {
   DEFAULT_LAYER_THRESHOLD_SETTING_VALUE,
-  LayerSettingsDialogState
+  LayerSettingsDialogState,
 } from '../../../../../shared/models/layerSettingsDialogState';
 import { Nullable } from '../../../../../shared/models/nullable';
 import { RenameLayerDialogState } from '../../../../../shared/models/renameLayerDialogState';
@@ -37,69 +37,89 @@ export class LayerList extends React.Component<LayerListProps, {}> {
     const layersWithIndices = editor.document.layers
       .map((layer, index) => ({
         layer,
-        index
+        index,
       }))
       .sort((a, b) => b.index - a.index);
 
     return (
       <div className={styles.layerList}>
         <div className={styles.layerListHeader}>
-          <label className={classNames('control-label', mainStyles.spaceRight)}>Layers</label>
+          <label className={classNames('control-label', mainStyles.spaceRight)}>
+            Layers
+          </label>
           <OverlayTrigger
-            overlay={<Tooltip id='addLayerTooltip'>Add layer</Tooltip>}
-            placement='bottom'
+            overlay={<Tooltip id="addLayerTooltip">Add layer</Tooltip>}
+            placement="bottom"
           >
             <Button
-              size='sm'
-              className={classNames(styles.addLayerButton, mainStyles.iconButton)}
+              size="sm"
+              className={classNames(
+                styles.addLayerButton,
+                mainStyles.iconButton
+              )}
               onClick={() => addLayer(this.props.store)}
             >
-              <i className='fa fa-plus' />
+              <i className="fa fa-plus" />
             </Button>
           </OverlayTrigger>
         </div>
         <ul>
-          {
-            layersWithIndices.map(layerWithIndex =>
-              <LayerListItem
-                key={layerWithIndex.index}
-                isSelected={layerWithIndex.index === editor.selectedLayerIndex}
-                layerIndex={layerWithIndex.index}
-                layers={editor.document.layers}
-                onSelectLayer={() => selectLayer(this.props.store, { layerIndex: layerWithIndex.index })}
-                onMoveLayer={(_, toIndex) => moveLayer(
-                  this.props.store,
-                  { layerIndex: layerWithIndex.index, toIndex }
-                )}
-                onSetLayerVisibility={
-                  () => setLayerVisibility(
-                    this.props.store,
-                    { layerIndex: layerWithIndex.index, isVisible: !layerWithIndex.layer.isVisible }
-                  )
-                }
-                onShowRenameLayerDialog={
-                  () => this.showRenameLayerDialog(layerWithIndex.index, layerWithIndex.layer.name)
-                }
-                onShowLayerBackgroundDialog={
-                  () => this.showLayerImageSourceDialog(layerWithIndex.index, layerWithIndex.layer.image.source)
-                }
-                onShowLayerSettingsDialog={
-                  () => {
-                    this.showLayerSettingsDialog(
-                      layerWithIndex.index,
-                      layerWithIndex.layer.transparencyThreshold,
-                      layerWithIndex.layer.opacityThreshold
-                    );
-                  }
-                }
-                onRemoveLayer={() => removeLayer(this.props.store, { layerIndex: layerWithIndex.index })}
-              />
-            )
-          }
+          {layersWithIndices.map((layerWithIndex) => (
+            <LayerListItem
+              key={layerWithIndex.index}
+              isSelected={layerWithIndex.index === editor.selectedLayerIndex}
+              layerIndex={layerWithIndex.index}
+              layers={editor.document.layers}
+              onSelectLayer={() =>
+                selectLayer(this.props.store, {
+                  layerIndex: layerWithIndex.index,
+                })
+              }
+              onMoveLayer={(_, toIndex) =>
+                moveLayer(this.props.store, {
+                  layerIndex: layerWithIndex.index,
+                  toIndex,
+                })
+              }
+              onSetLayerVisibility={() =>
+                setLayerVisibility(this.props.store, {
+                  layerIndex: layerWithIndex.index,
+                  isVisible: !layerWithIndex.layer.isVisible,
+                })
+              }
+              onShowRenameLayerDialog={() =>
+                this.showRenameLayerDialog(
+                  layerWithIndex.index,
+                  layerWithIndex.layer.name
+                )
+              }
+              onShowLayerBackgroundDialog={() =>
+                this.showLayerImageSourceDialog(
+                  layerWithIndex.index,
+                  layerWithIndex.layer.image.source
+                )
+              }
+              onShowLayerSettingsDialog={() => {
+                this.showLayerSettingsDialog(
+                  layerWithIndex.index,
+                  layerWithIndex.layer.transparencyThreshold,
+                  layerWithIndex.layer.opacityThreshold
+                );
+              }}
+              onRemoveLayer={() =>
+                removeLayer(this.props.store, {
+                  layerIndex: layerWithIndex.index,
+                })
+              }
+            />
+          ))}
         </ul>
         <RenameLayerDialog store={this.props.store} />
         <LayerBackgroundDialog store={this.props.store} />
-        <LayerSettingsDialog imageCache={this.props.imageCache} store={this.props.store} />
+        <LayerSettingsDialog
+          imageCache={this.props.imageCache}
+          store={this.props.store}
+        />
       </div>
     );
   }
@@ -115,21 +135,23 @@ export class LayerList extends React.Component<LayerListProps, {}> {
       thresholds: {
         transparency: {
           enabled: typeof transparencyThreshold === 'number',
-          value: typeof transparencyThreshold === 'number' ?
-            transparencyThreshold :
-            DEFAULT_LAYER_THRESHOLD_SETTING_VALUE
+          value:
+            typeof transparencyThreshold === 'number'
+              ? transparencyThreshold
+              : DEFAULT_LAYER_THRESHOLD_SETTING_VALUE,
         },
         opacity: {
           enabled: typeof opacityThreshold === 'number',
-          value: typeof opacityThreshold === 'number' ?
-            opacityThreshold :
-            DEFAULT_LAYER_THRESHOLD_SETTING_VALUE
-        }
-      }
+          value:
+            typeof opacityThreshold === 'number'
+              ? opacityThreshold
+              : DEFAULT_LAYER_THRESHOLD_SETTING_VALUE,
+        },
+      },
     };
 
     showWebDialog(this.props.store, {
-      dialog
+      dialog,
     });
   }
 
@@ -140,26 +162,23 @@ export class LayerList extends React.Component<LayerListProps, {}> {
     const dialog: LayerImageSourceDialogState = {
       dialogType: 'layerImageSource',
       layerIndex,
-      imageSource
+      imageSource,
     };
 
     showWebDialog(this.props.store, {
-      dialog
+      dialog,
     });
   }
 
-  private showRenameLayerDialog(
-    layerIndex: number,
-    layerName: string
-  ) {
+  private showRenameLayerDialog(layerIndex: number, layerName: string) {
     const dialog: RenameLayerDialogState = {
       dialogType: 'renameLayer',
       layerIndex,
-      layerName
+      layerName,
     };
 
     showWebDialog(this.props.store, {
-      dialog
+      dialog,
     });
   }
 }

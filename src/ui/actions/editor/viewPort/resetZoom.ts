@@ -9,18 +9,18 @@ export const resetZoom = defineAction(
         const zoom = 1;
         const viewPort = {
           ...editor.viewPort,
-          zoom
+          zoom,
         };
         editor = {
           ...editor,
-          viewPort
+          viewPort,
         };
       }
       return editor;
     });
     return {
       ...state,
-      editors
+      editors,
     };
   }
 ).getDispatcher();

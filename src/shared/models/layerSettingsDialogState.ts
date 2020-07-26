@@ -1,8 +1,11 @@
 import { tuple } from '../utils/tuple';
 
-export const DEFAULT_LAYER_THRESHOLD_SETTING_VALUE = .5;
+export const DEFAULT_LAYER_THRESHOLD_SETTING_VALUE = 0.5;
 
-export const LAYER_THRESHOLD_SETTING_FIELD_NAMES = tuple('transparency', 'opacity');
+export const LAYER_THRESHOLD_SETTING_FIELD_NAMES = tuple(
+  'transparency',
+  'opacity'
+);
 
 export type LayerThresholdSettingFieldName = typeof LAYER_THRESHOLD_SETTING_FIELD_NAMES[number];
 

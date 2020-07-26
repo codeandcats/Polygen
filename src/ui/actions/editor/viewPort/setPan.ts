@@ -17,15 +17,15 @@ export const setPan = defineAction(
           ...editor,
           viewPort: {
             ...editor.viewPort,
-            pan
-          }
+            pan,
+          },
         };
       }
       return editor;
     });
     return {
       ...state,
-      editors
+      editors,
     };
   }
 ).getDispatcher();

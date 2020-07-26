@@ -9,7 +9,8 @@ interface SetLayerImagePayload {
 }
 
 export const setLayerImage = defineAction(
-  'setLayerImage', (state: ApplicationState, payload: SetLayerImagePayload) => {
+  'setLayerImage',
+  (state: ApplicationState, payload: SetLayerImagePayload) => {
     const editors = state.editors.map((editor, editorIndex) => {
       if (editorIndex === state.activeEditorIndex) {
         return {
@@ -22,13 +23,13 @@ export const setLayerImage = defineAction(
                   ...layer,
                   image: {
                     ...layer.image,
-                    source: payload.imageSource
-                  }
+                    source: payload.imageSource,
+                  },
                 };
               }
               return layer;
-            })
-          }
+            }),
+          },
         };
       }
       return editor;
@@ -36,7 +37,7 @@ export const setLayerImage = defineAction(
 
     return {
       ...state,
-      editors
+      editors,
     };
   }
 ).getDispatcher();

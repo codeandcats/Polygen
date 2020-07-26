@@ -14,14 +14,14 @@ export const setEditorMode = defineAction(
       if (index === state.activeEditorIndex) {
         editor = {
           ...editor,
-          mode
+          mode,
         };
       }
       return editor;
     });
     return {
       ...state,
-      editors
+      editors,
     };
   }
 ).getDispatcher();

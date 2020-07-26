@@ -8,19 +8,18 @@ export const layerList = style({
     '>ul': {
       padding: px(10),
       paddingTop: 0,
-      width: percent(100)
-    }
-  }
+      width: percent(100),
+    },
+  },
 });
 
 export const layerListHeader = style({
   $debugName: 'layerListHeader',
 
-  padding: px(10)
+  padding: px(10),
 });
 
-export const addLayerButton = style({
-});
+export const addLayerButton = style({});
 
 export const layerListItem = style({
   $debugName: 'layerListItem',
@@ -29,20 +28,20 @@ export const layerListItem = style({
 
   $nest: {
     '.btn:focus': {
-      outline: 'none'
+      outline: 'none',
     },
     '&:not(:first-of-type):not(:last-of-type) .btn-group .btn': {
       borderRadius: 0,
-      borderTop: 0
+      borderTop: 0,
     },
     '&:not(:last-of-type):first-of-type .btn-group .btn': {
       borderBottomLeftRadius: 0,
-      borderBottomRightRadius: 0
+      borderBottomRightRadius: 0,
     },
     '&:not(:first-of-type):last-of-type .btn-group .btn': {
       borderTopLeftRadius: 0,
       borderTopRightRadius: 0,
-      borderTop: 0
+      borderTop: 0,
     },
     '&>.btn-group': {
       display: 'flex',
@@ -53,20 +52,20 @@ export const layerListItem = style({
           flexGrow: 1,
           overflow: 'hidden',
           textAlign: 'left',
-          textOverflow: 'ellipsis'
-        }
-      }
-    }
-  }
+          textOverflow: 'ellipsis',
+        },
+      },
+    },
+  },
 });
 
 export const layerNameButton = style({
-  $debugName: 'layerNameButton'
+  $debugName: 'layerNameButton',
 });
 
 export const layerVisibilityButton = style({
   $debugName: 'layerVisibilityButton',
-  maxWidth: px(40)
+  maxWidth: px(40),
 });
 
 export const layerActionsButton = style({
@@ -75,9 +74,9 @@ export const layerActionsButton = style({
   $nest: {
     '.btn': {
       borderTopLeftRadius: 0,
-      borderBottomLeftRadius: 0
-    }
-  }
+      borderBottomLeftRadius: 0,
+    },
+  },
 });
 
 export const layerListItemInvisible = style({
@@ -85,7 +84,7 @@ export const layerListItemInvisible = style({
 
   $nest: {
     '&>.btn-group .btn': {
-      opacity: .75
-    }
-  }
+      opacity: 0.75,
+    },
+  },
 });

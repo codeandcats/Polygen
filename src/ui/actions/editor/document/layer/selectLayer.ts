@@ -6,7 +6,8 @@ interface SelectLayerPayload {
 }
 
 export const selectLayer = defineAction(
-  'selectedLayer', (state: ApplicationState, payload: SelectLayerPayload) => {
+  'selectedLayer',
+  (state: ApplicationState, payload: SelectLayerPayload) => {
     const editors = state.editors.map((editor, editorIndex) => {
       if (editorIndex === state.activeEditorIndex) {
         const selectedLayerIndex = payload.layerIndex;
@@ -14,7 +15,7 @@ export const selectLayer = defineAction(
           return {
             ...editor,
             selectedLayerIndex,
-            selectedPointIndices: []
+            selectedPointIndices: [],
           };
         }
       }
@@ -23,7 +24,7 @@ export const selectLayer = defineAction(
 
     return {
       ...state,
-      editors
+      editors,
     };
   }
 ).getDispatcher();

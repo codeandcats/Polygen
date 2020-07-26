@@ -1,9 +1,9 @@
 declare module 'circumcenter' {
-	type Point = [number, number];
+  type Point = [number, number];
 
-	type Triangle = [Point, Point, Point];
+  type Triangle = [Point, Point, Point];
 
-	function circumcenter(triangle: Triangle): Point;
+  function circumcenter(triangle: Triangle): Point;
 
-	export = circumcenter;
+  export = circumcenter;
 }

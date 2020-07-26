@@ -1,5 +1,12 @@
 import * as React from 'react';
-import { Button, Col, Form, FormControl, FormGroup, Modal } from 'react-bootstrap';
+import {
+  Button,
+  Col,
+  Form,
+  FormControl,
+  FormGroup,
+  Modal,
+} from 'react-bootstrap';
 import titleCase = require('titlecase');
 import { ApplicationState } from '../../../../shared/models/applicationState';
 import { Size } from '../../../../shared/models/size';
@@ -12,11 +19,17 @@ export interface NewProjectFileDialogProps {
   store: Store<ApplicationState>;
 }
 
-export interface NewProjectFileDialogState {
-}
+export interface NewProjectFileDialogState {}
 
-export class NewProjectFileDialog extends React.Component<NewProjectFileDialogProps, NewProjectFileDialogState> {
-  private accept(event: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement>) {
+export class NewProjectFileDialog extends React.Component<
+  NewProjectFileDialogProps,
+  NewProjectFileDialogState
+> {
+  private accept(
+    event:
+      | React.FormEvent<HTMLFormElement>
+      | React.MouseEvent<HTMLButtonElement>
+  ) {
     event.preventDefault();
 
     const width = this.getDimensionValueIfValid('width');
@@ -54,19 +67,22 @@ export class NewProjectFileDialog extends React.Component<NewProjectFileDialogPr
     return numericValue;
   }
 
-  private setDimension(dimension: keyof Size, event: React.FormEvent<FormControl>) {
+  private setDimension(
+    dimension: keyof Size,
+    event: React.FormEvent<FormControl>
+  ) {
     const state = this.props.store.getState();
     const dialog = state.dialogs.web;
     if (!dialog || dialog.dialogType !== 'newProjectFile') {
       return;
     }
 
-    const { value } = (event.target as HTMLInputElement);
+    const { value } = event.target as HTMLInputElement;
     updateWebDialogFields(this.props.store, {
       dimensions: {
         ...dialog.dimensions,
-        [dimension]: value
-      }
+        [dimension]: value,
+      },
     });
   }
 
@@ -80,14 +96,18 @@ export class NewProjectFileDialog extends React.Component<NewProjectFileDialogPr
 
     return (
       <FormGroup>
-        <Col sm={2} as={Form.Label}>{titleCase(dimension)}</Col>
+        <Col sm={2} as={Form.Label}>
+          {titleCase(dimension)}
+        </Col>
         <Col sm={10}>
           <FormControl
-            type='number'
-            className='text-right'
+            type="number"
+            className="text-right"
             value={`${dialog.dimensions[dimension] || 0}`}
-            onChange={(event: React.FormEvent<FormControl>) => this.setDimension(dimension, event)}
-            min='1'
+            onChange={(event: React.FormEvent<FormControl>) =>
+              this.setDimension(dimension, event)
+            }
+            min="1"
             style={{ maxWidth: 150 }}
           />
         </Col>
@@ -97,28 +117,38 @@ export class NewProjectFileDialog extends React.Component<NewProjectFileDialogPr
 
   public render() {
     const state = this.props.store.getState();
-    const isVisible = !!state.dialogs.web && state.dialogs.web.dialogType === 'newProjectFile';
+    const isVisible =
+      !!state.dialogs.web && state.dialogs.web.dialogType === 'newProjectFile';
     const isWidthValid = !!this.getDimensionValueIfValid('width');
     const isHeightValid = !!this.getDimensionValueIfValid('height');
     const isSubmitEnabled = isWidthValid && isHeightValid;
 
     return (
-      <Modal show={isVisible} onHide={() => this.cancel()} >
+      <Modal show={isVisible} onHide={() => this.cancel()}>
         <Modal.Header>
           <h2>Create new file</h2>
         </Modal.Header>
         <Modal.Body>
-          <Form inline onSubmit={(event: React.FormEvent<HTMLFormElement>) => this.accept(event)}>
+          <Form
+            inline
+            onSubmit={(event: React.FormEvent<HTMLFormElement>) =>
+              this.accept(event)
+            }
+          >
             {this.getDimensionControl('width')}
             {this.getDimensionControl('height')}
           </Form>
         </Modal.Body>
         <Modal.Footer>
           <Button
-            variant='primary'
-            onClick={(event: React.MouseEvent<HTMLButtonElement>) => this.accept(event)}
+            variant="primary"
+            onClick={(event: React.MouseEvent<HTMLButtonElement>) =>
+              this.accept(event)
+            }
             disabled={!isSubmitEnabled}
-          >OK</Button>
+          >
+            OK
+          </Button>
           <Button onClick={() => this.cancel()}>Cancel</Button>
         </Modal.Footer>
       </Modal>

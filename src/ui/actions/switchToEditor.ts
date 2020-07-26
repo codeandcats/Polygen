@@ -6,10 +6,11 @@ export interface SwitchToEditorPayload {
 }
 
 export const switchToEditor = defineAction(
-  'switchToEditor', (state: ApplicationState, payload: SwitchToEditorPayload) => {
+  'switchToEditor',
+  (state: ApplicationState, payload: SwitchToEditorPayload) => {
     return {
       ...state,
-      activeEditorIndex: payload.editorIndex
+      activeEditorIndex: payload.editorIndex,
     };
   }
 ).getDispatcher();

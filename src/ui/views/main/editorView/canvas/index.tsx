@@ -9,10 +9,20 @@ import { Size } from '../../../../../shared/models/size';
 import { ImageCache } from '../../../../models/imageCache';
 import { MouseButtons } from '../../../../models/mouseButton';
 import { TOOL_BY_NAME } from '../../../../models/tools';
-import { CanvasMouseButtonsState, CanvasMouseState, Tool, ToolHelper } from '../../../../models/tools/common';
+import {
+  CanvasMouseButtonsState,
+  CanvasMouseState,
+  Tool,
+  ToolHelper,
+} from '../../../../models/tools/common';
 import { PointTool } from '../../../../models/tools/pointTool';
 import { Fps } from '../../../../utils/fps';
-import { renderDocument, renderTool, renderTransparencyTiles, runInTransaction } from '../../../../utils/graphics';
+import {
+  renderDocument,
+  renderTool,
+  renderTransparencyTiles,
+  runInTransaction,
+} from '../../../../utils/graphics';
 import { MouseTrap } from '../../../../utils/mouseTrap';
 import * as styles from './styles';
 
@@ -42,14 +52,14 @@ export class Canvas extends React.Component<CanvasProps, CanvasState> {
   private fps = new Fps();
   private helper: ToolHelper = {
     actions: {
-      addPoint: point => this.props.onAddPoint(point),
-      selectPoints: pointIndices => this.props.onSelectPoints(pointIndices),
-      setPan: point => this.props.onSetPan(point)
+      addPoint: (point) => this.props.onAddPoint(point),
+      selectPoints: (pointIndices) => this.props.onSelectPoints(pointIndices),
+      setPan: (point) => this.props.onSetPan(point),
     },
     getEditor: () => this.props.editor,
     getImageCache: () => this.props.imageCache,
     getMouseCursor: () => (this.canvas && this.canvas.style.cursor) || '',
-    setMouseCursor: cursor => {
+    setMouseCursor: (cursor) => {
       if (this.canvas && this.canvas.style.cursor !== cursor) {
         this.canvas.style.cursor = cursor;
       }
@@ -58,77 +68,91 @@ export class Canvas extends React.Component<CanvasProps, CanvasState> {
     getToolState: () => this.state && this.state.toolState,
     setToolState: (stateOrCallback: any | ((state: any) => any)) => {
       if (typeof stateOrCallback === 'function') {
-        this.setState(state => {
+        this.setState((state) => {
           return {
-            toolState: stateOrCallback(state && state.toolState)
+            toolState: stateOrCallback(state && state.toolState),
           };
         });
       } else {
         this.setState({
-          toolState: stateOrCallback
+          toolState: stateOrCallback,
         });
       }
     },
     translation: {
-      documentToViewPort: point => {
+      documentToViewPort: (point) => {
         const editor = this.props.editor;
 
         const documentHalfSize: Size = {
           width: editor.document.dimensions.width / 2,
-          height: editor.document.dimensions.height / 2
+          height: editor.document.dimensions.height / 2,
         };
 
         point = {
           x: point.x * documentHalfSize.width,
-          y: point.y * documentHalfSize.height
+          y: point.y * documentHalfSize.height,
         };
 
         const canvasCenter: Point = {
           x: this.props.width / 2,
-          y: this.props.height / 2
+          y: this.props.height / 2,
         };
 
         const result: Point = {
-          x: canvasCenter.x + editor.viewPort.pan.x + (point.x * editor.viewPort.zoom),
-          y: canvasCenter.y + editor.viewPort.pan.y + (point.y * editor.viewPort.zoom),
+          x:
+            canvasCenter.x +
+            editor.viewPort.pan.x +
+            point.x * editor.viewPort.zoom,
+          y:
+            canvasCenter.y +
+            editor.viewPort.pan.y +
+            point.y * editor.viewPort.zoom,
         };
 
         return result;
       },
-      viewPortToDocument: point => {
+      viewPortToDocument: (point) => {
         const editor = this.props.editor;
 
         const documentHalfSize: Size = {
           width: editor.document.dimensions.width / 2,
-          height: editor.document.dimensions.height / 2
+          height: editor.document.dimensions.height / 2,
         };
 
         const canvasCenter: Point = {
           x: this.props.width / 2,
-          y: this.props.height / 2
+          y: this.props.height / 2,
         };
 
         const result: Point = {
-          x: ((point.x - canvasCenter.x - editor.viewPort.pan.x) / editor.viewPort.zoom) / documentHalfSize.width,
-          y: ((point.y - canvasCenter.y - editor.viewPort.pan.y) / editor.viewPort.zoom) / documentHalfSize.height
+          x:
+            (point.x - canvasCenter.x - editor.viewPort.pan.x) /
+            editor.viewPort.zoom /
+            documentHalfSize.width,
+          y:
+            (point.y - canvasCenter.y - editor.viewPort.pan.y) /
+            editor.viewPort.zoom /
+            documentHalfSize.height,
         };
 
         return result;
-      }
-    }
+      },
+    },
   };
 
   constructor(props: CanvasProps, context: any) {
     super(props, context);
     this.state = {
       mouse: undefined,
-      toolState: undefined
+      toolState: undefined,
     };
   }
 
   public componentDidMount() {
     if (this.canvas) {
-      this.animationFrameTimer = requestAnimationFrame(() => this.renderFrame());
+      this.animationFrameTimer = requestAnimationFrame(() =>
+        this.renderFrame()
+      );
     }
   }
 
@@ -140,12 +164,12 @@ export class Canvas extends React.Component<CanvasProps, CanvasState> {
   }
 
   public shouldComponentUpdate(nextProps: CanvasProps) {
-    const willDimensionsChange = (
+    const willDimensionsChange =
       this.props.width !== nextProps.width ||
-      this.props.height !== nextProps.height
-    );
+      this.props.height !== nextProps.height;
 
-    const currentToolName = this.props.editor && this.props.editor.selectedToolName;
+    const currentToolName =
+      this.props.editor && this.props.editor.selectedToolName;
     const nextToolName = nextProps.editor && nextProps.editor.selectedToolName;
     if (currentToolName !== nextToolName && !nextToolName) {
       this.helper.setMouseCursor('default');
@@ -164,21 +188,23 @@ export class Canvas extends React.Component<CanvasProps, CanvasState> {
     if (this.canvas) {
       const viewPortPoint = {
         x: event.offsetX,
-        y: event.offsetY
+        y: event.offsetY,
       };
 
-      const documentPoint = this.helper.translation.viewPortToDocument(viewPortPoint);
+      const documentPoint = this.helper.translation.viewPortToDocument(
+        viewPortPoint
+      );
 
       const buttons = {
         left: event.buttons === MouseButtons.left,
         middle: event.buttons === MouseButtons.middle,
-        right: event.buttons === MouseButtons.right
+        right: event.buttons === MouseButtons.right,
       };
 
       const result = {
         buttons,
         viewPortPoint,
-        documentPoint
+        documentPoint,
       };
 
       return result;
@@ -194,16 +220,22 @@ export class Canvas extends React.Component<CanvasProps, CanvasState> {
     const editor = this.props.editor;
 
     const getMoveAmount = (direction: Point): Point => {
-      const canvasMoveDistanceInPixels =
-        event.shiftKey ?
-          LARGE_MOVE_MULTIPLIER :
-          SMALL_MOVE_MULTIPLIER;
+      const canvasMoveDistanceInPixels = event.shiftKey
+        ? LARGE_MOVE_MULTIPLIER
+        : SMALL_MOVE_MULTIPLIER;
 
-      const documentMoveDistanceInPixels = canvasMoveDistanceInPixels * editor.viewPort.zoom;
+      const documentMoveDistanceInPixels =
+        canvasMoveDistanceInPixels * editor.viewPort.zoom;
 
       const amount = {
-        x: direction.x * (documentMoveDistanceInPixels / (editor.document.dimensions.width / 2)),
-        y: direction.y * (documentMoveDistanceInPixels / (editor.document.dimensions.height / 2))
+        x:
+          direction.x *
+          (documentMoveDistanceInPixels /
+            (editor.document.dimensions.width / 2)),
+        y:
+          direction.y *
+          (documentMoveDistanceInPixels /
+            (editor.document.dimensions.height / 2)),
       };
 
       return amount;
@@ -246,7 +278,7 @@ export class Canvas extends React.Component<CanvasProps, CanvasState> {
     if (tool) {
       tool.mouseDown(this.helper, mouse);
     }
-  }
+  };
 
   private mouseMove = (event: MouseEvent): void => {
     const mouse = this.getMouseState(event);
@@ -260,7 +292,7 @@ export class Canvas extends React.Component<CanvasProps, CanvasState> {
     if (tool) {
       tool.mouseMove(this.helper, mouse);
     }
-  }
+  };
 
   private mouseUp = (event: MouseEvent): void => {
     const mouse = this.getMouseState(event);
@@ -274,16 +306,16 @@ export class Canvas extends React.Component<CanvasProps, CanvasState> {
         buttons: {
           left: false,
           middle: false,
-          right: false
-        }
-      }
+          right: false,
+        },
+      },
     });
 
     const tool = this.getSelectedTool();
     if (tool) {
       tool.mouseUp(this.helper, mouse);
     }
-  }
+  };
 
   private renderFps(context: CanvasRenderingContext2D, pixelRatio: number) {
     runInTransaction(context, () => {
@@ -320,7 +352,7 @@ export class Canvas extends React.Component<CanvasProps, CanvasState> {
       x: 0,
       y: 0,
       width: this.canvas.width,
-      height: this.canvas.height
+      height: this.canvas.height,
     };
 
     const context = this.canvas.getContext('2d');
@@ -334,7 +366,13 @@ export class Canvas extends React.Component<CanvasProps, CanvasState> {
       renderTransparencyTiles(context, bounds, 20, pixelRatio);
 
       const { imageCache } = this.props;
-      const { document, mode, selectedLayerIndex, selectedPointIndices, viewPort } = this.props.editor;
+      const {
+        document,
+        mode,
+        selectedLayerIndex,
+        selectedPointIndices,
+        viewPort,
+      } = this.props.editor;
       const isInEditMode = editor.mode === 'edit';
 
       renderDocument({
@@ -348,7 +386,7 @@ export class Canvas extends React.Component<CanvasProps, CanvasState> {
         selectedPointIndices: isInEditMode ? selectedPointIndices : [],
         shouldRenderEdges: isInEditMode,
         shouldRenderPoints: isInEditMode,
-        viewPort
+        viewPort,
       });
 
       const tool = this.getSelectedTool();
@@ -387,11 +425,10 @@ export class Canvas extends React.Component<CanvasProps, CanvasState> {
   public render() {
     const width = this.props.width * window.devicePixelRatio;
     const height = this.props.height * window.devicePixelRatio;
-    const style = (
-      window.devicePixelRatio === 1 ?
-        undefined :
-        { width: this.props.width, height: this.props.height }
-    );
+    const style =
+      window.devicePixelRatio === 1
+        ? undefined
+        : { width: this.props.width, height: this.props.height };
 
     return (
       <canvas
@@ -399,12 +436,11 @@ export class Canvas extends React.Component<CanvasProps, CanvasState> {
         width={width}
         height={height}
         style={style}
-        onKeyDown={event => this.keyDown(event)}
-        onWheel={event => this.wheel(event)}
-        ref={el => this.setCanvasElement(el)}
+        onKeyDown={(event) => this.keyDown(event)}
+        onWheel={(event) => this.wheel(event)}
+        ref={(el) => this.setCanvasElement(el)}
         tabIndex={-1}
-      >
-      </canvas>
+      ></canvas>
     );
   }
 

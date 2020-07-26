@@ -4,7 +4,7 @@ import * as path from 'path';
 
 export async function mkdir(dirPath: string): Promise<void> {
   return new Promise<void>((resolve, reject) => {
-    mkdirp(dirPath, err => err ? reject(err) : resolve());
+    mkdirp(dirPath, (err) => (err ? reject(err) : resolve()));
   });
 }
 

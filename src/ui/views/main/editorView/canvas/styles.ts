@@ -11,7 +11,7 @@ export const canvas = style({
 
   $nest: {
     '&:focus': {
-      outline: 'none'
-    }
-  }
+      outline: 'none',
+    },
+  },
 });

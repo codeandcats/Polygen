@@ -30,12 +30,15 @@ export interface EditorViewState {
   canvasSize: Size;
 }
 
-export class EditorView extends React.Component<EditorViewProps, EditorViewState> {
+export class EditorView extends React.Component<
+  EditorViewProps,
+  EditorViewState
+> {
   private static EDITOR_BODY_ROW_ID = 'editorBodyRow';
   private static EDITOR_CONTAINER_COLUMN_ID = 'editorContainerColumn';
   private static readonly DEFAULT_CANVAS_SIZE = Object.freeze({
     width: 100,
-    height: 100
+    height: 100,
   });
 
   private canvasContainer: Nullable<HTMLDivElement>;
@@ -45,7 +48,7 @@ export class EditorView extends React.Component<EditorViewProps, EditorViewState
   constructor(props: EditorViewProps, context: any) {
     super(props, context);
     this.state = {
-      canvasSize: EditorView.DEFAULT_CANVAS_SIZE
+      canvasSize: EditorView.DEFAULT_CANVAS_SIZE,
     };
   }
 
@@ -64,17 +67,16 @@ export class EditorView extends React.Component<EditorViewProps, EditorViewState
 
     const canvasSize = {
       width: window.innerWidth - styles.LAYER_LIST_WIDTH,
-      height: this.canvasContainer.offsetHeight
+      height: this.canvasContainer.offsetHeight,
     };
 
-    const hasSizedChanged = (
+    const hasSizedChanged =
       this.state.canvasSize.width !== canvasSize.width ||
-      this.state.canvasSize.height !== canvasSize.height
-    );
+      this.state.canvasSize.height !== canvasSize.height;
 
     if (hasSizedChanged) {
       this.setState({
-        canvasSize
+        canvasSize,
       });
     }
   }
@@ -99,38 +101,61 @@ export class EditorView extends React.Component<EditorViewProps, EditorViewState
             <div className={styles.editorBodyMainHeader}>
               <EditorToolbar
                 mode={editor.mode}
-                onSetMode={mode => setEditorMode(this.props.store, { mode })}
+                onSetMode={(mode) => setEditorMode(this.props.store, { mode })}
                 selectedToolName={editor.selectedToolName}
-                onSelectTool={toolName => selectTool(this.props.store, { toolName })}
+                onSelectTool={(toolName) =>
+                  selectTool(this.props.store, { toolName })
+                }
               />
             </div>
             <div
               className={styles.editorBodyMainCanvasContainer}
-              ref={element => this.setCanvasContainer(element)}
+              ref={(element) => this.setCanvasContainer(element)}
             >
               <Canvas
                 editor={editor}
                 width={this.state.canvasSize.width}
                 height={this.state.canvasSize.height}
                 imageCache={this.props.imageCache}
-                onAddPoint={point => addPoint(this.props.store, { point, imageCache: this.props.imageCache })}
-                onDeleteSelection={() => removeSelection(this.props.store, { imageCache: this.props.imageCache })}
-                onMoveSelection={moveBy => {
-                  moveSelectedPoints(this.props.store, { moveBy, imageCache: this.props.imageCache });
+                onAddPoint={(point) =>
+                  addPoint(this.props.store, {
+                    point,
+                    imageCache: this.props.imageCache,
+                  })
+                }
+                onDeleteSelection={() =>
+                  removeSelection(this.props.store, {
+                    imageCache: this.props.imageCache,
+                  })
+                }
+                onMoveSelection={(moveBy) => {
+                  moveSelectedPoints(this.props.store, {
+                    moveBy,
+                    imageCache: this.props.imageCache,
+                  });
                 }}
                 onSelectAll={() => selectAllPoints(this.props.store)}
-                onSelectPoints={pointIndices => selectPoints(this.props.store, { pointIndices })}
-                onSetPan={point => setPan(this.props.store, { pan: point })}
+                onSelectPoints={(pointIndices) =>
+                  selectPoints(this.props.store, { pointIndices })
+                }
+                onSetPan={(point) => setPan(this.props.store, { pan: point })}
               />
             </div>
           </div>
           <div className={styles.editorBodyRight}>
-            <LayerList imageCache={this.props.imageCache} store={this.props.store} />
+            <LayerList
+              imageCache={this.props.imageCache}
+              store={this.props.store}
+            />
           </div>
         </div>
         <div className={styles.editorFooter}>
-          <span className={mainStyles.spaceRight}>Points: <Badge>{layer.points.length}</Badge></span>
-          <span>Polygons: <Badge>{layer.polygons.length}</Badge></span>
+          <span className={mainStyles.spaceRight}>
+            Points: <Badge>{layer.points.length}</Badge>
+          </span>
+          <span>
+            Polygons: <Badge>{layer.polygons.length}</Badge>
+          </span>
         </div>
       </div>
     );
@@ -146,7 +171,7 @@ export class EditorView extends React.Component<EditorViewProps, EditorViewState
 
   public updatePolygonColors() {
     updatePolygonColors(this.props.store, {
-      imageCache: this.props.imageCache
+      imageCache: this.props.imageCache,
     });
   }
 }

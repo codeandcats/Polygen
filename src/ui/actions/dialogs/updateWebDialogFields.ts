@@ -5,18 +5,22 @@ import { defineAction } from '../../reduxWithLessSux/action';
 type UpdateWebDialogFieldPayload<T extends WebDialog> = Partial<T>;
 
 export const updateWebDialogFields = defineAction(
-  'updateWebDialogFields', (state: ApplicationState, payload: UpdateWebDialogFieldPayload<WebDialog>) => {
+  'updateWebDialogFields',
+  (
+    state: ApplicationState,
+    payload: UpdateWebDialogFieldPayload<WebDialog>
+  ) => {
     const web: any = state.dialogs.web || {};
     for (const key of Object.getOwnPropertyNames(payload)) {
       web[key] = (payload as any)[key];
     }
     const dialogs: Dialogs = {
       ...state.dialogs,
-      web
+      web,
     };
     const result: ApplicationState = {
       ...state,
-      dialogs
+      dialogs,
     };
     return result;
   }

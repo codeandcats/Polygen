@@ -7,7 +7,8 @@ interface RenameLayerPayload {
 }
 
 export const renameLayer = defineAction(
-  'renameLayer', (state: ApplicationState, payload: RenameLayerPayload) => {
+  'renameLayer',
+  (state: ApplicationState, payload: RenameLayerPayload) => {
     const editors = state.editors.map((editor, editorIndex) => {
       if (editorIndex === state.activeEditorIndex) {
         const document = editor.document;
@@ -15,7 +16,7 @@ export const renameLayer = defineAction(
           if (layerIndex === payload.layerIndex) {
             layer = {
               ...layer,
-              name: payload.layerName
+              name: payload.layerName,
             };
           }
           return layer;
@@ -25,8 +26,8 @@ export const renameLayer = defineAction(
           ...editor,
           document: {
             ...document,
-            layers
-          }
+            layers,
+          },
         };
       }
       return editor;
@@ -34,7 +35,7 @@ export const renameLayer = defineAction(
 
     return {
       ...state,
-      editors
+      editors,
     };
   }
 ).getDispatcher();

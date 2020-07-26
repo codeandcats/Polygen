@@ -9,7 +9,7 @@ export const toggleResponsiveBreakpointLabelVisible = defineAction(
     const isResponsiveBreakpointLabelVisible = !state.isResponsiveBreakpointLabelVisible;
     return {
       ...state,
-      isResponsiveBreakpointLabelVisible
+      isResponsiveBreakpointLabelVisible,
     };
   }
 ).getDispatcher();

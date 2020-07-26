@@ -10,14 +10,14 @@ export const toggleFramesPerSecond = defineAction(
       if (index === state.activeEditorIndex) {
         editor = {
           ...editor,
-          isFramesPerSecondVisible: !editor.isFramesPerSecondVisible
+          isFramesPerSecondVisible: !editor.isFramesPerSecondVisible,
         };
       }
       return editor;
     });
     return {
       ...state,
-      editors
+      editors,
     };
   }
 ).getDispatcher();

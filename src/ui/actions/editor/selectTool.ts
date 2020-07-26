@@ -14,14 +14,14 @@ export const selectTool = defineAction(
       if (index === state.activeEditorIndex) {
         editor = {
           ...editor,
-          selectedToolName: payload.toolName
+          selectedToolName: payload.toolName,
         };
       }
       return editor;
     });
     return {
       ...state,
-      editors
+      editors,
     };
   }
 ).getDispatcher();

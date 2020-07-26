@@ -11,7 +11,7 @@ export interface Settings {
 
 export class SettingsFile {
   private static readonly DEFAULTS: Settings = {
-    recentFileNames: []
+    recentFileNames: [],
   };
 
   private settingsFileName?: string = undefined;
@@ -20,7 +20,11 @@ export class SettingsFile {
     if (!this.settingsFileName) {
       const application = app || remote.app;
       const appDataPath = application.getPath('appData');
-      this.settingsFileName = path.join(appDataPath, PRODUCT_NAME, 'config.json');
+      this.settingsFileName = path.join(
+        appDataPath,
+        PRODUCT_NAME,
+        'config.json'
+      );
     }
     return this.settingsFileName;
   }

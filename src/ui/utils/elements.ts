@@ -5,8 +5,7 @@
 const IDENTITY = new WebKitCSSMatrix();
 
 class Point {
-  constructor(public x: number, public y: number, public z: number) {
-  }
+  constructor(public x: number, public y: number, public z: number) {}
 
   public transformBy(matrix: WebKitCSSMatrix) {
     const tmp = matrix.multiply(IDENTITY.translate(this.x, this.y, this.z));
@@ -32,7 +31,11 @@ function getTransformationMatrix(element: HTMLElement) {
   let left = +Infinity;
   let top = +Infinity;
   while (--i >= 0) {
-    const p = new Point(i === 0 || i === 1 ? 0 : w, i === 0 || i === 3 ? 0 : h, 0).transformBy(transformationMatrix);
+    const p = new Point(
+      i === 0 || i === 1 ? 0 : w,
+      i === 0 || i === 3 ? 0 : h,
+      0
+    ).transformBy(transformationMatrix);
     if (p.x < left) {
       left = p.x;
     }
@@ -41,9 +44,11 @@ function getTransformationMatrix(element: HTMLElement) {
     }
   }
   const rect = element.getBoundingClientRect();
-  transformationMatrix = IDENTITY
-    .translate(window.pageXOffset + rect.left - left, window.pageYOffset + rect.top - top, 0)
-    .multiply(transformationMatrix);
+  transformationMatrix = IDENTITY.translate(
+    window.pageXOffset + rect.left - left,
+    window.pageYOffset + rect.top - top,
+    0
+  ).multiply(transformationMatrix);
 
   return transformationMatrix;
 }
@@ -52,14 +57,26 @@ function getTransformationMatrix(element: HTMLElement) {
  * Returns coordinate in element's local coordinate system
  * (works properly with css transforms without perspective projection)
  */
-export function convertPointFromPageToNode(element: HTMLElement, pageX: number, pageY: number) {
-  return new Point(pageX, pageY, 0).transformBy(getTransformationMatrix(element).inverse());
+export function convertPointFromPageToNode(
+  element: HTMLElement,
+  pageX: number,
+  pageY: number
+) {
+  return new Point(pageX, pageY, 0).transformBy(
+    getTransformationMatrix(element).inverse()
+  );
 }
 
 /**
  * Returns coordinate in window's coordinate system
  * (works properly with css transforms without perspective projection)
  */
-export function convertPointFromNodeToPage(element: HTMLElement, offsetX: number, offsetY: number) {
-  return new Point(offsetX, offsetY, 0).transformBy(getTransformationMatrix(element));
+export function convertPointFromNodeToPage(
+  element: HTMLElement,
+  offsetX: number,
+  offsetY: number
+) {
+  return new Point(offsetX, offsetY, 0).transformBy(
+    getTransformationMatrix(element)
+  );
 }

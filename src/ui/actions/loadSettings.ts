@@ -7,10 +7,11 @@ export interface LoadSettingsPayload {
 }
 
 export const loadSettings = defineAction(
-  'loadSettings', (state: ApplicationState, payload: LoadSettingsPayload) => {
+  'loadSettings',
+  (state: ApplicationState, payload: LoadSettingsPayload) => {
     return {
       ...state,
-      recentFileNames: payload.settings.recentFileNames
+      recentFileNames: payload.settings.recentFileNames,
     };
   }
 ).getDispatcher();

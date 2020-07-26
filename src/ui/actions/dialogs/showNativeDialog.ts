@@ -7,14 +7,15 @@ interface ShowNativeDialogPayload {
 }
 
 export const showNativeDialog = defineAction(
-  'showNativeDialog', (state: ApplicationState, payload: ShowNativeDialogPayload) => {
+  'showNativeDialog',
+  (state: ApplicationState, payload: ShowNativeDialogPayload) => {
     const dialogs: Dialogs = {
       ...state.dialogs,
-      native: payload.type
+      native: payload.type,
     };
     const result: ApplicationState = {
       ...state,
-      dialogs
+      dialogs,
     };
     return result;
   }

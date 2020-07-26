@@ -20,10 +20,12 @@ interface MainWindowProps {
   onShowNewProjectFileDialog: () => void;
 }
 
-interface MainWindowState {
-}
+interface MainWindowState {}
 
-export class MainWindow extends React.Component<MainWindowProps, MainWindowState> {
+export class MainWindow extends React.Component<
+  MainWindowProps,
+  MainWindowState
+> {
   constructor(props: Readonly<MainWindowProps>, context?: any) {
     super(props, context);
   }
@@ -42,20 +44,26 @@ export class MainWindow extends React.Component<MainWindowProps, MainWindowState
       <div className={styles.mainWindow}>
         <NewProjectFileDialog store={this.props.store} />
         <ExportDialog imageCache={this.imageCache} store={this.props.store} />
-        {
-          state.editors.length === 0 ?
-            <WelcomeView
-              recentFileNames={state.recentFileNames}
-              onOpenProjectFile={fileName => this.props.onOpenProjectFile(fileName)}
-              onShowNewProjectFileDialog={() => this.props.onShowNewProjectFileDialog()}
-              onShowOpenProjectFileDialog={() => this.props.onShowOpenProjectFileDialog()}
-            /> :
-            <EditorView
-              imageCache={this.imageCache}
-              ref={editorView => this.editorView = editorView}
-              store={this.props.store}
-            />
-        }
+        {state.editors.length === 0 ? (
+          <WelcomeView
+            recentFileNames={state.recentFileNames}
+            onOpenProjectFile={(fileName) =>
+              this.props.onOpenProjectFile(fileName)
+            }
+            onShowNewProjectFileDialog={() =>
+              this.props.onShowNewProjectFileDialog()
+            }
+            onShowOpenProjectFileDialog={() =>
+              this.props.onShowOpenProjectFileDialog()
+            }
+          />
+        ) : (
+          <EditorView
+            imageCache={this.imageCache}
+            ref={(editorView) => (this.editorView = editorView)}
+            store={this.props.store}
+          />
+        )}
         {state.isResponsiveBreakpointLabelVisible ? <BootstrapLabel /> : null}
       </div>
     );

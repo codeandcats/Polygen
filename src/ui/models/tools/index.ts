@@ -8,5 +8,5 @@ export const TOOL_BY_NAME: { [toolName: string]: Tool } = {
   imageBounds: new ImageBoundsTool(),
   pan: new PanTool(),
   point: new PointTool(),
-  selection: new SelectionTool()
+  selection: new SelectionTool(),
 };

@@ -6,7 +6,8 @@ interface RemoveLayerPayload {
 }
 
 export const removeLayer = defineAction(
-  'removeLayer', (state: ApplicationState, payload: RemoveLayerPayload) => {
+  'removeLayer',
+  (state: ApplicationState, payload: RemoveLayerPayload) => {
     const editors = state.editors.map((editor, editorIndex) => {
       if (editorIndex === state.activeEditorIndex) {
         let { selectedLayerIndex } = editor;
@@ -15,15 +16,18 @@ export const removeLayer = defineAction(
         if (layers.length > 1) {
           layers = layers.filter((_, index) => index !== payload.layerIndex);
         }
-        selectedLayerIndex = Math.min(layers.length - 1, Math.max(0, selectedLayerIndex));
+        selectedLayerIndex = Math.min(
+          layers.length - 1,
+          Math.max(0, selectedLayerIndex)
+        );
 
         return {
           ...editor,
           document: {
             ...document,
-            layers
+            layers,
           },
-          selectedLayerIndex
+          selectedLayerIndex,
         };
       }
       return editor;
@@ -31,7 +35,7 @@ export const removeLayer = defineAction(
 
     return {
       ...state,
-      editors
+      editors,
     };
   }
 ).getDispatcher();

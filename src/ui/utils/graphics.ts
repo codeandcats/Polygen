@@ -27,8 +27,11 @@ import { Rgba } from '../../shared/models/rgba';
 import { Size } from '../../shared/models/size';
 import { ViewPort } from '../../shared/models/viewPort';
 import {
-  forEachPointWithinPolygon, getCenter, getDistanceBetweenPoints,
-  isPointInRectangle, trianglePointsToTriangleArrayPoints
+  forEachPointWithinPolygon,
+  getCenter,
+  getDistanceBetweenPoints,
+  isPointInRectangle,
+  trianglePointsToTriangleArrayPoints,
 } from '../../shared/utils/geometry';
 import { clamp } from '../../shared/utils/math';
 import { ImageCache } from '../models/imageCache';
@@ -48,8 +51,8 @@ export function applyViewportTransform(
   pixelRatio: number
 ) {
   context.translate(
-    (bounds.width / 2) + viewPort.pan.x * pixelRatio,
-    (bounds.height / 2) + viewPort.pan.y * pixelRatio
+    bounds.width / 2 + viewPort.pan.x * pixelRatio,
+    bounds.height / 2 + viewPort.pan.y * pixelRatio
   );
 
   context.scale(pixelRatio, pixelRatio);
@@ -65,7 +68,10 @@ interface GradientColorStep {
 
 function createGradient(
   context: CanvasRenderingContext2D,
-  x1: number, y1: number, x2: number, y2: number,
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number,
   colorStops: GradientColorStep[]
 ) {
   const gradient = context.createLinearGradient(x1, y1, x2, y2);
@@ -75,7 +81,10 @@ function createGradient(
   return gradient;
 }
 
-export function getImageBounds(documentDimensions: Size, layer: Layer): Rectangle {
+export function getImageBounds(
+  documentDimensions: Size,
+  layer: Layer
+): Rectangle {
   const halfWidth = documentDimensions.width / 2;
   const halfHeight = documentDimensions.height / 2;
   const x1 = halfWidth * layer.image.topLeft.x;
@@ -88,7 +97,7 @@ export function getImageBounds(documentDimensions: Size, layer: Layer): Rectangl
     x: x1,
     y: y1,
     width,
-    height
+    height,
   };
 }
 
@@ -99,7 +108,7 @@ export function getAbsoluteDocumentPoint(
 ): Point {
   const result = {
     x: relativeDocumentPoint.x * (documentDimensions.width / 2),
-    y: relativeDocumentPoint.y * (documentDimensions.height / 2)
+    y: relativeDocumentPoint.y * (documentDimensions.height / 2),
   };
 
   if (shouldRound) {
@@ -128,9 +137,11 @@ export function getLayerPixelData(
 
   if (!layer.image.source) {
     return {
-      data: new Uint8ClampedArray(4 * document.dimensions.width * document.dimensions.height),
+      data: new Uint8ClampedArray(
+        4 * document.dimensions.width * document.dimensions.height
+      ),
       width,
-      height
+      height,
     };
   }
 
@@ -142,18 +153,32 @@ export function getLayerPixelData(
 
   const element = imageCache.getImage(layer.image.source).element;
 
-  context.drawImage(element, imageBounds.x, imageBounds.y, imageBounds.width, imageBounds.height);
+  context.drawImage(
+    element,
+    imageBounds.x,
+    imageBounds.y,
+    imageBounds.width,
+    imageBounds.height
+  );
 
-  const imageData = context.getImageData(0, 0, document.dimensions.width, document.dimensions.height);
+  const imageData = context.getImageData(
+    0,
+    0,
+    document.dimensions.width,
+    document.dimensions.height
+  );
 
   return {
     data: imageData.data,
     width,
-    height
+    height,
   };
 }
 
-export function getPolygonAverageColor(pixelData: LayerPixelData, polygon: [Point, Point, Point]): Rgba {
+export function getPolygonAverageColor(
+  pixelData: LayerPixelData,
+  polygon: [Point, Point, Point]
+): Rgba {
   let totalR = 0;
   let totalG = 0;
   let totalB = 0;
@@ -164,18 +189,18 @@ export function getPolygonAverageColor(pixelData: LayerPixelData, polygon: [Poin
     x: 0,
     y: 0,
     width: pixelData.width,
-    height: pixelData.height
+    height: pixelData.height,
   };
 
   const BYTES_PER_PIXEL = 4;
   const bytesPerRow = pixelData.width * BYTES_PER_PIXEL;
 
-  forEachPointWithinPolygon(polygon, point => {
+  forEachPointWithinPolygon(polygon, (point) => {
     if (!isPointInRectangle(point, layerBounds)) {
       return;
     }
 
-    const pixelIndex = (point.y * bytesPerRow) + (BYTES_PER_PIXEL * point.x);
+    const pixelIndex = point.y * bytesPerRow + BYTES_PER_PIXEL * point.x;
 
     const currentR = clamp(0, 255, pixelData.data[pixelIndex]);
     const currentG = clamp(0, 255, pixelData.data[pixelIndex + 1]);
@@ -190,18 +215,21 @@ export function getPolygonAverageColor(pixelData: LayerPixelData, polygon: [Poin
     pixelCount++;
   });
 
-  const r = pixelCount === 0 ? 0 : clamp(0, 255, Math.round(totalR / pixelCount));
-  const g = pixelCount === 0 ? 0 : clamp(0, 255, Math.round(totalG / pixelCount));
-  const b = pixelCount === 0 ? 0 : clamp(0, 255, Math.round(totalB / pixelCount));
+  const r =
+    pixelCount === 0 ? 0 : clamp(0, 255, Math.round(totalR / pixelCount));
+  const g =
+    pixelCount === 0 ? 0 : clamp(0, 255, Math.round(totalG / pixelCount));
+  const b =
+    pixelCount === 0 ? 0 : clamp(0, 255, Math.round(totalB / pixelCount));
   let a = pixelCount === 0 ? 0 : clamp(0, 255, Math.round(totalA / pixelCount));
 
-  a = +clamp(0, 1, (a / 255)).toFixed(2);
+  a = +clamp(0, 1, a / 255).toFixed(2);
 
   return {
     r,
     g,
     b,
-    a
+    a,
   };
 }
 
@@ -213,21 +241,23 @@ interface RecalculatePolygonColoursOptions {
   polygons?: Polygon[];
 }
 
-export function recalculatePolygonColours(options: RecalculatePolygonColoursOptions): Polygon[] {
+export function recalculatePolygonColours(
+  options: RecalculatePolygonColoursOptions
+): Polygon[] {
   const { document, imageCache, layer } = options;
   let polygons = options.polygons || options.layer.polygons;
   const points = options.points || options.layer.points;
 
   if (!layer.image.source) {
-    return polygons.map(polygon => {
+    return polygons.map((polygon) => {
       return {
         ...polygon,
         color: {
           r: 0,
           g: 0,
           b: 0,
-          a: 0
-        }
+          a: 0,
+        },
       };
     });
   }
@@ -239,29 +269,34 @@ export function recalculatePolygonColours(options: RecalculatePolygonColoursOpti
 
   const layerPixelData = getLayerPixelData(document, layer, imageCache);
 
-  polygons = polygons.map(polygon => {
-    const polygonPoints = polygon.pointIndices
-      .map(index => {
-        let point = (points as Point[])[index];
-        point = getAbsoluteDocumentPoint(point, document.dimensions);
-        point = {
-          x: point.x + (document.dimensions.width / 2),
-          y: point.y + (document.dimensions.height / 2)
-        };
-        return point;
-      }) as [Point, Point, Point];
+  polygons = polygons.map((polygon) => {
+    const polygonPoints = polygon.pointIndices.map((index) => {
+      let point = (points as Point[])[index];
+      point = getAbsoluteDocumentPoint(point, document.dimensions);
+      point = {
+        x: point.x + document.dimensions.width / 2,
+        y: point.y + document.dimensions.height / 2,
+      };
+      return point;
+    }) as [Point, Point, Point];
 
     const color = getPolygonAverageColor(layerPixelData, polygonPoints);
 
-    if (layer.transparencyThreshold != null && color.a < layer.transparencyThreshold) {
+    if (
+      layer.transparencyThreshold != null &&
+      color.a < layer.transparencyThreshold
+    ) {
       color.a = 0;
-    } else if (layer.opacityThreshold != null && color.a >= layer.opacityThreshold) {
+    } else if (
+      layer.opacityThreshold != null &&
+      color.a >= layer.opacityThreshold
+    ) {
       color.a = 1;
     }
 
     return {
       ...polygon,
-      color
+      color,
     };
   });
 
@@ -283,29 +318,42 @@ export interface RenderDocumentOptions {
 }
 
 export function renderDocument(options: RenderDocumentOptions) {
-  const { bounds, context, document, imageCache, mode, pixelRatio, selectedPointIndices, viewPort } = options;
+  const {
+    bounds,
+    context,
+    document,
+    imageCache,
+    mode,
+    pixelRatio,
+    selectedPointIndices,
+    viewPort,
+  } = options;
   const documentDimensions = document.dimensions;
 
   runInTransaction(options.context, () => {
-    applyViewportTransform(
-      context,
-      bounds,
-      viewPort,
-      pixelRatio
-    );
+    applyViewportTransform(context, bounds, viewPort, pixelRatio);
 
     renderDocumentBackground({
       context: options.context,
       document: options.document,
-      mode: options.mode
+      mode: options.mode,
     });
 
     if (mode !== 'edit') {
-      context.rect(bounds.x - bounds.width / 2, bounds.y - bounds.height / 2, bounds.width, bounds.height);
+      context.rect(
+        bounds.x - bounds.width / 2,
+        bounds.y - bounds.height / 2,
+        bounds.width,
+        bounds.height
+      );
       context.clip();
     }
 
-    for (let layerIndex = 0; layerIndex < options.document.layers.length; layerIndex++) {
+    for (
+      let layerIndex = 0;
+      layerIndex < options.document.layers.length;
+      layerIndex++
+    ) {
       const layer = options.document.layers[layerIndex];
       const isSelectedLayer = layerIndex === options.selectedLayerIndex;
       if (layer.isVisible) {
@@ -313,7 +361,7 @@ export function renderDocument(options: RenderDocumentOptions) {
           ...options,
           mode,
           isSelectedLayer,
-          layer
+          layer,
         });
       }
     }
@@ -328,9 +376,14 @@ export interface RenderLayerOptions extends RenderDocumentOptions {
 
 function renderLayer(options: RenderLayerOptions) {
   const {
-    context, document, imageCache,
-    isSelectedLayer, layer, mode,
-    selectedPointIndices, shouldRenderEdges
+    context,
+    document,
+    imageCache,
+    isSelectedLayer,
+    layer,
+    mode,
+    selectedPointIndices,
+    shouldRenderEdges,
   } = options;
   const documentDimensions = document.dimensions;
   const zoom = options.viewPort.zoom;
@@ -340,12 +393,18 @@ function renderLayer(options: RenderLayerOptions) {
       const image = imageCache.getImage(layer.image.source);
       if (image.hasElementLoaded) {
         const bounds = getImageBounds(documentDimensions, layer);
-        context.drawImage(image.element, bounds.x, bounds.y, bounds.width, bounds.height);
+        context.drawImage(
+          image.element,
+          bounds.x,
+          bounds.y,
+          bounds.width,
+          bounds.height
+        );
       }
     }
 
     runInTransaction(context, () => {
-      context.globalAlpha = mode === 'edit' ? .8 : 1;
+      context.globalAlpha = mode === 'edit' ? 0.8 : 1;
       const { points } = layer;
 
       for (const polygon of layer.polygons) {
@@ -361,7 +420,7 @@ function renderLayer(options: RenderLayerOptions) {
           points,
           polygon,
           shouldRenderEdges,
-          zoom
+          zoom,
         });
       }
     });
@@ -394,15 +453,7 @@ export function renderPoint(
   runInTransaction(context, () => {
     context.beginPath();
 
-    context.ellipse(
-      point.x,
-      point.y,
-      RADIUS,
-      RADIUS,
-      0,
-      0,
-      360
-    );
+    context.ellipse(point.x, point.y, RADIUS, RADIUS, 0, 0, 360);
 
     context.lineWidth = 1;
     context.fillStyle = isSelected ? SELECTION_COLOR : POINT_FILL_COLOR;
@@ -428,12 +479,15 @@ export interface RenderPolygonOptions {
   zoom: number;
 }
 
-export function tracePolygonPath(
-  options: { context: CanvasRenderingContext2D, documentDimensions: Size, points: Point[], polygon: Polygon }
-) {
+export function tracePolygonPath(options: {
+  context: CanvasRenderingContext2D;
+  documentDimensions: Size;
+  points: Point[];
+  polygon: Polygon;
+}) {
   const { context, documentDimensions, points, polygon } = options;
 
-  const polygonPoints = polygon.pointIndices.map(pointIndex => {
+  const polygonPoints = polygon.pointIndices.map((pointIndex) => {
     return getAbsoluteDocumentPoint(points[pointIndex], documentDimensions);
   });
 
@@ -444,7 +498,11 @@ export function tracePolygonPath(
   context.closePath();
 }
 
-export function fillPolygon(options: { context: CanvasRenderingContext2D, polygon: Polygon, zoom: number }) {
+export function fillPolygon(options: {
+  context: CanvasRenderingContext2D;
+  polygon: Polygon;
+  zoom: number;
+}) {
   const { context, polygon, zoom } = options;
   const oldGlobalAlpha = context.globalAlpha;
   context.globalAlpha = context.globalAlpha * polygon.color.a;
@@ -453,7 +511,7 @@ export function fillPolygon(options: { context: CanvasRenderingContext2D, polygo
 
   // Awful workaround to fill unwanted seams between polygons
   // (is problematic with transparency)
-  context.lineWidth = .5 / zoom;
+  context.lineWidth = 0.5 / zoom;
   context.strokeStyle = context.fillStyle;
   context.stroke();
 
@@ -464,17 +522,30 @@ export function renderPolygon(options: RenderPolygonOptions) {
   const { context, documentDimensions, points, polygon, zoom } = options;
 
   runInTransaction(context, () => {
-    const polygonPoints = polygon.pointIndices.map(pointIndex => {
+    const polygonPoints = polygon.pointIndices.map((pointIndex) => {
       return getAbsoluteDocumentPoint(points[pointIndex], documentDimensions);
     });
 
-    const polygonPointsAsArrays = trianglePointsToTriangleArrayPoints(polygonPoints);
+    const polygonPointsAsArrays = trianglePointsToTriangleArrayPoints(
+      polygonPoints
+    );
 
     const centerPoint = circumcenter(polygonPointsAsArrays);
-    const clippingRadius = getDistanceBetweenPoints({ x: centerPoint[0], y: centerPoint[1] }, polygonPoints[0]);
+    const clippingRadius = getDistanceBetweenPoints(
+      { x: centerPoint[0], y: centerPoint[1] },
+      polygonPoints[0]
+    );
 
     context.beginPath();
-    context.ellipse(centerPoint[0], centerPoint[1], clippingRadius, clippingRadius, 0, 0, 360);
+    context.ellipse(
+      centerPoint[0],
+      centerPoint[1],
+      clippingRadius,
+      clippingRadius,
+      0,
+      0,
+      360
+    );
     context.clip();
 
     tracePolygonPath(options);
@@ -495,7 +566,10 @@ export function renderPolygon(options: RenderPolygonOptions) {
 
 const SELECTION_COLOR = '#337ab7';
 
-export function renderSelectionRectangle(context: CanvasRenderingContext2D, rectangleInProjectSpace: Rectangle) {
+export function renderSelectionRectangle(
+  context: CanvasRenderingContext2D,
+  rectangleInProjectSpace: Rectangle
+) {
   runInTransaction(context, () => {
     context.beginPath();
 
@@ -507,7 +581,7 @@ export function renderSelectionRectangle(context: CanvasRenderingContext2D, rect
     );
 
     context.fillStyle = SELECTION_COLOR;
-    context.globalAlpha = .15;
+    context.globalAlpha = 0.15;
     context.fill();
     context.globalAlpha = 1;
 
@@ -526,7 +600,10 @@ export function renderSelectionStroke(context: CanvasRenderingContext2D) {
   const DASH_LENGTH = 5;
   const STEP_ANIMATION_DURATION = 400;
 
-  context.lineDashOffset = DASH_LENGTH * 2 * ((Date.now() % STEP_ANIMATION_DURATION) / STEP_ANIMATION_DURATION);
+  context.lineDashOffset =
+    DASH_LENGTH *
+    2 *
+    ((Date.now() % STEP_ANIMATION_DURATION) / STEP_ANIMATION_DURATION);
   context.setLineDash([DASH_LENGTH, DASH_LENGTH]);
   context.strokeStyle = SELECTION_STROKE_COLOR_2;
   context.stroke();
@@ -542,12 +619,7 @@ export function renderTool(
     context.beginPath();
     const editor = helper.getEditor();
     const pixelRatio = helper.getPixelRatio();
-    applyViewportTransform(
-      context,
-      bounds,
-      editor.viewPort,
-      pixelRatio
-    );
+    applyViewportTransform(context, bounds, editor.viewPort, pixelRatio);
     tool.render(helper, context, bounds);
   });
 }
@@ -571,7 +643,10 @@ export function renderTransparencyTiles(
   });
 }
 
-export function runInTransaction(context: CanvasRenderingContext2D, callback: () => void) {
+export function runInTransaction(
+  context: CanvasRenderingContext2D,
+  callback: () => void
+) {
   context.save();
   try {
     callback();
@@ -586,7 +661,9 @@ interface RenderDocumentBackgroundOptions {
   mode: RenderMode;
 }
 
-export function renderDocumentBackground(options: RenderDocumentBackgroundOptions) {
+export function renderDocumentBackground(
+  options: RenderDocumentBackgroundOptions
+) {
   const { context, document, mode } = options;
 
   runInTransaction(context, () => {
@@ -617,7 +694,7 @@ export function renderDocumentBackground(options: RenderDocumentBackgroundOption
     const SHADOW_OFFSET = 5;
     const SHADOW_COLOR_STOPS: GradientColorStep[] = [
       { stop: 0, fillStyle: 'rgba(0, 0, 0, .3)' },
-      { stop: 1, fillStyle: 'rgba(0, 0, 0, .0)' }
+      { stop: 1, fillStyle: 'rgba(0, 0, 0, .0)' },
     ];
 
     // Right shadow
@@ -627,7 +704,14 @@ export function renderDocumentBackground(options: RenderDocumentBackgroundOption
     context.lineTo(halfWidth + SHADOW_OFFSET, halfHeight + SHADOW_OFFSET);
     context.lineTo(halfWidth + SHADOW_OFFSET, -halfHeight + SHADOW_OFFSET);
     context.closePath();
-    context.fillStyle = createGradient(context, halfWidth + 1, 0, halfWidth + 1 + SHADOW_OFFSET, 0, SHADOW_COLOR_STOPS);
+    context.fillStyle = createGradient(
+      context,
+      halfWidth + 1,
+      0,
+      halfWidth + 1 + SHADOW_OFFSET,
+      0,
+      SHADOW_COLOR_STOPS
+    );
     context.fill();
 
     // Bottom shadow

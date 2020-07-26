@@ -7,14 +7,15 @@ interface ShowWebDialogPayload {
 }
 
 export const showWebDialog = defineAction(
-  'showWebDialog', (state: ApplicationState, payload: ShowWebDialogPayload) => {
+  'showWebDialog',
+  (state: ApplicationState, payload: ShowWebDialogPayload) => {
     const dialogs: Dialogs = {
       ...state.dialogs,
-      web: payload.dialog
+      web: payload.dialog,
     };
     const result: ApplicationState = {
       ...state,
-      dialogs
+      dialogs,
     };
     return result;
   }

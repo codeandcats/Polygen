@@ -8,28 +8,19 @@ export class ImageBoundsTool extends Tool {
 
   private static CURSOR = 'default';
 
-  public mouseDown(
-    helper: ToolHelper
-  ): void {
+  public mouseDown(helper: ToolHelper): void {
     helper.setMouseCursor(ImageBoundsTool.CURSOR);
   }
 
-  public mouseMove(
-    helper: ToolHelper
-  ): void {
+  public mouseMove(helper: ToolHelper): void {
     helper.setMouseCursor(ImageBoundsTool.CURSOR);
   }
 
-  public mouseUp(
-    helper: ToolHelper
-  ): void {
+  public mouseUp(helper: ToolHelper): void {
     helper.setMouseCursor(ImageBoundsTool.CURSOR);
   }
 
-  public render(
-    helper: ToolHelper,
-    context: CanvasRenderingContext2D
-  ): void {
+  public render(helper: ToolHelper, context: CanvasRenderingContext2D): void {
     const editor = helper.getEditor();
     const layer = editor.document.layers[editor.selectedLayerIndex];
     const bounds = getImageBounds(editor.document.dimensions, layer);

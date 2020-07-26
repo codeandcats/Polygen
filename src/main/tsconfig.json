@@ -2,12 +2,7 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "noEmit": false,
-    "lib": [
-      "dom",
-      "es6"
-    ]
+    "lib": ["dom", "es6"]
   },
-  "files": [
-    "index.ts"
-  ]
+  "files": ["index.ts"]
 }

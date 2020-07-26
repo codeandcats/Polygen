@@ -3,14 +3,18 @@ import { Point } from '../../../../../../shared/models/point';
 import { recalculatePolygons } from '../../../../../../shared/utils/geometry';
 import { ImageCache } from '../../../../../models/imageCache';
 import { defineAction } from '../../../../../reduxWithLessSux/action';
-import { getAbsoluteDocumentPoint, recalculatePolygonColours } from '../../../../../utils/graphics';
+import {
+  getAbsoluteDocumentPoint,
+  recalculatePolygonColours,
+} from '../../../../../utils/graphics';
 
 interface RemoveSelectionPayload {
   imageCache: ImageCache;
 }
 
 export const removeSelection = defineAction(
-  'removeSelection', (state: ApplicationState, payload: RemoveSelectionPayload) => {
+  'removeSelection',
+  (state: ApplicationState, payload: RemoveSelectionPayload) => {
     const editors = state.editors.map((editor, editorIndex) => {
       if (editorIndex === state.activeEditorIndex) {
         const selectedPointIndices = editor.selectedPointIndices;
@@ -31,19 +35,19 @@ export const removeSelection = defineAction(
                   imageCache: payload.imageCache,
                   layer,
                   points,
-                  polygons
+                  polygons,
                 });
 
                 return {
                   ...layer,
                   points,
-                  polygons
+                  polygons,
                 };
               }
               return layer;
-            })
+            }),
           },
-          selectedPointIndices: []
+          selectedPointIndices: [],
         };
       }
       return editor;
@@ -51,7 +55,7 @@ export const removeSelection = defineAction(
 
     return {
       ...state,
-      editors
+      editors,
     };
   }
 ).getDispatcher();

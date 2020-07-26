@@ -19,15 +19,15 @@ export const DEFAULT_APPLICATION_STATE: ApplicationState = {
   activeEditorIndex: -1,
   dialogs: {
     web: undefined,
-    native: undefined
+    native: undefined,
   },
   editors: [],
   focusedElement: {
     isInput: false,
-    isTextInput: false
+    isTextInput: false,
   },
   isResponsiveBreakpointLabelVisible: false,
-  recentFileNames: []
+  recentFileNames: [],
 };
 
 export const MAX_RECENT_FILE_NAME_COUNT = 10;
@@ -40,7 +40,10 @@ export function isEditorVisible(state: ApplicationState): boolean {
   return state.activeEditorIndex > -1;
 }
 
-export function isToolSelected(state: ApplicationState, toolName: ToolName): boolean {
+export function isToolSelected(
+  state: ApplicationState,
+  toolName: ToolName
+): boolean {
   const editor = state.editors[state.activeEditorIndex];
   return editor && editor.selectedToolName === toolName;
 }

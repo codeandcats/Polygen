@@ -10,29 +10,29 @@ export interface WelcomeViewProps {
   onOpenProjectFile: (fileName: string) => void;
 }
 
-export interface WelcomeViewState {
-}
+export interface WelcomeViewState {}
 
-export const WelcomeView: React.StatelessComponent<WelcomeViewProps> = (props: WelcomeViewProps) => {
+export const WelcomeView: React.StatelessComponent<WelcomeViewProps> = (
+  props: WelcomeViewProps
+) => {
   const renderFileList = () => (
-    <ListGroup className={styles.fileList} variant='flush' activeKey=''>
-      {
-        props.recentFileNames.map((recentFileName: string) => (
-          <ListGroup.Item
-            action
-            href='#'
-            active={false}
-            key={recentFileName}
-            onClick={() => props.onOpenProjectFile(recentFileName)}
-          >
-            {path.basename(recentFileName)}
-          </ListGroup.Item>
-        ))
-      }
+    <ListGroup className={styles.fileList} variant="flush" activeKey="">
+      {props.recentFileNames.map((recentFileName: string) => (
+        <ListGroup.Item
+          action
+          href="#"
+          active={false}
+          key={recentFileName}
+          onClick={() => props.onOpenProjectFile(recentFileName)}
+        >
+          {path.basename(recentFileName)}
+        </ListGroup.Item>
+      ))}
     </ListGroup>
   );
 
-  const shouldShowRecentFiles = props.recentFileNames && props.recentFileNames.length > 0;
+  const shouldShowRecentFiles =
+    props.recentFileNames && props.recentFileNames.length > 0;
 
   return (
     <div className={styles.welcomePage}>
@@ -42,17 +42,20 @@ export const WelcomeView: React.StatelessComponent<WelcomeViewProps> = (props: W
           <p>Create or open a file to get started.</p>
 
           <ButtonToolbar>
-            <Button onClick={() => props.onShowNewProjectFileDialog()} className='mr-2'>New file</Button>
-            <Button onClick={() => props.onShowOpenProjectFileDialog()}>Open existing file</Button>
+            <Button
+              onClick={() => props.onShowNewProjectFileDialog()}
+              className="mr-2"
+            >
+              New file
+            </Button>
+            <Button onClick={() => props.onShowOpenProjectFileDialog()}>
+              Open existing file
+            </Button>
           </ButtonToolbar>
 
-          {
-            shouldShowRecentFiles ? <h6>Recent Files</h6> : null
-          }
+          {shouldShowRecentFiles ? <h6>Recent Files</h6> : null}
         </div>
-        {
-          shouldShowRecentFiles ? renderFileList() : null
-        }
+        {shouldShowRecentFiles ? renderFileList() : null}
       </Jumbotron>
     </div>
   );

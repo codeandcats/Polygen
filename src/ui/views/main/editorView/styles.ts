@@ -10,7 +10,7 @@ export const editorContainer = style({
 
   height: percent(100),
   display: 'flex',
-  flexDirection: 'column'
+  flexDirection: 'column',
 });
 
 export const editorBody = style({
@@ -20,7 +20,7 @@ export const editorBody = style({
   flex: '1 1 auto',
   position: 'relative',
   overflowY: 'scroll',
-  flexDirection: 'row'
+  flexDirection: 'row',
 });
 
 export const editorFooter = style({
@@ -28,7 +28,7 @@ export const editorFooter = style({
 
   flex: '0 1 auto',
   textAlign: 'left',
-  padding: px(10)
+  padding: px(10),
 });
 
 export const editorBodyMain = style({
@@ -36,26 +36,26 @@ export const editorBodyMain = style({
 
   display: 'flex',
   flexDirection: 'column',
-  flex: '1 1 auto'
+  flex: '1 1 auto',
 });
 
 export const editorBodyMainHeader = style({
   $debugName: 'editorBodyMainHeader',
 
   flex: '0 1 auto',
-  padding: px(10)
+  padding: px(10),
 });
 
 export const editorBodyMainCanvasContainer = style({
   $debugName: 'editorBodyMainCanvasContainer',
 
   flex: '1 1 auto',
-  overflow: 'hidden'
+  overflow: 'hidden',
 });
 
 export const editorBodyRight = style({
   $debugName: 'editorBodyRight',
 
   flexBasis: px(LAYER_LIST_WIDTH),
-  overflowY: 'scroll'
+  overflowY: 'scroll',
 });

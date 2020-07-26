@@ -3,7 +3,10 @@ import { Point } from '../../../../../../shared/models/point';
 import { recalculatePolygons } from '../../../../../../shared/utils/geometry';
 import { ImageCache } from '../../../../../models/imageCache';
 import { defineAction } from '../../../../../reduxWithLessSux/action';
-import { getAbsoluteDocumentPoint, recalculatePolygonColours } from '../../../../../utils/graphics';
+import {
+  getAbsoluteDocumentPoint,
+  recalculatePolygonColours,
+} from '../../../../../utils/graphics';
 
 interface MoveSelectedPointsPayload {
   imageCache: ImageCache;
@@ -11,7 +14,8 @@ interface MoveSelectedPointsPayload {
 }
 
 export const moveSelectedPoints = defineAction(
-  'moveSelectedPoints', (state: ApplicationState, payload: MoveSelectedPointsPayload) => {
+  'moveSelectedPoints',
+  (state: ApplicationState, payload: MoveSelectedPointsPayload) => {
     const editors = state.editors.map((editor, editorIndex) => {
       if (editorIndex === state.activeEditorIndex) {
         const document = editor.document;
@@ -25,7 +29,7 @@ export const moveSelectedPoints = defineAction(
                   if (editor.selectedPointIndices.indexOf(pointIndex) > -1) {
                     return {
                       x: point.x + payload.moveBy.x,
-                      y: point.y + payload.moveBy.y
+                      y: point.y + payload.moveBy.y,
                     };
                   }
                   return point;
@@ -38,18 +42,18 @@ export const moveSelectedPoints = defineAction(
                   imageCache: payload.imageCache,
                   layer,
                   points,
-                  polygons
+                  polygons,
                 });
 
                 return {
                   ...layer,
                   points,
-                  polygons
+                  polygons,
                 };
               }
               return layer;
-            })
-          }
+            }),
+          },
         };
       }
       return editor;
@@ -57,7 +61,7 @@ export const moveSelectedPoints = defineAction(
 
     return {
       ...state,
-      editors
+      editors,
     };
   }
 ).getDispatcher();

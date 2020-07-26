@@ -1,7 +1,12 @@
 import * as EventEmitter from 'events';
 import { Nullable } from '../../shared/models/nullable';
 
-export type MouseTrapMouseEventName = 'mousedown' | 'mousemove' | 'mouseup' | 'mouseenter' | 'mouseleave';
+export type MouseTrapMouseEventName =
+  | 'mousedown'
+  | 'mousemove'
+  | 'mouseup'
+  | 'mouseenter'
+  | 'mouseleave';
 
 export type MouseTrapMouseEventHandler = (event: MouseEvent) => void;
 
@@ -12,7 +17,7 @@ let mouseTrapInstanceCount = 0;
 const MOUSE_BUTTON = Object.freeze({
   LEFT: 0,
   AUXILIARY: 1,
-  RIGHT: 2
+  RIGHT: 2,
 });
 
 const MOUSE_BUTTONS = Object.freeze({
@@ -60,13 +65,16 @@ export class MouseTrap {
 
   private elementMouseEnter = (event: MouseEvent) => {
     this.events.emit('mouseenter', event);
-  }
+  };
 
   private elementMouseLeave = (event: MouseEvent) => {
     this.events.emit('mouseleave', event);
-  }
+  };
 
-  private emitMouseEvent(eventName: MouseTrapMouseEventName, event: MouseEvent) {
+  private emitMouseEvent(
+    eventName: MouseTrapMouseEventName,
+    event: MouseEvent
+  ) {
     const customEventName = this.getUniqueEventName(eventName);
 
     const customHandler = (customEvent2: MouseEvent) => {
@@ -78,7 +86,9 @@ export class MouseTrap {
 
     const customEvent = new MouseEvent(customEventName, {
       button: this.wasMouseDownInsideElement ? this.mouseDownButton || 0 : 0,
-      buttons: this.wasMouseDownInsideElement ? mouseButtonToButtons(this.mouseDownButton) : 0,
+      buttons: this.wasMouseDownInsideElement
+        ? mouseButtonToButtons(this.mouseDownButton)
+        : 0,
       view: window,
       bubbles: false,
       cancelable: false,
@@ -87,7 +97,7 @@ export class MouseTrap {
       altKey: event.altKey,
       ctrlKey: event.ctrlKey,
       shiftKey: event.shiftKey,
-      metaKey: event.metaKey
+      metaKey: event.metaKey,
     });
 
     this.element.dispatchEvent(customEvent);
@@ -102,7 +112,7 @@ export class MouseTrap {
     if (this.wasMouseDownInsideElement) {
       this.emitMouseEvent('mousedown', event);
     }
-  }
+  };
 
   private windowMouseMove = (event: MouseEvent) => {
     const elementUnderMouse = document.elementFromPoint(event.x, event.y);
@@ -114,7 +124,7 @@ export class MouseTrap {
     }
 
     this.emitMouseEvent('mousemove', event);
-  }
+  };
 
   private windowMouseUp = (event: MouseEvent) => {
     if (!this.wasMouseDownInsideElement) {
@@ -125,7 +135,7 @@ export class MouseTrap {
 
     this.mouseDownButton = undefined;
     this.wasMouseDownInsideElement = false;
-  }
+  };
 
   public capture() {
     if (this.isCaptured) {
@@ -155,12 +165,18 @@ export class MouseTrap {
     this.isCaptured = false;
   }
 
-  public on(eventName: MouseTrapMouseEventName, handler: MouseTrapMouseEventHandler): Unsubscribe {
+  public on(
+    eventName: MouseTrapMouseEventName,
+    handler: MouseTrapMouseEventHandler
+  ): Unsubscribe {
     this.events.on(eventName, handler);
     return () => this.off(eventName, handler);
   }
 
-  public off(eventName: MouseTrapMouseEventName, handler: MouseTrapMouseEventHandler): void {
+  public off(
+    eventName: MouseTrapMouseEventName,
+    handler: MouseTrapMouseEventHandler
+  ): void {
     this.events.removeListener(eventName, handler);
   }
 }

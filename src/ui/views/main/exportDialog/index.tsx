@@ -2,10 +2,20 @@ import Frame = require('canvas-to-buffer');
 import { remote, SaveDialogOptions } from 'electron';
 import * as fs from 'fs-extra';
 import * as React from 'react';
-import { Button, Col, Form, FormControl, FormGroup, Modal } from 'react-bootstrap';
+import {
+  Button,
+  Col,
+  Form,
+  FormControl,
+  FormGroup,
+  Modal,
+} from 'react-bootstrap';
 import titleCase = require('titlecase');
 import { ApplicationState } from '../../../../shared/models/applicationState';
-import { ExportFileFormat, ExportFileFormats } from '../../../../shared/models/exportFileFormat';
+import {
+  ExportFileFormat,
+  ExportFileFormats,
+} from '../../../../shared/models/exportFileFormat';
 import { FloatPercent } from '../../../../shared/models/floatPercent';
 import { PolygenDocument } from '../../../../shared/models/polygenDocument';
 import { Size } from '../../../../shared/models/size';
@@ -24,8 +34,7 @@ interface ExportDialogProps {
   store: Store<ApplicationState>;
 }
 
-interface ExportDialogState {
-}
+interface ExportDialogState {}
 
 interface RenderDocumentToFileOptions {
   dimensions: Size;
@@ -37,17 +46,22 @@ interface RenderDocumentToFileOptions {
 }
 
 function calculateZoomToFit(canvasSize: Size, documentSize: Size) {
-  const documentAspectRatio = !documentSize.height ? 0 : documentSize.width / documentSize.height;
-  const canvasAspectRatio = !canvasSize.height ? 0 : canvasSize.width / canvasSize.height;
-  const result = (
-    canvasAspectRatio > documentAspectRatio ?
-      canvasSize.height / documentSize.height :
-      canvasSize.width / documentSize.width
-  );
+  const documentAspectRatio = !documentSize.height
+    ? 0
+    : documentSize.width / documentSize.height;
+  const canvasAspectRatio = !canvasSize.height
+    ? 0
+    : canvasSize.width / canvasSize.height;
+  const result =
+    canvasAspectRatio > documentAspectRatio
+      ? canvasSize.height / documentSize.height
+      : canvasSize.width / documentSize.width;
   return result;
 }
 
-async function renderDocumentToFile(options: RenderDocumentToFileOptions): Promise<void> {
+async function renderDocumentToFile(
+  options: RenderDocumentToFileOptions
+): Promise<void> {
   const width = options.dimensions.width;
   const height = options.dimensions.height;
 
@@ -69,7 +83,7 @@ async function renderDocumentToFile(options: RenderDocumentToFileOptions): Promi
     bounds: {
       x: 0,
       y: 0,
-      ...options.dimensions
+      ...options.dimensions,
     },
     context: largeContext,
     document: options.document,
@@ -83,10 +97,10 @@ async function renderDocumentToFile(options: RenderDocumentToFileOptions): Promi
     viewPort: {
       pan: {
         x: 0,
-        y: 0
+        y: 0,
       },
-      zoom: calculateZoomToFit(options.dimensions, options.document.dimensions)
-    }
+      zoom: calculateZoomToFit(options.dimensions, options.document.dimensions),
+    },
   });
 
   if (!largeContext) {
@@ -98,7 +112,7 @@ async function renderDocumentToFile(options: RenderDocumentToFileOptions): Promi
 
   const frame = new Frame(finalCanvas, {
     image: { types: [options.format] },
-    quality: options.quality
+    quality: options.quality,
   });
 
   const buffer = frame.toBuffer();
@@ -106,8 +120,15 @@ async function renderDocumentToFile(options: RenderDocumentToFileOptions): Promi
   await fs.writeFile(options.fileName, buffer);
 }
 
-export class ExportDialog extends React.Component<ExportDialogProps, ExportDialogState> {
-  private async accept(event: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement>): Promise<void> {
+export class ExportDialog extends React.Component<
+  ExportDialogProps,
+  ExportDialogState
+> {
+  private async accept(
+    event:
+      | React.FormEvent<HTMLFormElement>
+      | React.MouseEvent<HTMLButtonElement>
+  ): Promise<void> {
     event.preventDefault();
 
     const state = this.props.store.getState();
@@ -134,13 +155,13 @@ export class ExportDialog extends React.Component<ExportDialogProps, ExportDialo
       await renderDocumentToFile({
         dimensions: {
           width,
-          height
+          height,
         },
         document,
         fileName,
         format,
         imageCache: this.props.imageCache,
-        quality
+        quality,
       });
 
       hideWebDialog(this.props.store);
@@ -148,28 +169,26 @@ export class ExportDialog extends React.Component<ExportDialogProps, ExportDialo
   }
 
   private async promptUserForImageFileName(): Promise<string | undefined> {
-    return new Promise<string | undefined>(resolve => {
+    return new Promise<string | undefined>((resolve) => {
       const window = remote.getCurrentWindow();
       const options: SaveDialogOptions = {
         filters: [
           {
             extensions: ['png'],
-            name: 'Png image files'
+            name: 'Png image files',
           },
           {
             extensions: ['jpeg'],
-            name: 'Jpeg image files'
-          }
-        ]
+            name: 'Jpeg image files',
+          },
+        ],
       };
       showNativeDialog(this.props.store, { type: 'save' });
-      remote.dialog.showSaveDialog(
-        window,
-        options,
-        fileName => resolve(fileName)
+      remote.dialog.showSaveDialog(window, options, (fileName) =>
+        resolve(fileName)
       );
     }).then(
-      fileName => {
+      (fileName) => {
         hideNativeDialog(this.props.store);
         return fileName;
       },
@@ -193,7 +212,7 @@ export class ExportDialog extends React.Component<ExportDialogProps, ExportDialo
 
     const value = dialog.dimensions[dimension];
 
-    if (((typeof value === 'string') && value === '') || value == null) {
+    if ((typeof value === 'string' && value === '') || value == null) {
       return undefined;
     }
 
@@ -205,19 +224,22 @@ export class ExportDialog extends React.Component<ExportDialogProps, ExportDialo
     return numericValue;
   }
 
-  private setDimension(dimension: keyof Size, event: React.FormEvent<FormControl>) {
+  private setDimension(
+    dimension: keyof Size,
+    event: React.FormEvent<FormControl>
+  ) {
     const state = this.props.store.getState();
     const dialog = state.dialogs.web;
     if (!dialog || dialog.dialogType !== 'export') {
       return;
     }
 
-    const { value } = (event.target as HTMLInputElement);
+    const { value } = event.target as HTMLInputElement;
     updateWebDialogFields(this.props.store, {
       dimensions: {
         ...dialog.dimensions,
-        [dimension]: value
-      }
+        [dimension]: value,
+      },
     });
   }
 
@@ -231,14 +253,18 @@ export class ExportDialog extends React.Component<ExportDialogProps, ExportDialo
 
     return (
       <FormGroup>
-        <Col sm='2' as={Form.Label}>{titleCase(dimension)}</Col>
+        <Col sm="2" as={Form.Label}>
+          {titleCase(dimension)}
+        </Col>
         <Col sm={10}>
           <FormControl
-            type='number'
-            className='text-right'
+            type="number"
+            className="text-right"
             value={`${dialog.dimensions[dimension] || 0}`}
-            onChange={(event: React.FormEvent<FormControl>) => this.setDimension(dimension, event)}
-            min='1'
+            onChange={(event: React.FormEvent<FormControl>) =>
+              this.setDimension(dimension, event)
+            }
+            min="1"
             style={{ maxWidth: 150 }}
           />
         </Col>
@@ -252,7 +278,9 @@ export class ExportDialog extends React.Component<ExportDialogProps, ExportDialo
   }
 
   private setQuality(event: React.FormEvent<FormControl>) {
-    let quality = parseFloat('' + ((event.target as HTMLInputElement).value || ''));
+    let quality = parseFloat(
+      '' + ((event.target as HTMLInputElement).value || '')
+    );
     quality = Math.round(quality);
     quality = clamp(1, 100, quality);
     quality /= 100;
@@ -266,58 +294,76 @@ export class ExportDialog extends React.Component<ExportDialogProps, ExportDialo
     const isWidthValid = !!this.getDimensionValueIfValid('width');
     const isHeightValid = !!this.getDimensionValueIfValid('height');
     const isSubmitEnabled = isWidthValid && isHeightValid;
-    const format: ExportFileFormat = (dialog && dialog.dialogType === 'export') && dialog.format || 'png';
-    const quality = (dialog && dialog.dialogType === 'export' && dialog.quality) || 0;
+    const format: ExportFileFormat =
+      (dialog && dialog.dialogType === 'export' && dialog.format) || 'png';
+    const quality =
+      (dialog && dialog.dialogType === 'export' && dialog.quality) || 0;
 
     return (
-      <Modal show={isVisible} onHide={() => this.cancel()} >
+      <Modal show={isVisible} onHide={() => this.cancel()}>
         <Modal.Header>
           <h2>Export image</h2>
         </Modal.Header>
         <Modal.Body>
-          <Form inline onSubmit={(event: React.FormEvent<HTMLFormElement>) => this.accept(event)}>
-
+          <Form
+            inline
+            onSubmit={(event: React.FormEvent<HTMLFormElement>) =>
+              this.accept(event)
+            }
+          >
             {this.getDimensionControl('width')}
 
             {this.getDimensionControl('height')}
 
             <FormGroup>
-              <Col as={Form.Label} sm={2}>Format</Col>
+              <Col as={Form.Label} sm={2}>
+                Format
+              </Col>
               <Col sm={10}>
                 <FormControl
-                  as='select'
+                  as="select"
                   value={format}
-                  onChange={(event: React.FormEvent<FormControl>) => this.setFormat(event)}
-                >
-                  {
-                    ExportFileFormats.map(value => <option key={value} value={value}>{value.toUpperCase()}</option>)
+                  onChange={(event: React.FormEvent<FormControl>) =>
+                    this.setFormat(event)
                   }
+                >
+                  {ExportFileFormats.map((value) => (
+                    <option key={value} value={value}>
+                      {value.toUpperCase()}
+                    </option>
+                  ))}
                 </FormControl>
               </Col>
             </FormGroup>
 
             <FormGroup>
-              <Col sm={2} as={Form.Label}>Quality</Col>
+              <Col sm={2} as={Form.Label}>
+                Quality
+              </Col>
               <Col sm={10}>
                 <FormControl
-                  type='number'
+                  type="number"
                   value={`${Math.round(quality * 100)}`}
                   min={0}
                   max={100}
-                  onChange={(event: React.FormEvent<FormControl>) => this.setQuality(event)}
-                >
-                </FormControl>
+                  onChange={(event: React.FormEvent<FormControl>) =>
+                    this.setQuality(event)
+                  }
+                ></FormControl>
               </Col>
             </FormGroup>
-
           </Form>
         </Modal.Body>
         <Modal.Footer>
           <Button
-            variant='primary'
-            onClick={(event: React.MouseEvent<HTMLButtonElement>) => this.accept(event)}
+            variant="primary"
+            onClick={(event: React.MouseEvent<HTMLButtonElement>) =>
+              this.accept(event)
+            }
             disabled={!isSubmitEnabled}
-          >OK</Button>
+          >
+            OK
+          </Button>
           <Button onClick={() => this.cancel()}>Cancel</Button>
         </Modal.Footer>
       </Modal>

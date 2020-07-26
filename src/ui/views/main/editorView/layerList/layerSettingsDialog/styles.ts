@@ -6,11 +6,11 @@ export const settingsForm = style({
 
   $nest: {
     '.form-group:last-of-type': {
-      marginBottom: 0
-    }
-  }
+      marginBottom: 0,
+    },
+  },
 });
 
 export const checkbox = style({
-  justifyContent: important('flex-start')
+  justifyContent: important('flex-start'),
 });

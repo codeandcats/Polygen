@@ -9,7 +9,8 @@ interface UpdatePolygonColorsPayload {
 }
 
 export const updatePolygonColors = defineAction(
-  'updatePolygonColors', (state: ApplicationState, payload: UpdatePolygonColorsPayload) => {
+  'updatePolygonColors',
+  (state: ApplicationState, payload: UpdatePolygonColorsPayload) => {
     const editors = state.editors.map((editor, editorIndex) => {
       if (editorIndex === state.activeEditorIndex) {
         const document = editor.document;
@@ -24,17 +25,17 @@ export const updatePolygonColors = defineAction(
                   imageCache: payload.imageCache,
                   layer,
                   points: layer.points,
-                  polygons: layer.polygons
+                  polygons: layer.polygons,
                 });
 
                 return {
                   ...layer,
-                  polygons
+                  polygons,
                 };
               }
               return layer;
-            })
-          }
+            }),
+          },
         };
       }
       return editor;
@@ -42,7 +43,7 @@ export const updatePolygonColors = defineAction(
 
     return {
       ...state,
-      editors
+      editors,
     };
   }
 ).getDispatcher();

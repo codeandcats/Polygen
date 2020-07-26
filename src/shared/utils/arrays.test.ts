@@ -1,7 +1,6 @@
 import { moveElement } from './arrays';
 
 describe('moveElement', () => {
-
   it('should move an element backwards', () => {
     const original = ['a', 'b', 'c', 'd', 'e'];
     const actual = moveElement(original, 3, 2);
@@ -26,5 +25,4 @@ describe('moveElement', () => {
     expect(original).toBe(copyOfOriginalReference);
     expect(original).toEqual(copyOfOriginal);
   });
-
 });

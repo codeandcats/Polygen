@@ -44,11 +44,15 @@ export class ImageCache {
         objectUrl,
       };
 
-      element.addEventListener('load', () => {
-        if (item) {
-          item.hasElementLoaded = true;
-        }
-      }, false);
+      element.addEventListener(
+        'load',
+        () => {
+          if (item) {
+            item.hasElementLoaded = true;
+          }
+        },
+        false
+      );
 
       this.cache[imageSource.id] = item;
 

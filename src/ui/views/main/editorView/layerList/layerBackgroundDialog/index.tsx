@@ -18,11 +18,18 @@ export interface LayerBackgroundDialogProps {
   store: Store<ApplicationState>;
 }
 
-export class LayerBackgroundDialog extends React.Component<LayerBackgroundDialogProps, {}> {
+export class LayerBackgroundDialog extends React.Component<
+  LayerBackgroundDialogProps,
+  {}
+> {
   private imageCache: Nullable<ImageCache>;
   private fileInput: Nullable<HTMLInputElement>;
 
-  private accept(event: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement>) {
+  private accept(
+    event:
+      | React.FormEvent<HTMLFormElement>
+      | React.MouseEvent<HTMLButtonElement>
+  ) {
     event.preventDefault();
     const state = this.props.store.getState();
     const dialog = state.dialogs.web;
@@ -35,7 +42,7 @@ export class LayerBackgroundDialog extends React.Component<LayerBackgroundDialog
 
     setLayerImage(this.props.store, {
       imageSource,
-      layerIndex
+      layerIndex,
     });
 
     hideWebDialog(this.props.store);
@@ -58,12 +65,15 @@ export class LayerBackgroundDialog extends React.Component<LayerBackgroundDialog
 
   private removeImage() {
     updateWebDialogFields(this.props.store, {
-      imageSource: undefined
+      imageSource: undefined,
     });
   }
 
   public render() {
-    const dialog = getWebDialogState(this.props.store.getState(), 'layerImageSource');
+    const dialog = getWebDialogState(
+      this.props.store.getState(),
+      'layerImageSource'
+    );
 
     let imageSource: Nullable<ImageSource> = null;
     let isVisible: boolean = false;
@@ -73,63 +83,66 @@ export class LayerBackgroundDialog extends React.Component<LayerBackgroundDialog
       isVisible = true;
     }
 
-    const cachedImage = (
-      this.imageCache &&
-      imageSource &&
-      this.imageCache.getImage(imageSource)
-    );
+    const cachedImage =
+      this.imageCache && imageSource && this.imageCache.getImage(imageSource);
 
-    const removeImageButton = (
-      imageSource ?
-        <Button
-          variant='danger'
-          className={mainStyles.buttonSpaceLeft}
-          onClick={() => this.removeImage()}
-        >Remove Image</Button> :
-        undefined
-    );
+    const removeImageButton = imageSource ? (
+      <Button
+        variant="danger"
+        className={mainStyles.buttonSpaceLeft}
+        onClick={() => this.removeImage()}
+      >
+        Remove Image
+      </Button>
+    ) : undefined;
 
     return (
-      <Modal show={isVisible} onHide={() => this.cancel()} >
+      <Modal show={isVisible} onHide={() => this.cancel()}>
         <Modal.Header>
           <h2>Layer background image</h2>
         </Modal.Header>
         <Modal.Body>
           <Form
             className={styles.layerBackgroundImageForm}
-            encType='multipart/form-data'
-            onSubmit={(event: React.FormEvent<HTMLFormElement>) => this.accept(event)}
+            encType="multipart/form-data"
+            onSubmit={(event: React.FormEvent<HTMLFormElement>) =>
+              this.accept(event)
+            }
           >
-            <FormGroup className='text-center'>
-              <Button onClick={() => this.showFilePicker()}>Select Image</Button>
+            <FormGroup className="text-center">
+              <Button onClick={() => this.showFilePicker()}>
+                Select Image
+              </Button>
               {removeImageButton}
               <div style={{ width: 0, height: 0, overflow: 'hidden' }}>
                 <input
-                  accept='image/*'
+                  accept="image/*"
                   onChange={() => this.updateImage()}
-                  ref={el => this.fileInput = el}
-                  type='file'
+                  ref={(el) => (this.fileInput = el)}
+                  type="file"
                 />
               </div>
             </FormGroup>
-            {
-              cachedImage ?
-                <FormGroup className='text-center'>
-                  <Image
-                    alt='Image preview'
-                    fluid={true}
-                    src={cachedImage.objectUrl}
-                  />
-                </FormGroup> :
-                undefined
-            }
+            {cachedImage ? (
+              <FormGroup className="text-center">
+                <Image
+                  alt="Image preview"
+                  fluid={true}
+                  src={cachedImage.objectUrl}
+                />
+              </FormGroup>
+            ) : undefined}
           </Form>
         </Modal.Body>
         <Modal.Footer>
           <Button
-            variant='primary'
-            onClick={(event: React.MouseEvent<HTMLButtonElement>) => this.accept(event)}
-          >OK</Button>
+            variant="primary"
+            onClick={(event: React.MouseEvent<HTMLButtonElement>) =>
+              this.accept(event)
+            }
+          >
+            OK
+          </Button>
           <Button onClick={() => this.cancel()}>Cancel</Button>
         </Modal.Footer>
       </Modal>
@@ -143,18 +156,22 @@ export class LayerBackgroundDialog extends React.Component<LayerBackgroundDialog
   }
 
   private updateImage() {
-    if (this.fileInput && this.fileInput.files && this.fileInput.files.length === 1) {
+    if (
+      this.fileInput &&
+      this.fileInput.files &&
+      this.fileInput.files.length === 1
+    ) {
       const file = this.fileInput.files[0] as File & { path: string };
 
       const buffer = fs.readFileSync(file.path, null);
 
       const imageSource: ImageSource = {
         id: uuid(),
-        data: buffer.toString('base64')
+        data: buffer.toString('base64'),
       };
 
       updateWebDialogFields(this.props.store, {
-        imageSource
+        imageSource,
       });
 
       if (this.fileInput && this.fileInput.form) {

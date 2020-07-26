@@ -4,7 +4,7 @@ import { Rectangle } from './rectangle';
 import { Nullable } from './nullable';
 
 export interface LayerImage {
-	topLeft: Point;
-	bottomRight: Point;
-	source: Nullable<ImageSource>;
+  topLeft: Point;
+  bottomRight: Point;
+  source: Nullable<ImageSource>;
 }
