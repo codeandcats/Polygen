@@ -25,7 +25,7 @@ export class ImageBoundsTool extends Tool {
     const layer = editor.document.layers[editor.selectedLayerIndex];
     const bounds = getImageBounds(editor.document.dimensions, layer);
 
-    if (layer.image.source) {
+    if (layer.image.imageId) {
       context.rect(bounds.x, bounds.y, bounds.width, bounds.height);
       renderSelectionStroke(context);
       context.stroke();

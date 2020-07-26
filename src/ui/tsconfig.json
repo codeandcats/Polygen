@@ -11,5 +11,10 @@
     "strictNullChecks": true,
     "target": "es3"
   },
-  "include": ["**/*.ts", "**/*.tsx", "../shared/typings/**/*.ts"]
+  "include": [
+    "../shared/typings/array.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "../shared/typings/**/*.ts"
+  ]
 }

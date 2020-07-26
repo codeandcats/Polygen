@@ -51,6 +51,7 @@ import { toggleResponsiveBreakpointLabelVisible } from '../../actions/toggleResp
 import { Store } from '../../reduxWithLessSux/store';
 import { canElementDelete, canElementSelectAll } from '../../utils/forms';
 import { MainWindow } from './index';
+import { upgradeDocument } from '../../utils/documentUpgrade';
 
 export class Application {
   private readonly MENU_DEFINITIONS: Array<
@@ -414,13 +415,12 @@ export class Application {
   }
 
   private async openExactProjectFile(fileName: string): Promise<void> {
-    const state = this.store.getState();
     const editorIndex = this.getEditorIndexOfProjectFile(fileName);
     if (editorIndex > -1) {
       switchToEditor(this.store, { editorIndex });
     } else {
       return fs.readFile(fileName, { encoding: 'utf8' }).then((json) => {
-        const document: PolygenDocument = JSON.parse(json);
+        const document: PolygenDocument = upgradeDocument(JSON.parse(json));
         openExistingProjectFile(this.store, {
           fileName,
           document,

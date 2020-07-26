@@ -1,8 +1,7 @@
 import { Point } from './point';
 import { Polygon } from './polygon';
-import { ImageSource } from './imageSource';
 import { Nullable } from './nullable';
-import { LayerImage } from './layerImage';
+import { LayerImage, LegacyLayerImage } from './layerImage';
 import { FloatPercent } from './floatPercent';
 
 export interface Layer {
@@ -14,3 +13,7 @@ export interface Layer {
   points: Point[];
   polygons: Polygon[];
 }
+
+export type LegacyLayer = Pick<Layer, Exclude<keyof Layer, 'image'>> & {
+  image: LegacyLayerImage;
+};

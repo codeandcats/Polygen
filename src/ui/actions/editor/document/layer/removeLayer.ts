@@ -1,5 +1,6 @@
 import { ApplicationState } from '../../../../../shared/models/applicationState';
 import { defineAction } from '../../../../reduxWithLessSux/action';
+import { purgeUnusedImages } from '../purgeUnusedImages';
 
 interface RemoveLayerPayload {
   layerIndex: number;
@@ -23,10 +24,10 @@ export const removeLayer = defineAction(
 
         return {
           ...editor,
-          document: {
+          document: purgeUnusedImages({
             ...document,
             layers,
-          },
+          }),
           selectedLayerIndex,
         };
       }

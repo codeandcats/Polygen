@@ -14,10 +14,7 @@
 // - Round points
 
 import circumcenter = require('circumcenter');
-import { Editor } from '../../shared/models/editor';
 import { EditorMode } from '../../shared/models/editorMode';
-import { Layer } from '../../shared/models/layer';
-import { LayerImage } from '../../shared/models/layerImage';
 import { LayerPixelData } from '../../shared/models/layerImagePixelData';
 import { Point } from '../../shared/models/point';
 import { PolygenDocument } from '../../shared/models/polygenDocument';
@@ -36,6 +33,7 @@ import {
 import { clamp } from '../../shared/utils/math';
 import { ImageCache } from '../models/imageCache';
 import { Tool, ToolHelper } from '../models/tools/common';
+import { Layer } from '../../shared/models/layer';
 
 export type RenderMode = EditorMode | 'final';
 
@@ -135,7 +133,9 @@ export function getLayerPixelData(
     throw new Error('Could not get context for canvas');
   }
 
-  if (!layer.image.source) {
+  const image = getCachedImageForLayer(document, layer, imageCache);
+
+  if (!image) {
     return {
       data: new Uint8ClampedArray(
         4 * document.dimensions.width * document.dimensions.height
@@ -151,10 +151,8 @@ export function getLayerPixelData(
 
   const imageBounds = getImageBounds(document.dimensions, layer);
 
-  const element = imageCache.getImage(layer.image.source).element;
-
   context.drawImage(
-    element,
+    image.element,
     imageBounds.x,
     imageBounds.y,
     imageBounds.width,
@@ -248,7 +246,9 @@ export function recalculatePolygonColours(
   let polygons = options.polygons || options.layer.polygons;
   const points = options.points || options.layer.points;
 
-  if (!layer.image.source) {
+  const image = getCachedImageForLayer(document, layer, imageCache);
+
+  if (!image) {
     return polygons.map((polygon) => {
       return {
         ...polygon,
@@ -262,7 +262,6 @@ export function recalculatePolygonColours(
     });
   }
 
-  const image = options.imageCache.getImage(layer.image.source);
   if (!image.hasElementLoaded) {
     return layer.polygons;
   }
@@ -389,17 +388,22 @@ function renderLayer(options: RenderLayerOptions) {
   const zoom = options.viewPort.zoom;
 
   runInTransaction(context, () => {
-    if (mode === 'edit' && isSelectedLayer && layer.image.source) {
-      const image = imageCache.getImage(layer.image.source);
-      if (image.hasElementLoaded) {
-        const bounds = getImageBounds(documentDimensions, layer);
-        context.drawImage(
-          image.element,
-          bounds.x,
-          bounds.y,
-          bounds.width,
-          bounds.height
-        );
+    if (mode === 'edit' && isSelectedLayer && layer.image.imageId) {
+      const imageSource = document.images.find(
+        (image) => image.id === layer.image.imageId
+      );
+      if (imageSource) {
+        const image = imageCache.getImage(imageSource);
+        if (image.hasElementLoaded) {
+          const bounds = getImageBounds(documentDimensions, layer);
+          context.drawImage(
+            image.element,
+            bounds.x,
+            bounds.y,
+            bounds.width,
+            bounds.height
+          );
+        }
       }
     }
 
@@ -730,4 +734,18 @@ export function renderDocumentBackground(
     );
     context.fill();
   });
+}
+
+export function getCachedImageForLayer(
+  document: PolygenDocument,
+  layer: Layer,
+  cache: ImageCache
+) {
+  const image = document.images.find(
+    (image) => image.id === layer.image.imageId
+  );
+  if (!image) {
+    return undefined;
+  }
+  return cache.getImage(image);
 }

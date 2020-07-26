@@ -4,5 +4,5 @@
     "noEmit": false,
     "lib": ["dom", "es6"]
   },
-  "files": ["index.ts"]
+  "files": ["../shared/typings/array.d.ts", "index.ts"]
 }

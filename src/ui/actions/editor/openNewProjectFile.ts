@@ -12,12 +12,13 @@ export const openNewProjectFile = defineAction(
   'openNewProjectFile',
   (state: ApplicationState, payload: OpenNewProjectFilePayload) => {
     const document: PolygenDocument = {
+      images: [],
       layers: [
         {
           image: {
             topLeft: { x: -1, y: -1 },
             bottomRight: { x: 1, y: 1 },
-            source: undefined,
+            imageId: undefined,
           },
           isVisible: true,
           name: 'Layer 1',

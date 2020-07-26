@@ -12,7 +12,7 @@ export const addLayer = defineAction('addLayer', (state: ApplicationState) => {
         image: {
           topLeft: { x: -1, y: -1 },
           bottomRight: { x: 1, y: 1 },
-          source: undefined,
+          imageId: undefined,
         },
         isVisible: true,
         name: `Layer ${document.layers.length + 1}`,
