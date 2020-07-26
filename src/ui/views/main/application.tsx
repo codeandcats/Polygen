@@ -348,7 +348,7 @@ export class Application {
       const options: OpenDialogOptions = {
         filters: [
           {
-            extensions: ['plg'],
+            extensions: ['plg', 'json'],
             name: 'Polygen Files'
           }
         ]
@@ -410,7 +410,7 @@ export class Application {
       const options: SaveDialogOptions = {
         filters: [
           {
-            extensions: ['plg'],
+            extensions: ['plg', 'json'],
             name: 'Polygen Files'
           }
         ]
