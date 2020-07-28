@@ -9,7 +9,7 @@ import { Layer } from '../../shared/models/layer';
 export function upgradeDocument(
   document: PolygenDocument | LegacyPolygenDocument
 ): PolygenDocument {
-  const images: ImageSource[] = [];
+  const images: ImageSource[] = document.images ?? [];
   const layers: Array<Layer | LegacyLayer> = document.layers;
 
   return {
